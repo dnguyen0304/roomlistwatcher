@@ -91,3 +91,6 @@ ENV/
 
 # Protocol Buffers
 *_pb2.py
+
+# PyCharm
+.idea/
