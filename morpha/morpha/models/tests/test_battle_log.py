@@ -2,28 +2,28 @@
 
 from nose.tools import assert_equal, assert_list_equal, assert_true
 
-from .. import IRecordParser, BattleLogParser
+from .. import IRecord
+from ..battle_log import Parser
 
 
-class MockRecord(object):
-    pass
+class MockRecord(IRecord):
+
+    def __init__(self):
+        self.record_id = 0
+
+    @classmethod
+    def from_message(cls, message):
+        return cls()
 
 
-class MockRecordParser(IRecordParser):
-
-    @staticmethod
-    def parse(message):
-        return MockRecord()
-
-
-class TestBattleLogParser(object):
+class TestParser(object):
 
     def __init__(self):
         self.parser = None
 
     def setup(self):
-        self.parser = BattleLogParser()
-        self.parser.parsers['mock'] = MockRecordParser
+        self.parser = Parser()
+        self.parser.parsers['mock'] = MockRecord
 
     def test_parse(self):
         data = '|mock|foo\n|mock|bar'
