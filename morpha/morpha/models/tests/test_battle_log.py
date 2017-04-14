@@ -41,7 +41,7 @@ class TestHtmlParser(object):
         assert_false(self.html_parser._is_battle_log)
 
 
-class TestParser(object):
+class TestMessageParser(object):
 
     def __init__(self):
         self.parser = None
