@@ -32,11 +32,11 @@ class TestHtmlParser(object):
     def test_interface(self):
         assert_true(hasattr(self.html_parser, 'processed_data'))
 
-    def test_parse_battle_log_html(self):
+    def test_parse(self):
         self.html_parser.feed(data=self.data)
         assert_equal(self.html_parser.processed_data, 'foo')
 
-    def test_parse_battle_log_flag(self):
+    def test_parse_unsets_flag(self):
         self.html_parser.feed(data=self.data)
         assert_false(self.html_parser._is_battle_log)
 
