@@ -15,6 +15,9 @@ git commit --message "foo."
 # Python
 ### Package Hierarchy
 ```
+Parsers
+|
+Models
 ```
 
 ### General
