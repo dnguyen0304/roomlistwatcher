@@ -6,7 +6,7 @@ from nose.tools import (assert_equal,
                         assert_true)
 
 from .. import IRecord
-from ..battle_log import HtmlParser, Parser
+from ..battle_log import HtmlParser, MessageParser
 
 
 class MockRecord(IRecord):
@@ -47,7 +47,7 @@ class TestParser(object):
         self.parser = None
 
     def setup(self):
-        self.parser = Parser()
+        self.parser = MessageParser()
         self.parser.parsers['mock'] = MockRecord
 
     def test_parse(self):

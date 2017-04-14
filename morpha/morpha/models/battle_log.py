@@ -29,7 +29,7 @@ class HtmlParser(html_parser.HTMLParser):
             self.processed_data = data
 
 
-class Parser(object):
+class MessageParser(object):
 
     parsers = {'poke': TeamPreviewRecord}
 
@@ -56,7 +56,7 @@ class BattleLog(object):
     @classmethod
     def _from_string(cls, data):
         battle_log = cls()
-        battle_log.records = Parser().parse(data=data)
+        battle_log.records = MessageParser().parse(data=data)
         return battle_log
 
     def __repr__(self):
