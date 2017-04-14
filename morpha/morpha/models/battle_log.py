@@ -54,6 +54,14 @@ class BattleLog(object):
         self.records = list()
 
     @classmethod
+    def from_html(cls, file_path):
+        with open(file_path, mode='rb') as file:
+            data = file.read()
+        html_parser_ = HtmlParser()
+        html_parser_.feed(data=data)
+        return cls._from_string(data=html_parser_.processed_data)
+
+    @classmethod
     def _from_string(cls, data):
         battle_log = cls()
         battle_log.records = MessageParser().parse_all(data=data)
