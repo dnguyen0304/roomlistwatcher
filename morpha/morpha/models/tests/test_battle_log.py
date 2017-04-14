@@ -50,20 +50,20 @@ class TestParser(object):
         self.parser = MessageParser()
         self.parser.parsers['mock'] = MockRecord
 
-    def test_parse(self):
+    def test_parse_all(self):
         data = '|mock|foo\n|mock|bar'
-        records = self.parser.parse(data=data)
+        records = self.parser.parse_all(data=data)
         assert_equal(len(records), 2)
         assert_true(all(isinstance(record, MockRecord) for record in records))
 
-    def test_parse_unmapped_topics_fail_silently(self):
+    def test_parse_all_unmapped_topics_fail_silently(self):
         data = '|foo\n|bar'
-        records = self.parser.parse(data=data)
+        records = self.parser.parse_all(data=data)
         assert_list_equal(records, list())
 
-    def test_parse_updates_record_id(self):
+    def test_parse_all_updates_record_id(self):
         data = '|mock|foo\n|mock|bar'
-        records = self.parser.parse(data=data)
+        records = self.parser.parse_all(data=data)
         assert_true(all(hasattr(record, 'record_id') for record in records))
         assert_equal(records[0].record_id, 1)
         assert_equal(records[1].record_id, 2)

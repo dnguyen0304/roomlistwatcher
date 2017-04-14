@@ -33,7 +33,7 @@ class MessageParser(object):
 
     parsers = {'poke': TeamPreviewRecord}
 
-    def parse(self, data):
+    def parse_all(self, data):
         records = list()
         for record_id, message in enumerate(data.split('\n')):
             topic = message.split('|')[1]
@@ -56,7 +56,7 @@ class BattleLog(object):
     @classmethod
     def _from_string(cls, data):
         battle_log = cls()
-        battle_log.records = MessageParser().parse(data=data)
+        battle_log.records = MessageParser().parse_all(data=data)
         return battle_log
 
     def __repr__(self):
