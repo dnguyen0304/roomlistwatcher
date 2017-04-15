@@ -19,6 +19,16 @@ class MockRecord(IRecord):
         return cls()
 
 
+class ExceptionMockRecord(IRecord):
+
+    def __init__(self):
+        self.record_id = 0
+
+    @classmethod
+    def from_message(cls, message):
+        raise ValueError
+
+
 class TestHtmlParser(object):
 
     def __init__(self):
@@ -49,6 +59,7 @@ class TestMessageParser(object):
     def setup(self):
         self.parser = MessageParser()
         self.parser.mapping['mock'] = MockRecord
+        self.parser.mapping['mock_exception'] = ExceptionMockRecord
 
     def test_parse_all(self):
         data = '|mock|foo\n|mock|bar'
@@ -60,6 +71,10 @@ class TestMessageParser(object):
         data = '|foo\n|bar'
         records = self.parser.parse_all(data=data)
         assert_list_equal(records, list())
+
+    def test_parse_all_unmatched_patterns_fail_silently(self):
+        data = '|mock_exception'
+        self.parser.parse_all(data=data)
 
     def test_parse_all_updates_record_id(self):
         data = '|mock|foo\n|mock|bar'

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import logging
 import sys
 
 if sys.version_info < (3, 0):
@@ -35,6 +36,7 @@ class MessageParser(object):
                '-damage': DamageRecord}
 
     def parse_all(self, data):
+        logger = logging.getLogger('morpha')
         records = list()
         for record_id, message in enumerate(data.split('\n')):
             topic = message.split('|')[1]
@@ -42,6 +44,8 @@ class MessageParser(object):
                 record = self.mapping[topic].from_message(message)
             except KeyError:
                 pass
+            except ValueError:
+                logger.debug(msg=message)
             else:
                 record.record_id = record_id + 1
                 records.append(record)
