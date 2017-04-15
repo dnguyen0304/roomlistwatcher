@@ -31,7 +31,7 @@ class HtmlParser(html_parser.HTMLParser):
 
 class MessageParser(object):
 
-    parsers = {'poke': TeamPreviewRecord,
+    mapping = {'poke': TeamPreviewRecord,
                '-damage': DamageRecord}
 
     def parse_all(self, data):
@@ -39,7 +39,7 @@ class MessageParser(object):
         for record_id, message in enumerate(data.split('\n')):
             topic = message.split('|')[1]
             try:
-                record = self.parsers[topic].from_message(message)
+                record = self.mapping[topic].from_message(message)
             except KeyError:
                 pass
             else:
