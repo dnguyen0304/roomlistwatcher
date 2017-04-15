@@ -10,8 +10,6 @@ class TestDamageRecord(object):
     def test_from_message(self):
         message = '|-damage|p1a: Foo-Bar Foobar|10\/100'
         record = DamageRecord.from_message(message)
-        assert_equal(record.dealt_by_player_id, 2)
-        assert_equal(record.dealt_by_pokemon_name, '')
         assert_equal(record.taken_by_player_id, 1)
         assert_equal(record.taken_by_pokemon_name, 'Foo-Bar Foobar')
         assert_equal(record.remaining_hit_points, 10)
@@ -21,8 +19,6 @@ class TestDamageRecord(object):
     def test_from_message_faint_status_condition(self):
         message = '|-damage|p1a: Foo-Bar Foobar|0 fnt'
         record = DamageRecord.from_message(message)
-        assert_equal(record.dealt_by_player_id, 2)
-        assert_equal(record.dealt_by_pokemon_name, '')
         assert_equal(record.taken_by_player_id, 1)
         assert_equal(record.taken_by_pokemon_name, 'Foo-Bar Foobar')
         assert_equal(record.remaining_hit_points, 0)
@@ -32,8 +28,6 @@ class TestDamageRecord(object):
     def test_from_message_indirect_damage(self):
         message = '|-damage|p1a: Foo-Bar Foobar|10\/100|[from] Stealth Rock'
         record = DamageRecord.from_message(message)
-        assert_equal(record.dealt_by_player_id, 2)
-        assert_equal(record.dealt_by_pokemon_name, '')
         assert_equal(record.taken_by_player_id, 1)
         assert_equal(record.taken_by_pokemon_name, 'Foo-Bar Foobar')
         assert_equal(record.remaining_hit_points, 10)
