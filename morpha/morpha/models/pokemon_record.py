@@ -5,7 +5,7 @@ import re
 from . import IRecord
 
 
-class TeamPreviewRecord(IRecord):
+class PokemonRecord(IRecord):
 
     def __init__(self, player_id, pokemon_name):
         self.record_id = 0
