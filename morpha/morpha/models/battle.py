@@ -25,7 +25,6 @@ class Battle(object):
     }
 
     def __init__(self):
-        self.players_are_loaded = False
         self.pokemon_are_loaded = False
         self._sides = list()
         self._sides_index = dict()
@@ -33,17 +32,14 @@ class Battle(object):
         self._players_index = dict()
 
     def apply_log_record(self, log_record):
+        if len(self._players) == 2 and not isinstance(log_record, PokemonRecord):
+            self.pokemon_are_loaded = True
         try:
             handler = getattr(self, self._mapping[type(log_record)])
         except KeyError:
             pass
         else:
             handler(log_record)
-
-        if len(self._players) == 2:
-            self.players_are_loaded = True
-        if len(self._players) == 2 and not isinstance(log_record, PokemonRecord):
-            self.pokemon_are_loaded = True
 
     def get_all_players(self):
         return self._players

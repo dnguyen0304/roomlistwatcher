@@ -36,12 +36,6 @@ class TestBattle(object):
 
         self.battle.apply_log_record('foo')
 
-    def test_players_are_loaded_flag(self):
-        self.battle.apply_log_record(PlayerRecord(position=2, name='eggs'))
-        self.set_up_pokemon_record_handlers()
-
-        assert_true(self.battle.players_are_loaded)
-
     def test_pokemon_are_loaded_flag(self):
         self.battle.apply_log_record(PlayerRecord(position=2, name='eggs'))
         self.set_up_switch_record_handlers()
