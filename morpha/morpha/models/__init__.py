@@ -6,6 +6,7 @@ from .damage_record import DamageRecord
 from .move_record import MoveRecord
 from .player_record import PlayerRecord
 from .pokemon_record import PokemonRecord
+from .switch_record import SwitchRecord
 from .battle_log import BattleLog
 from .pokemon import Pokemon
 from .player import Player
@@ -20,4 +21,5 @@ __all__ = ['Battle',
            'PlayerRecord',
            'Pokemon',
            'PokemonRecord',
+           'SwitchRecord',
            'utilities']

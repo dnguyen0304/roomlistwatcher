@@ -6,7 +6,11 @@ import sys
 if sys.version_info < (3, 0):
     import HTMLParser as html_parser
 
-from . import DamageRecord, MoveRecord, PlayerRecord, PokemonRecord
+from . import (DamageRecord,
+               MoveRecord,
+               PlayerRecord,
+               PokemonRecord,
+               SwitchRecord)
 
 
 class HtmlParser(html_parser.HTMLParser):
@@ -35,6 +39,7 @@ class MessageParser(object):
     mapping = {'player': PlayerRecord,
                'poke': PokemonRecord,
                'move': MoveRecord,
+               'switch': SwitchRecord,
                '-damage': DamageRecord}
 
     def parse_all(self, data):
