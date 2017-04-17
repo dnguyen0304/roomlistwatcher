@@ -28,7 +28,7 @@ class TestBattle(object):
     def test_import_log(self):
         self.mock_record_handlers()
 
-        log = BattleLog._from_string(data='|player|p1|foo|0')
+        log = BattleLog.from_string(data='|player|p1|foo|0')
         self.battle.import_log(log)
         self.battle.handle_player_record.assert_called()
 

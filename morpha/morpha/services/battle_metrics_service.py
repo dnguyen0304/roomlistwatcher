@@ -17,7 +17,7 @@ class BattleMetricsService(object):
         self._battle.import_log(log)
 
     def read_string(self, data):
-        log = models.BattleLog._from_string(data=data)
+        log = models.BattleLog.from_string(data=data)
         self._battle.import_log(log)
 
     @property
