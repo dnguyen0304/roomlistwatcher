@@ -11,7 +11,8 @@ class BattleMetricsService(object):
 
     _mapping = {
         models.PlayerRecord: '_handle_player_record',
-        models.PokemonRecord: '_handle_pokemon_record'
+        models.PokemonRecord: '_handle_pokemon_record',
+        models.SwitchRecord: '_handle_switch_record'
     }
 
     def __init__(self):
@@ -38,6 +39,13 @@ class BattleMetricsService(object):
         pokemon = models.Pokemon(name=record.pokemon_name)
         player = self._battle.get_player(position=record.player_id)
         player.pokemon.append(pokemon)
+
+    def _handle_switch_record(self, record):
+        player = self._battle.get_player(position=record.player_id)
+        for pokemon in player.pokemon:
+            if pokemon.name == record.pokemon_name:
+                pokemon.total_hit_points = record.total_hit_points
+                break
 
     @property
     def summary(self):

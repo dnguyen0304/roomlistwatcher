@@ -45,6 +45,14 @@ class TestBattleMetricsService(object):
         player = self.service._battle.get_player(position=1)
         assert_equal(player.pokemon[0].name, 'bar')
 
+    def test_handle_switch_record(self):
+        self.run_player_record_handler()
+        self.run_pokemon_record_handler()
+        self.run_switch_record_handler()
+
+        player = self.service._battle.get_player(position=1)
+        assert_equal(player.pokemon[0].total_hit_points, 100)
+
     def test_summary_fields(self):
         self.run_player_record_handler()
         self.run_pokemon_record_handler()
@@ -63,3 +71,10 @@ class TestBattleMetricsService(object):
     def run_pokemon_record_handler(self):
         record = models.PokemonRecord(player_id=1, pokemon_name='bar')
         self.service._handle_pokemon_record(record)
+
+    def run_switch_record_handler(self):
+        record = models.SwitchRecord(player_id=1,
+                                     pokemon_name='bar',
+                                     remaining_hit_points=0,
+                                     total_hit_points=100)
+        self.service._handle_switch_record(record)
