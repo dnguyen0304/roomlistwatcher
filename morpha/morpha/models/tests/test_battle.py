@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import mock
-from nose.tools import assert_equal
+from nose.tools import assert_equal, assert_true
 
 from .. import Battle, PlayerRecord, PokemonRecord, SwitchRecord
 
@@ -36,23 +36,32 @@ class TestBattle(object):
 
         self.battle.apply_log_record('foo')
 
+    def test_players_are_loaded_flag(self):
+        self.battle.apply_log_record(PlayerRecord(position=2, name='eggs'))
+        self.set_up_pokemon_record_handlers()
+
+        assert_true(self.battle.players_are_loaded)
+
+    def test_pokemon_are_loaded_flag(self):
+        self.battle.apply_log_record(PlayerRecord(position=2, name='eggs'))
+        self.set_up_switch_record_handlers()
+
+        assert_true(self.battle.pokemon_are_loaded)
+
     def test_handle_player_record(self):
-        self.battle.handle_player_record(self.player_record)
+        self.set_up_player_record_handlers()
 
         player = self.battle.get_all_players()[0]
         assert_equal(player.name, self.player_record.name)
 
     def test_handle_pokemon_record(self):
-        self.battle.handle_player_record(self.player_record)
-        self.battle.handle_pokemon_record(self.pokemon_record)
+        self.set_up_pokemon_record_handlers()
 
         player = self.battle.get_all_players()[0]
         assert_equal(player.pokemon[0].name, self.pokemon_record.pokemon_name)
 
     def test_handle_switch_record(self):
-        self.battle.handle_player_record(self.player_record)
-        self.battle.handle_pokemon_record(self.pokemon_record)
-        self.battle.handle_switch_record(self.switch_record)
+        self.set_up_switch_record_handlers()
 
         player = self.battle.get_all_players()[0]
         assert_equal(player.pokemon[0].total_hit_points,
@@ -62,3 +71,14 @@ class TestBattle(object):
         for attribute in dir(self.battle):
             if attribute.startswith('handle') and attribute.endswith('record'):
                 setattr(self.battle, attribute, mock.MagicMock())
+
+    def set_up_player_record_handlers(self):
+        self.battle.apply_log_record(self.player_record)
+
+    def set_up_pokemon_record_handlers(self):
+        self.set_up_player_record_handlers()
+        self.battle.apply_log_record(self.pokemon_record)
+
+    def set_up_switch_record_handlers(self):
+        self.set_up_pokemon_record_handlers()
+        self.battle.apply_log_record(self.switch_record)

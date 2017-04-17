@@ -25,6 +25,8 @@ class Battle(object):
     }
 
     def __init__(self):
+        self.players_are_loaded = False
+        self.pokemon_are_loaded = False
         self._sides = list()
         self._sides_index = dict()
         self._players = list()
@@ -37,6 +39,11 @@ class Battle(object):
             pass
         else:
             handler(log_record)
+
+        if len(self._players) == 2:
+            self.players_are_loaded = True
+        if len(self._players) == 2 and not isinstance(log_record, PokemonRecord):
+            self.pokemon_are_loaded = True
 
     def get_all_players(self):
         return self._players
