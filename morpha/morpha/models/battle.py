@@ -30,14 +30,13 @@ class Battle(object):
         self._players = list()
         self._players_index = dict()
 
-    def import_log(self, log):
-        for record in log.records:
-            try:
-                handler = getattr(self, self._mapping[type(record)])
-            except KeyError:
-                pass
-            else:
-                handler(record)
+    def apply_log_record(self, log_record):
+        try:
+            handler = getattr(self, self._mapping[type(log_record)])
+        except KeyError:
+            pass
+        else:
+            handler(log_record)
 
     def get_all_players(self):
         return self._players

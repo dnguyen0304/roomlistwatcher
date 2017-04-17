@@ -3,7 +3,7 @@
 import mock
 from nose.tools import assert_equal
 
-from .. import Battle, BattleLog, PlayerRecord, PokemonRecord, SwitchRecord
+from .. import Battle, PlayerRecord, PokemonRecord, SwitchRecord
 
 
 class TestBattle(object):
@@ -25,22 +25,16 @@ class TestBattle(object):
             remaining_hit_points=0,
             total_hit_points=100)
 
-    def test_import_log(self):
+    def test_apply_log_record(self):
         self.mock_record_handlers()
 
-        log = BattleLog.from_string(data='|player|p1|foo|0')
-        self.battle.import_log(log)
+        self.battle.apply_log_record(self.player_record)
         self.battle.handle_player_record.assert_called()
 
-    def test_import_log_missing_handler(self):
-        class MockBattleLog(object):
-            records = list()
-
+    def test_apply_log_record_missing_handler(self):
         self.mock_record_handlers()
 
-        log = MockBattleLog()
-        log.records.append('foo')
-        self.battle.import_log(log)
+        self.battle.apply_log_record('foo')
 
     def test_handle_player_record(self):
         self.battle.handle_player_record(self.player_record)

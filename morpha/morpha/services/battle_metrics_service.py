@@ -14,11 +14,13 @@ class BattleMetricsService(object):
 
     def read_html(self, file_path):
         log = models.BattleLog.from_html(file_path=file_path)
-        self._battle.import_log(log)
+        for log_record in log.records:
+            self._battle.apply_log_record(log_record)
 
     def read_string(self, data):
         log = models.BattleLog.from_string(data=data)
-        self._battle.import_log(log)
+        for log_record in log.records:
+            self._battle.apply_log_record(log_record)
 
     @property
     def summary(self):
