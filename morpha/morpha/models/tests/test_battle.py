@@ -9,18 +9,18 @@ from .. import Battle, PlayerRecord, PokemonRecord, SwitchRecord
 class TestBattle(object):
 
     def __init__(self):
-        self.player_record = None
+        self.player_1_record = None
         self.pokemon_record = None
         self.switch_record = None
         self.battle = Battle()
 
     def setup(self):
-        self.player_record = PlayerRecord(position=1, name='foo')
+        self.player_1_record = PlayerRecord(position=1, name='foo')
         self.pokemon_record = PokemonRecord(
-            position=self.player_record.position,
+            position=self.player_1_record.position,
             pokemon_name='bar')
         self.switch_record = SwitchRecord(
-            position=self.player_record.position,
+            position=self.player_1_record.position,
             pokemon_name=self.pokemon_record.pokemon_name,
             remaining_hit_points=0,
             total_hit_points=100)
@@ -28,7 +28,7 @@ class TestBattle(object):
     def test_apply_log_record(self):
         self.mock_record_handlers()
 
-        self.battle.apply_log_record(self.player_record)
+        self.battle.apply_log_record(self.player_1_record)
         self.battle.handle_player_record.assert_called()
 
     def test_apply_log_record_missing_handler(self):
@@ -52,7 +52,7 @@ class TestBattle(object):
         self.set_up_player_record_handlers()
 
         player = self.battle.get_all_players()[0]
-        assert_equal(player.name, self.player_record.name)
+        assert_equal(player.name, self.player_1_record.name)
 
     def test_handle_pokemon_record(self):
         self.set_up_pokemon_record_handlers()
@@ -73,7 +73,7 @@ class TestBattle(object):
                 setattr(self.battle, attribute, mock.MagicMock())
 
     def set_up_player_record_handlers(self):
-        self.battle.apply_log_record(self.player_record)
+        self.battle.apply_log_record(self.player_1_record)
 
     def set_up_pokemon_record_handlers(self):
         self.set_up_player_record_handlers()
