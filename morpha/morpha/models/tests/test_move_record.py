@@ -10,10 +10,10 @@ class TestMoveRecord(object):
     def test_from_message(self):
         message = '|move|p1a: foo|foobar|p2a: bar'
         record = MoveRecord.from_message(message)
-        assert_equal(record.used_by_player_id, 1)
+        assert_equal(record.used_by_position, 1)
         assert_equal(record.used_by_pokemon_name, 'foo')
         assert_equal(record.move_name, 'foobar')
-        assert_equal(record.targeted_player_id, 2)
+        assert_equal(record.targeted_position, 2)
         assert_equal(record.targeted_pokemon_name, 'bar')
 
     @raises(ValueError)

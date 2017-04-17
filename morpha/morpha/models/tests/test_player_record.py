@@ -10,7 +10,7 @@ class TestPlayerRecord(object):
     def test_from_message(self):
         message = '|player|p1|foo|0'
         record = PlayerRecord.from_message(message)
-        assert_equal(record.player_id, 1)
+        assert_equal(record.position, 1)
         assert_equal(record.name, 'foo')
 
     @raises(ValueError)

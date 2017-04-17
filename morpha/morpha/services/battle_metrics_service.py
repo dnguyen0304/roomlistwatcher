@@ -33,15 +33,15 @@ class BattleMetricsService(object):
 
     def _handle_player_record(self, record):
         player = models.Player(name=record.name)
-        self._battle.add_player(position=record.player_id, player=player)
+        self._battle.add_player(position=record.position, player=player)
 
     def _handle_pokemon_record(self, record):
         pokemon = models.Pokemon(name=record.pokemon_name)
-        player = self._battle.get_player(position=record.player_id)
+        player = self._battle.get_player(position=record.position)
         player.pokemon.append(pokemon)
 
     def _handle_switch_record(self, record):
-        player = self._battle.get_player(position=record.player_id)
+        player = self._battle.get_player(position=record.position)
         for pokemon in player.pokemon:
             if pokemon.name == record.pokemon_name:
                 pokemon.total_hit_points = record.total_hit_points

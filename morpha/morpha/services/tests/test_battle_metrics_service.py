@@ -65,15 +65,15 @@ class TestBattleMetricsService(object):
         self.service._handle_pokemon_record = mock.MagicMock()
 
     def run_player_record_handler(self):
-        record = models.PlayerRecord(player_id=1, name='foo')
+        record = models.PlayerRecord(position=1, name='foo')
         self.service._handle_player_record(record)
 
     def run_pokemon_record_handler(self):
-        record = models.PokemonRecord(player_id=1, pokemon_name='bar')
+        record = models.PokemonRecord(position=1, pokemon_name='bar')
         self.service._handle_pokemon_record(record)
 
     def run_switch_record_handler(self):
-        record = models.SwitchRecord(player_id=1,
+        record = models.SwitchRecord(position=1,
                                      pokemon_name='bar',
                                      remaining_hit_points=0,
                                      total_hit_points=100)
