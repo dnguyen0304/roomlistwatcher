@@ -25,9 +25,9 @@ class MoveRecord(IRecord):
     @classmethod
     def from_message(cls, message):
         pattern = ('\|move'
-                   '\|p(?P<used_by_position>\d)a: (?P<used_by_pokemon_name>.+)'
-                   '\|(?P<move_name>.+)'
-                   '\|p(?P<targeted_position>\d)a: (?P<targeted_pokemon_name>.+)')
+                   '\|p(?P<used_by_position>\d)a: (?P<used_by_pokemon_name>[^\n\r|]+)'
+                   '\|(?P<move_name>[^\n\r|]+)'
+                   '\|p(?P<targeted_position>\d)a: (?P<targeted_pokemon_name>[^\n\r|]+)')
         match = re.match(pattern=pattern, string=message)
 
         if match:
