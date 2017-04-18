@@ -27,7 +27,7 @@ class BattleMetricsService(object):
             # While there is a pd.Index.any method, pd.MultiIndex
             # objects do not support truth testing. You must instead
             # rely on the isinstance or type functions.
-            summary_has_index = isinstance(self.summary, pd.MultiIndex)
+            summary_has_index = isinstance(self.summary.index, pd.MultiIndex)
             if not summary_has_index and self._battle.pokemon_are_loaded:
                 self.summary = self._create_index()
                 self.summary = self._create_metrics()
