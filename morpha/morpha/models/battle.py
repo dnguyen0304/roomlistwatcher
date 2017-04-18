@@ -54,8 +54,8 @@ class Battle(object):
     handler_mapping = {
         PlayerRecord: 'handle_player_record',
         PokemonRecord: 'handle_pokemon_record',
-        MoveRecord: 'handle_move_record',
-        SwitchRecord: 'handle_switch_record'
+        SwitchRecord: 'handle_switch_record',
+        MoveRecord: 'handle_move_record'
     }
 
     def __init__(self):
@@ -93,13 +93,6 @@ class Battle(object):
 
         self._pokemon_index[record.position][pokemon.full_name] = pokemon
 
-    def handle_move_record(self, record):
-        self.current_action = CurrentAction(
-            used_by_player=self._players_index[record.used_by_position],
-            used_by_pokemon=self._pokemon_index[record.used_by_position][record.used_by_pokemon_name],
-            targeted_player=self._players_index[record.targeted_position],
-            targeted_pokemon=self._pokemon_index[record.targeted_position][record.targeted_pokemon_name])
-
     def handle_switch_record(self, record):
         pokemon = self._pokemon_index[record.position][record.pokemon_full_name]
         pokemon.name = record.pokemon_name
@@ -108,6 +101,13 @@ class Battle(object):
         pokemon.total_hit_points = record.total_hit_points
 
         self._pokemon_index[record.position][pokemon.name] = pokemon
+
+    def handle_move_record(self, record):
+        self.current_action = CurrentAction(
+            used_by_player=self._players_index[record.used_by_position],
+            used_by_pokemon=self._pokemon_index[record.used_by_position][record.used_by_pokemon_name],
+            targeted_player=self._players_index[record.targeted_position],
+            targeted_pokemon=self._pokemon_index[record.targeted_position][record.targeted_pokemon_name])
 
     def get_all_players(self):
         return self._players
