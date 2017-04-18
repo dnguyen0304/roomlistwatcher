@@ -101,11 +101,10 @@ class Battle(object):
             targeted_pokemon=self._pokemon_index[record.targeted_position][record.targeted_pokemon_name])
 
     def handle_switch_record(self, record):
-        player = self._players_index[record.position]
-        for pokemon in player.pokemon:
-            if pokemon.name == record.pokemon_name:
-                pokemon.total_hit_points = record.total_hit_points
-                break
+        pokemon = self._pokemon_index[record.position][record.pokemon_name]
+        if not pokemon.remaining_hit_points:
+            pokemon.remaining_hit_points = record.remaining_hit_points
+        pokemon.total_hit_points = record.total_hit_points
 
     def get_all_players(self):
         return self._players

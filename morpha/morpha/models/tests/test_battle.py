@@ -88,6 +88,8 @@ class TestBattle(object):
         self.set_up_switch_record_handler()
 
         player = self.battle.get_all_players()[0]
+        assert_equal(player.pokemon[0].remaining_hit_points,
+                     self.switch_record.remaining_hit_points)
         assert_equal(player.pokemon[0].total_hit_points,
                      self.switch_record.total_hit_points)
 
