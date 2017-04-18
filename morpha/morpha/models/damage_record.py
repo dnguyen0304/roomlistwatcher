@@ -28,9 +28,9 @@ class DamageRecord(IRecord):
     @classmethod
     def from_message(cls, message):
         pattern = ('\|-damage'
-                   '\|p(?P<taken_by_position>\d)a: (?P<taken_by_pokemon_name>[\w\s-]+)'
-                   '\|(?P<remaining_hit_points>\d+)(?:\\\/(?P<total_hit_points>\d+))?(?: \w+)?'
-                   '(?:\|\[from\] (?P<indirectly_dealt_by>[\w\s]+))?')
+                   '\|p(?P<taken_by_position>\d)a: (?P<taken_by_pokemon_name>[^\n\r|]+)'
+                   '\|(?P<remaining_hit_points>\d+)(?:\\\/(?P<total_hit_points>\d+))?(?: [^\n\r|]+)?'
+                   '(?:\|\[from\] (?P<indirectly_dealt_by>[^\n\r|]+))?')
         match = re.match(pattern=pattern, string=message)
 
         if match:
