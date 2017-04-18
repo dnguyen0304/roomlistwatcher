@@ -41,9 +41,6 @@ class Battle(object):
         else:
             handler(log_record)
 
-    def get_all_players(self):
-        return self._players
-
     def handle_player_record(self, record):
         player = Player(name=record.name)
         side = Side(position=record.position, player=player)
@@ -63,6 +60,9 @@ class Battle(object):
             if pokemon.name == record.pokemon_name:
                 pokemon.total_hit_points = record.total_hit_points
                 break
+
+    def get_all_players(self):
+        return self._players
 
     def __repr__(self):
         repr_ = '{}()'

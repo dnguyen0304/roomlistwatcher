@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
+import collections
+
 import mock
-from nose.tools import assert_equal, assert_true
+from nose.tools import assert_equal, assert_is_instance, assert_true
 
 from .. import Battle, PlayerRecord, PokemonRecord, SwitchRecord
 
@@ -60,6 +62,13 @@ class TestBattle(object):
         player = self.battle.get_all_players()[0]
         assert_equal(player.pokemon[0].total_hit_points,
                      self.switch_record.total_hit_points)
+
+    def test_get_all_players(self):
+        self.set_up_player_record_handlers()
+
+        players = self.battle.get_all_players()
+        assert_is_instance(players, collections.Iterable)
+        assert_equal(players[0].name, self.player_1_record.name)
 
     def mock_record_handlers(self):
         for attribute in dir(self.battle):
