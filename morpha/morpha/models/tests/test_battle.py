@@ -19,7 +19,8 @@ class TestBattle(object):
         self.pokemon_1_record = None
         self.pokemon_2_record = None
         self.move_record = None
-        self.switch_record = None
+        self.switch_1_record = None
+        self.switch_2_record = None
         self.battle = Battle()
 
     def setup(self):
@@ -27,22 +28,28 @@ class TestBattle(object):
         self.player_2_record = PlayerRecord(position=2, name='bar')
         self.pokemon_1_record = PokemonRecord(
             position=self.player_1_record.position,
-            name='eggs')
+            full_name='eggs-spam')
         self.pokemon_2_record = PokemonRecord(
             position=self.player_2_record.position,
-            name='ham')
-        self.move_record = MoveRecord(
-            used_by_position=self.player_1_record.position,
-            used_by_pokemon_name=self.pokemon_1_record.name,
-            targeted_position=self.player_2_record.position,
-            targeted_pokemon_name=self.pokemon_2_record.name,
-            move_name='foobar')
-        self.switch_record = SwitchRecord(
+            full_name='ham')
+        self.switch_1_record = SwitchRecord(
             position=self.player_1_record.position,
-            pokemon_name=self.pokemon_1_record.name,
-            pokemon_full_name=self.pokemon_1_record.name + '-spam',
+            pokemon_name='eggs',
+            pokemon_full_name=self.pokemon_1_record.full_name,
             remaining_hit_points=100,
             total_hit_points=100)
+        self.switch_2_record = SwitchRecord(
+            position=self.player_2_record.position,
+            pokemon_name=self.pokemon_2_record.full_name,
+            pokemon_full_name=self.pokemon_2_record.full_name,
+            remaining_hit_points=100,
+            total_hit_points=100)
+        self.move_record = MoveRecord(
+            used_by_position=self.player_1_record.position,
+            used_by_pokemon_name=self.switch_1_record.pokemon_name,
+            targeted_position=self.player_2_record.position,
+            targeted_pokemon_name=self.switch_2_record.pokemon_name,
+            move_name='foobar')
 
     def test_apply_log_record(self):
         self.mock_record_handlers()
@@ -69,8 +76,8 @@ class TestBattle(object):
     def test_handle_pokemon_record(self):
         self.set_up_pokemon_record_handler()
 
-        player = self.battle.get_all_players()[0]
-        assert_equal(player.pokemon[0].name, self.pokemon_1_record.name)
+        pokemon = self.battle.get_all_players()[0].pokemon[0]
+        assert_equal(pokemon.full_name, self.pokemon_1_record.full_name)
 
     def test_handle_move_record(self):
         self.set_up_move_record_handler()
@@ -78,21 +85,21 @@ class TestBattle(object):
         assert_is_not_none(self.battle.current_action)
         assert_equal(self.battle.current_action.used_by_player.name,
                      self.player_1_record.name)
-        assert_equal(self.battle.current_action.used_by_pokemon.name,
-                     self.pokemon_1_record.name)
+        assert_equal(self.battle.current_action.used_by_pokemon.full_name,
+                     self.pokemon_1_record.full_name)
         assert_equal(self.battle.current_action.targeted_player.name,
                      self.player_2_record.name)
-        assert_equal(self.battle.current_action.targeted_pokemon.name,
-                     self.pokemon_2_record.name)
+        assert_equal(self.battle.current_action.targeted_pokemon.full_name,
+                     self.pokemon_2_record.full_name)
 
     def test_handle_switch_record(self):
         self.set_up_switch_record_handler()
 
         player = self.battle.get_all_players()[0]
         assert_equal(player.pokemon[0].remaining_hit_points,
-                     self.switch_record.remaining_hit_points)
+                     self.switch_1_record.remaining_hit_points)
         assert_equal(player.pokemon[0].total_hit_points,
-                     self.switch_record.total_hit_points)
+                     self.switch_1_record.total_hit_points)
 
     def test_get_all_players(self):
         self.set_up_player_record_handler()
@@ -116,9 +123,10 @@ class TestBattle(object):
         self.battle.apply_log_record(self.pokemon_2_record)
 
     def set_up_move_record_handler(self):
-        self.set_up_pokemon_record_handler()
+        self.set_up_switch_record_handler()
         self.battle.apply_log_record(self.move_record)
 
     def set_up_switch_record_handler(self):
         self.set_up_pokemon_record_handler()
-        self.battle.apply_log_record(self.switch_record)
+        self.battle.apply_log_record(self.switch_1_record)
+        self.battle.apply_log_record(self.switch_2_record)

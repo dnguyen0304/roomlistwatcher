@@ -87,11 +87,11 @@ class Battle(object):
         self._players_index[record.position] = player
 
     def handle_pokemon_record(self, record):
-        pokemon = Pokemon(name=record.name)
+        pokemon = Pokemon(full_name=record.full_name)
         player = self._players_index[record.position]
         player.pokemon.append(pokemon)
 
-        self._pokemon_index[record.position][pokemon.name] = pokemon
+        self._pokemon_index[record.position][pokemon.full_name] = pokemon
 
     def handle_move_record(self, record):
         self.current_action = CurrentAction(
@@ -101,10 +101,13 @@ class Battle(object):
             targeted_pokemon=self._pokemon_index[record.targeted_position][record.targeted_pokemon_name])
 
     def handle_switch_record(self, record):
-        pokemon = self._pokemon_index[record.position][record.pokemon_name]
-        if not pokemon.remaining_hit_points:
-            pokemon.remaining_hit_points = record.remaining_hit_points
+        pokemon = self._pokemon_index[record.position][record.pokemon_full_name]
+        pokemon.name = record.pokemon_name
+        pokemon.remaining_hit_points = (pokemon.remaining_hit_points or
+                                        record.remaining_hit_points)
         pokemon.total_hit_points = record.total_hit_points
+
+        self._pokemon_index[record.position][pokemon.name] = pokemon
 
     def get_all_players(self):
         return self._players
