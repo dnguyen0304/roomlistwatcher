@@ -51,7 +51,7 @@ class CurrentAction(object):
 
 class Battle(object):
 
-    _mapping = {
+    handler_mapping = {
         PlayerRecord: 'handle_player_record',
         PokemonRecord: 'handle_pokemon_record',
         MoveRecord: 'handle_move_record',
@@ -71,7 +71,7 @@ class Battle(object):
         if len(self._players) == 2 and not isinstance(log_record, PokemonRecord):
             self.pokemon_are_loaded = True
         try:
-            handler = getattr(self, self._mapping[type(log_record)])
+            handler = getattr(self, self.handler_mapping[type(log_record)])
         except KeyError:
             pass
         else:
