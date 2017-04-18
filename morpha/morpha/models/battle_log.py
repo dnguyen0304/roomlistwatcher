@@ -7,6 +7,7 @@ if sys.version_info < (3, 0):
     import HTMLParser as html_parser
 
 from . import (DamageRecord,
+               FormeChangedRecord,
                MoveRecord,
                PlayerRecord,
                PokemonRecord,
@@ -36,11 +37,12 @@ class HtmlParser(html_parser.HTMLParser):
 
 class MessageParser(object):
 
-    mapping = {'player': PlayerRecord,
-               'poke': PokemonRecord,
-               'move': MoveRecord,
-               'switch': SwitchRecord,
-               '-damage': DamageRecord}
+    record_mapping = {'player': PlayerRecord,
+                      'poke': PokemonRecord,
+                      'switch': SwitchRecord,
+                      'detailschange': FormeChangedRecord,
+                      'move': MoveRecord,
+                      '-damage': DamageRecord}
 
     def parse_all(self, data):
         logger = logging.getLogger('morpha')
@@ -48,7 +50,7 @@ class MessageParser(object):
         for record_id, message in enumerate(data.split('\n')):
             topic = message.split('|')[1]
             try:
-                record = self.mapping[topic].from_message(message)
+                record = self.record_mapping[topic].from_message(message)
             except KeyError:
                 pass
             except ValueError:

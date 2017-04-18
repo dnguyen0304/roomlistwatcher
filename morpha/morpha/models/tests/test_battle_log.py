@@ -58,8 +58,8 @@ class TestMessageParser(object):
 
     def setup(self):
         self.parser = MessageParser()
-        self.parser.mapping['mock'] = MockRecord
-        self.parser.mapping['mock_exception'] = ExceptionMockRecord
+        self.parser.record_mapping['mock'] = MockRecord
+        self.parser.record_mapping['mock_exception'] = ExceptionMockRecord
 
     def test_parse_all(self):
         data = '|mock|foo\n|mock|bar'
