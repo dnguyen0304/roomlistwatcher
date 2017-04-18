@@ -10,6 +10,7 @@ class SwitchRecord(IRecord):
     def __init__(self,
                  position,
                  pokemon_name,
+                 pokemon_full_name,
                  remaining_hit_points,
                  total_hit_points):
 
@@ -17,14 +18,15 @@ class SwitchRecord(IRecord):
 
         self.position = int(position)
         self.pokemon_name = pokemon_name
+        self.pokemon_full_name = pokemon_full_name
         self.remaining_hit_points = int(remaining_hit_points)
         self.total_hit_points = int(total_hit_points)
 
     @classmethod
     def from_message(cls, message):
         pattern = ('\|switch'
-                   '\|p(?P<position>\d)a: [^\n\r|]+'
-                   '\|(?P<pokemon_name>[^\n\r,]+)(?:, [^\n\r|]+)?'
+                   '\|p(?P<position>\d)a: (?P<pokemon_name>[^\n\r|]+)'
+                   '\|(?P<pokemon_full_name>[^\n\r,]+)(?:, [^\n\r|]+)?'
                    '\|(?P<remaining_hit_points>\d+)\\\/(?P<total_hit_points>\d+)')
         match = re.match(pattern=pattern, string=message)
 
@@ -40,11 +42,13 @@ class SwitchRecord(IRecord):
                  'record_id={}, '
                  'position={}, '
                  'pokemon_name="{}", '
+                 'pokemon_full_name="{}", '
                  'remaining_hit_points={}, '
                  'total_hit_points={})')
         return repr_.format(self.__class__.__name__,
                             self.record_id,
                             self.position,
                             self.pokemon_name,
+                            self.pokemon_full_name,
                             self.remaining_hit_points,
                             self.total_hit_points)

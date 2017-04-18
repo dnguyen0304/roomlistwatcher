@@ -40,6 +40,7 @@ class TestBattle(object):
         self.switch_record = SwitchRecord(
             position=self.player_1_record.position,
             pokemon_name=self.pokemon_1_record.name,
+            pokemon_full_name=self.pokemon_1_record.name + '-spam',
             remaining_hit_points=100,
             total_hit_points=100)
 
