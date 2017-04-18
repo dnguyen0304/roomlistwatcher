@@ -8,7 +8,12 @@ from nose.tools import (assert_equal,
                         assert_is_not_none,
                         assert_true)
 
-from .. import Battle, MoveRecord, PlayerRecord, PokemonRecord, SwitchRecord
+from .. import (Battle,
+                FormeChangedRecord,
+                MoveRecord,
+                PlayerRecord,
+                PokemonRecord,
+                SwitchRecord)
 
 
 class TestBattle(object):
@@ -20,6 +25,7 @@ class TestBattle(object):
         self.pokemon_2_record = None
         self.switch_1_record = None
         self.switch_2_record = None
+        self.forme_changed_1_record = None
         self.move_record = None
         self.battle = Battle()
 
@@ -44,6 +50,10 @@ class TestBattle(object):
             pokemon_full_name=self.pokemon_2_record.full_name,
             remaining_hit_points=100,
             total_hit_points=100)
+        self.forme_changed_1_record = FormeChangedRecord(
+            position=self.player_1_record.position,
+            pokemon_name=self.switch_1_record.pokemon_name,
+            forme_name=self.switch_1_record.pokemon_name + '-Mega')
         self.move_record = MoveRecord(
             used_by_position=self.player_1_record.position,
             used_by_pokemon_name=self.switch_1_record.pokemon_name,
@@ -88,6 +98,12 @@ class TestBattle(object):
         assert_equal(player.pokemon[0].total_hit_points,
                      self.switch_1_record.total_hit_points)
 
+    def test_handle_forme_changed_record(self):
+        self.set_up_forme_changed_record_handler()
+
+        pokemon = self.battle.get_all_players()[0].pokemon[0]
+        assert_equal(pokemon.name, self.forme_changed_1_record.forme_name)
+
     def test_handle_move_record(self):
         self.set_up_move_record_handler()
 
@@ -126,6 +142,10 @@ class TestBattle(object):
         self.set_up_pokemon_record_handler()
         self.battle.apply_log_record(self.switch_1_record)
         self.battle.apply_log_record(self.switch_2_record)
+
+    def set_up_forme_changed_record_handler(self):
+        self.set_up_switch_record_handler()
+        self.battle.apply_log_record(self.forme_changed_1_record)
 
     def set_up_move_record_handler(self):
         self.set_up_switch_record_handler()

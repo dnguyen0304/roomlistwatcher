@@ -2,7 +2,8 @@
 
 import collections
 
-from . import (MoveRecord,
+from . import (FormeChangedRecord,
+               MoveRecord,
                Player,
                PlayerRecord,
                Pokemon,
@@ -55,6 +56,7 @@ class Battle(object):
         PlayerRecord: 'handle_player_record',
         PokemonRecord: 'handle_pokemon_record',
         SwitchRecord: 'handle_switch_record',
+        FormeChangedRecord: 'handle_forme_changed_record',
         MoveRecord: 'handle_move_record'
     }
 
@@ -101,6 +103,12 @@ class Battle(object):
         pokemon.total_hit_points = record.total_hit_points
 
         self._pokemon_index[record.position][pokemon.name] = pokemon
+
+    def handle_forme_changed_record(self, record):
+        pokemon = self._pokemon_index[record.position][record.pokemon_name]
+        pokemon.name = record.forme_name
+
+        self._pokemon_index[record.position][record.forme_name] = pokemon
 
     def handle_move_record(self, record):
         self.current_action = CurrentAction(
