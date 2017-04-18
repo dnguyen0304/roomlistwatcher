@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import itertools
+
 import pandas as pd
 
 from .. import models
@@ -35,11 +37,13 @@ class BattleMetricsService(object):
     def _create_index(self):
         tuples = list()
         for player in self._battle.get_all_players():
-            for pokemon in player.pokemon:
-                tuples.append((player.name, pokemon.name))
+            pokemon_names = (pokemon.name for pokemon in player.pokemon)
+            tuples.extend(itertools.product([player.name], pokemon_names))
+
         names = ['player_name', 'pokemon_name']
         index = pd.MultiIndex.from_tuples(tuples, names=names)
         summary = pd.DataFrame(index=index)
+
         return summary
 
     def _create_metrics(self):
