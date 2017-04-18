@@ -25,7 +25,11 @@ class BattleMetricsService(object):
     def _handle_log_records(self, log_records):
         for log_record in log_records:
             self._battle.apply_log_record(log_record)
-            if not self.summary.index.any() and self._battle.pokemon_are_loaded:
+            # While there is a pd.Index.any method, pd.MultiIndex
+            # objects do not support any type of truth testing. You
+            # must instead rely on the isinstance or type functions.
+            summary_has_index = isinstance(self.summary, pd.MultiIndex)
+            if not summary_has_index and self._battle.pokemon_are_loaded:
                 self.summary = self._create_index()
 
     def _create_index(self):
