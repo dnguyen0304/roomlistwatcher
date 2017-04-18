@@ -87,7 +87,7 @@ class Battle(object):
         self._players_index[record.position] = player
 
     def handle_pokemon_record(self, record):
-        pokemon = Pokemon(name=record.pokemon_name)
+        pokemon = Pokemon(name=record.name)
         player = self._players_index[record.position]
         player.pokemon.append(pokemon)
 

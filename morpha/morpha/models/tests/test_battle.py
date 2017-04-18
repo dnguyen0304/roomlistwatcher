@@ -27,19 +27,19 @@ class TestBattle(object):
         self.player_2_record = PlayerRecord(position=2, name='bar')
         self.pokemon_1_record = PokemonRecord(
             position=self.player_1_record.position,
-            pokemon_name='eggs')
+            name='eggs')
         self.pokemon_2_record = PokemonRecord(
             position=self.player_2_record.position,
-            pokemon_name='ham')
+            name='ham')
         self.move_record = MoveRecord(
             used_by_position=self.player_1_record.position,
-            used_by_pokemon_name=self.pokemon_1_record.pokemon_name,
+            used_by_pokemon_name=self.pokemon_1_record.name,
             targeted_position=self.player_2_record.position,
-            targeted_pokemon_name=self.pokemon_2_record.pokemon_name,
+            targeted_pokemon_name=self.pokemon_2_record.name,
             move_name='foobar')
         self.switch_record = SwitchRecord(
             position=self.player_1_record.position,
-            pokemon_name=self.pokemon_1_record.pokemon_name,
+            pokemon_name=self.pokemon_1_record.name,
             remaining_hit_points=100,
             total_hit_points=100)
 
@@ -69,7 +69,7 @@ class TestBattle(object):
         self.set_up_pokemon_record_handler()
 
         player = self.battle.get_all_players()[0]
-        assert_equal(player.pokemon[0].name, self.pokemon_1_record.pokemon_name)
+        assert_equal(player.pokemon[0].name, self.pokemon_1_record.name)
 
     def test_handle_move_record(self):
         self.set_up_move_record_handler()
@@ -78,11 +78,11 @@ class TestBattle(object):
         assert_equal(self.battle.current_action.used_by_player.name,
                      self.player_1_record.name)
         assert_equal(self.battle.current_action.used_by_pokemon.name,
-                     self.pokemon_1_record.pokemon_name)
+                     self.pokemon_1_record.name)
         assert_equal(self.battle.current_action.targeted_player.name,
                      self.player_2_record.name)
         assert_equal(self.battle.current_action.targeted_pokemon.name,
-                     self.pokemon_2_record.pokemon_name)
+                     self.pokemon_2_record.name)
 
     def test_handle_switch_record(self):
         self.set_up_switch_record_handler()
