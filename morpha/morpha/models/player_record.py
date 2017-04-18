@@ -16,7 +16,7 @@ class PlayerRecord(IRecord):
 
     @classmethod
     def from_message(cls, message):
-        pattern = '\|player\|p(?P<position>\d)\|(?P<name>.+)\|.+'
+        pattern = '\|player\|p(?P<position>\d)\|(?P<name>[^\n\r|]+)\|.+'
         match = re.match(pattern=pattern, string=message)
 
         if match:
