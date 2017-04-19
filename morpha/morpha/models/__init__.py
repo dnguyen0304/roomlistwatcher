@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from . import utilities
 from .irecord import IRecord
 from .damage_record import DamageRecord
 from .forme_changed_record import FormeChangedRecord
@@ -22,4 +23,5 @@ __all__ = ['Battle',
            'PlayerRecord',
            'Pokemon',
            'PokemonRecord',
-           'SwitchRecord']
+           'SwitchRecord',
+           'utilities']
