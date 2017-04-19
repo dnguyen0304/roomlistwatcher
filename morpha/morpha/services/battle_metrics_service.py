@@ -29,8 +29,8 @@ class BattleMetricsService(object):
             # rely on the isinstance or type functions.
             summary_has_index = isinstance(self.summary.index, pd.MultiIndex)
             if not summary_has_index and self._battle.pokemon_are_loaded:
-                self.summary = self._create_index()
-                self.summary = self._create_metrics()
+                self._create_index()
+                self._create_metrics_placeholders()
             if isinstance(log_record, models.DamageRecord):
                 self.summary = self._update_damage_dealt(log_record=log_record)
         self._update_index_labels()
@@ -45,12 +45,12 @@ class BattleMetricsService(object):
         index = pd.MultiIndex.from_tuples(tuples, names=names)
         summary = pd.DataFrame(index=index)
 
-        return summary
+        self.summary = summary
 
-    def _create_metrics(self):
+    def _create_metrics_placeholders(self):
         summary = self.summary.copy()
         summary.loc[:, 'damage_dealt'] = 0
-        return summary
+        self.summary = summary
 
     def _update_damage_dealt(self, log_record):
         summary = self.summary.copy()
