@@ -102,7 +102,7 @@ class TestBattle(object):
         self.set_up_forme_changed_record_handler()
 
         pokemon = self.battle.get_all_players()[0].pokemon[0]
-        assert_equal(pokemon.name, self.forme_changed_1_record.forme_name)
+        assert_equal(pokemon.forme_name, self.forme_changed_1_record.forme_name)
 
     def test_handle_move_record(self):
         self.set_up_move_record_handler()

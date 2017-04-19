@@ -106,9 +106,9 @@ class Battle(object):
 
     def handle_forme_changed_record(self, record):
         pokemon = self._pokemon_index[record.position][record.pokemon_name]
-        pokemon.name = record.forme_name
+        pokemon.forme_name = record.forme_name
 
-        self._pokemon_index[record.position][record.forme_name] = pokemon
+        self._pokemon_index[record.position][pokemon.forme_name] = pokemon
 
     def handle_move_record(self, record):
         self.current_action = CurrentAction(

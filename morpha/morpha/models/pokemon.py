@@ -10,6 +10,7 @@ class Pokemon(object):
 
         self.name = name
         self.full_name = full_name
+        self.forme_name = ''
         self.remaining_hit_points = 0
         self.total_hit_points = 0
 
