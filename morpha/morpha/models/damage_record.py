@@ -15,7 +15,7 @@ class DamageRecord(IRecord):
 
     @classmethod
     def from_message(cls, message):
-        pattern = ('\|-damage'
+        pattern = ('\|-(?:damage|heal)'
                    '\|p\da: [^\n\r|]+'
                    '\|(?P<remaining_hit_points>\d+)(?:\\\/\d+)?(?: [^\n\r|]+)?'
                    '(?:\|\[from\] [^\n\r|]+)?')

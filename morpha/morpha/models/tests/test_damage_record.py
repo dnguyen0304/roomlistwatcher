@@ -12,13 +12,23 @@ class TestDamageRecord(object):
         record = DamageRecord.from_message(message)
         assert_equal(record.remaining_hit_points, 10)
 
+    def test_from_message_status_condition(self):
+        message = '|-damage|p1a: eggs|10\/100 par'
+        record = DamageRecord.from_message(message)
+        assert_equal(record.remaining_hit_points, 10)
+
     def test_from_message_faint_status_condition(self):
         message = '|-damage|p1a: eggs|0 fnt'
         record = DamageRecord.from_message(message)
         assert_equal(record.remaining_hit_points, 0)
 
-    def test_from_message_indirect_damage(self):
+    def test_from_message_indirect_cause(self):
         message = '|-damage|p1a: eggs|10\/100|[from] Stealth Rock'
+        record = DamageRecord.from_message(message)
+        assert_equal(record.remaining_hit_points, 10)
+
+    def test_from_message_wish(self):
+        message = '|-heal|p1a: eggs|10\/100|[from] move: Wish|[wisher] ham'
         record = DamageRecord.from_message(message)
         assert_equal(record.remaining_hit_points, 10)
 
