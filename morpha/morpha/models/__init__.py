@@ -2,8 +2,8 @@
 
 from . import utilities
 from .irecord import IRecord
-from .damage_record import DamageRecord
 from .forme_changed_record import FormeChangedRecord
+from .damage_record import HitPointsChangedRecord
 from .move_record import MoveRecord
 from .player_record import PlayerRecord
 from .pokemon_record import PokemonRecord
@@ -15,8 +15,8 @@ from .battle import Battle
 
 __all__ = ['Battle',
            'BattleLog',
-           'DamageRecord',
            'FormeChangedRecord',
+           'HitPointsChangedRecord',
            'IRecord',
            'MoveRecord',
            'Player',

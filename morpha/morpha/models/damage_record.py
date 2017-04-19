@@ -5,7 +5,7 @@ import re
 from . import IRecord
 
 
-class DamageRecord(IRecord):
+class HitPointsChangedRecord(IRecord):
 
     def __init__(self, remaining_hit_points):
 

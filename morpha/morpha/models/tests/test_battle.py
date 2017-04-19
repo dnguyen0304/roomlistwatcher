@@ -9,8 +9,8 @@ from nose.tools import (assert_equal,
                         assert_true)
 
 from .. import (Battle,
-                DamageRecord,
                 FormeChangedRecord,
+                HitPointsChangedRecord,
                 MoveRecord,
                 PlayerRecord,
                 PokemonRecord,
@@ -28,7 +28,7 @@ class TestBattle(object):
         self.switch_2_record = None
         self.forme_changed_1_record = None
         self.move_record = None
-        self.damage_record = None
+        self.hit_points_changed_record = None
         self.battle = Battle()
 
     def setup(self):
@@ -62,7 +62,8 @@ class TestBattle(object):
             targeted_position=self.player_2_record.position,
             targeted_pokemon_name=self.switch_2_record.pokemon_name,
             move_name='foobar')
-        self.damage_record = DamageRecord(remaining_hit_points=10)
+        self.hit_points_changed_record = HitPointsChangedRecord(
+            remaining_hit_points=10)
 
     def test_apply_log_record(self):
         self.mock_record_handlers()
@@ -120,12 +121,12 @@ class TestBattle(object):
         assert_equal(self.battle.current_action.targeted_pokemon.full_name,
                      self.pokemon_2_record.full_name)
 
-    def test_handle_damage_record(self):
-        self.set_up_damage_record_handler()
+    def test_handle_hit_points_changed_record(self):
+        self.set_up_hit_points_changed_record_handler()
 
         pokemon = self.battle.current_action.targeted_pokemon
         assert_equal(pokemon.remaining_hit_points,
-                     self.damage_record.remaining_hit_points)
+                     self.hit_points_changed_record.remaining_hit_points)
 
     def test_get_all_players(self):
         self.set_up_player_record_handler()
@@ -161,6 +162,6 @@ class TestBattle(object):
         self.set_up_switch_record_handler()
         self.battle.apply_log_record(self.move_record)
 
-    def set_up_damage_record_handler(self):
+    def set_up_hit_points_changed_record_handler(self):
         self.set_up_move_record_handler()
-        self.battle.apply_log_record(self.damage_record)
+        self.battle.apply_log_record(self.hit_points_changed_record)

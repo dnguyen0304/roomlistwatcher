@@ -6,8 +6,8 @@ import sys
 if sys.version_info < (3, 0):
     import HTMLParser as html_parser
 
-from . import (DamageRecord,
-               FormeChangedRecord,
+from . import (FormeChangedRecord,
+               HitPointsChangedRecord,
                MoveRecord,
                PlayerRecord,
                PokemonRecord,
@@ -42,7 +42,8 @@ class MessageParser(object):
                       'switch': SwitchRecord,
                       'detailschange': FormeChangedRecord,
                       'move': MoveRecord,
-                      '-damage': DamageRecord}
+                      '-damage': HitPointsChangedRecord,
+                      '-heal': HitPointsChangedRecord}
 
     def parse_all(self, data):
         logger = logging.getLogger('morpha')

@@ -27,7 +27,7 @@ class BattleMetricsService(object):
             # Metric computation is time-sensitive. It matters when
             # the battle state is updated.
 
-            if isinstance(log_record, models.DamageRecord):
+            if isinstance(log_record, models.HitPointsChangedRecord):
                 self._update_damage_dealt(log_record=log_record)
 
             self._battle.apply_log_record(log_record)
