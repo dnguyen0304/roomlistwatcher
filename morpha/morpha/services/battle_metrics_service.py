@@ -23,7 +23,15 @@ class BattleMetricsService(object):
 
     def _handle_log_records(self, log_records):
         for log_record in log_records:
+
+            # Metric computation is time-sensitive. It matters when
+            # the battle state is updated.
+
+            if isinstance(log_record, models.DamageRecord):
+                self._update_damage_dealt(log_record=log_record)
+
             self._battle.apply_log_record(log_record)
+
             # While there is a pd.Index.any method, pd.MultiIndex
             # objects do not support truth testing. You must instead
             # rely on the isinstance or type functions.
@@ -31,8 +39,7 @@ class BattleMetricsService(object):
             if not summary_has_index and self._battle.pokemon_are_loaded:
                 self._create_index()
                 self._create_metrics_placeholders()
-            if isinstance(log_record, models.DamageRecord):
-                self.summary = self._update_damage_dealt(log_record=log_record)
+
         self._update_index_labels()
 
     def _create_index(self):
@@ -60,11 +67,11 @@ class BattleMetricsService(object):
         hit_points_after = log_record.remaining_hit_points
         hit_points_delta = hit_points_before - hit_points_after
 
-        index = (current_action.used_by_player.name,
-                 current_action.used_by_pokemon.name)
+        index = (current_action.used_by_player.player_sid,
+                 current_action.used_by_pokemon.pokemon_sid)
         summary.loc[index, 'damage_dealt'] += hit_points_delta
 
-        return summary
+        self.summary = summary
 
     def _update_index_labels(self):
         summary = self.summary.copy()

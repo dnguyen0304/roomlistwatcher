@@ -95,10 +95,10 @@ class TestBattle(object):
     def test_handle_switch_record(self):
         self.set_up_switch_record_handler()
 
-        player = self.battle.get_all_players()[0]
-        assert_equal(player.pokemon[0].remaining_hit_points,
-                     self.switch_1_record.remaining_hit_points)
-        assert_equal(player.pokemon[0].total_hit_points,
+        targeted_pokemon = self.battle.current_action.targeted_pokemon
+        assert_equal(targeted_pokemon.remaining_hit_points,
+                     self.switch_1_record.total_hit_points)
+        assert_equal(targeted_pokemon.total_hit_points,
                      self.switch_1_record.total_hit_points)
 
     def test_handle_forme_changed_record(self):

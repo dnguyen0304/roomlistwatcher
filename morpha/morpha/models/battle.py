@@ -17,6 +17,7 @@ class Side(object):
     def __init__(self, position, player):
         self.position = position
         self.player = player
+        self.active_pokemon = None
 
     def __repr__(self):
         repr_ = '{}(position={}, player={})'
@@ -98,13 +99,28 @@ class Battle(object):
         self._pokemon_index[record.position][pokemon.full_name] = pokemon
 
     def handle_switch_record(self, record):
-        pokemon = self._pokemon_index[record.position][record.pokemon_full_name]
-        pokemon.name = record.pokemon_name
-        pokemon.remaining_hit_points = (pokemon.remaining_hit_points or
-                                        record.remaining_hit_points)
-        pokemon.total_hit_points = record.total_hit_points
+        # Get the necessary objects.
+        side = self._sides_index[record.position]
+        targeted_pokemon = (
+            self._pokemon_index[record.position][record.pokemon_full_name])
 
-        self._pokemon_index[record.position][pokemon.name] = pokemon
+        # Update the macro state of the battle.
+        self.current_action = CurrentAction(used_by_player=side.player,
+                                            used_by_pokemon=side.active_pokemon,
+                                            targeted_player=side.player,
+                                            targeted_pokemon=targeted_pokemon)
+
+        # Update the micro state of the Pokemon.
+        targeted_pokemon.name = record.pokemon_name
+        targeted_pokemon.remaining_hit_points = (
+            targeted_pokemon.remaining_hit_points or record.remaining_hit_points)
+        targeted_pokemon.total_hit_points = record.total_hit_points
+
+        # Apply the event.
+        side.active_pokemon = targeted_pokemon
+
+        # Update the indices.
+        self._pokemon_index[record.position][targeted_pokemon.name] = targeted_pokemon
 
     def handle_forme_changed_record(self, record):
         pokemon = self._pokemon_index[record.position][record.pokemon_name]
