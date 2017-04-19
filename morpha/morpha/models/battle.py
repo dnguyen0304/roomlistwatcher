@@ -2,7 +2,8 @@
 
 import collections
 
-from . import (FormeChangedRecord,
+from . import (DamageRecord,
+               FormeChangedRecord,
                MoveRecord,
                Player,
                PlayerRecord,
@@ -57,7 +58,8 @@ class Battle(object):
         PokemonRecord: 'handle_pokemon_record',
         SwitchRecord: 'handle_switch_record',
         FormeChangedRecord: 'handle_forme_changed_record',
-        MoveRecord: 'handle_move_record'
+        MoveRecord: 'handle_move_record',
+        DamageRecord: 'handle_damage_record'
     }
 
     def __init__(self):
@@ -116,6 +118,10 @@ class Battle(object):
             used_by_pokemon=self._pokemon_index[record.used_by_position][record.used_by_pokemon_name],
             targeted_player=self._players_index[record.targeted_position],
             targeted_pokemon=self._pokemon_index[record.targeted_position][record.targeted_pokemon_name])
+
+    def handle_damage_record(self, record):
+        pokemon = self.current_action.targeted_pokemon
+        pokemon.remaining_hit_points = record.remaining_hit_points
 
     def get_all_players(self):
         return self._players
