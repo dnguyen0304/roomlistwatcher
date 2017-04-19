@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from . import utilities
+
 
 class Pokemon(object):
 
@@ -8,6 +10,7 @@ class Pokemon(object):
         if not name and not full_name:
             raise TypeError('__init__() takes at least 2 arguments (1 given)')
 
+        self.pokemon_sid = utilities.generate_sid()
         self.name = name
         self.full_name = full_name
         self.forme_name = ''
