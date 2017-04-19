@@ -63,6 +63,8 @@ class TestBattle(object):
             targeted_pokemon_name=self.switch_2_record.pokemon_name,
             move_name='foobar')
         self.hit_points_changed_record = HitPointsChangedRecord(
+            targeted_position=self.player_2_record.position,
+            targeted_pokemon_name=self.switch_2_record.pokemon_name,
             remaining_hit_points=10)
 
     def test_apply_log_record(self):
@@ -124,7 +126,7 @@ class TestBattle(object):
     def test_handle_hit_points_changed_record(self):
         self.set_up_hit_points_changed_record_handler()
 
-        pokemon = self.battle.current_action.targeted_pokemon
+        pokemon = self.battle.get_all_players()[1].pokemon[0]
         assert_equal(pokemon.remaining_hit_points,
                      self.hit_points_changed_record.remaining_hit_points)
 

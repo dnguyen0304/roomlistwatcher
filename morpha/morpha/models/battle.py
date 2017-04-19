@@ -136,7 +136,8 @@ class Battle(object):
             targeted_pokemon=self._pokemon_index[record.targeted_position][record.targeted_pokemon_name])
 
     def handle_hit_points_changed_record(self, record):
-        pokemon = self.current_action.targeted_pokemon
+        pokemon = (self._pokemon_index[record.targeted_position]
+                                      [record.targeted_pokemon_name])
         pokemon.remaining_hit_points = record.remaining_hit_points
 
     def get_all_players(self):
