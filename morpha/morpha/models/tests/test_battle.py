@@ -25,7 +25,7 @@ class TestBattle(object):
         self.pokemon_1_record = None
         self.pokemon_2_record = None
         self.switch_1_record = None
-        self.switch_2_record = None
+        self.opponents_pokemon_switches_in = None
         self.forme_changed_1_record = None
         self.move_record = None
         self.hit_points_changed_record = None
@@ -46,7 +46,7 @@ class TestBattle(object):
             pokemon_full_name=self.pokemon_1_record.full_name,
             remaining_hit_points=100,
             total_hit_points=100)
-        self.switch_2_record = SwitchRecord(
+        self.opponents_pokemon_switches_in = SwitchRecord(
             position=self.player_2_record.position,
             pokemon_name=self.pokemon_2_record.full_name,
             pokemon_full_name=self.pokemon_2_record.full_name,
@@ -60,11 +60,11 @@ class TestBattle(object):
             used_by_position=self.player_1_record.position,
             used_by_pokemon_name=self.switch_1_record.pokemon_name,
             targeted_position=self.player_2_record.position,
-            targeted_pokemon_name=self.switch_2_record.pokemon_name,
+            targeted_pokemon_name=self.opponents_pokemon_switches_in.pokemon_name,
             move_name='foobar')
         self.hit_points_changed_record = HitPointsChangedRecord(
             targeted_position=self.player_2_record.position,
-            targeted_pokemon_name=self.switch_2_record.pokemon_name,
+            targeted_pokemon_name=self.opponents_pokemon_switches_in.pokemon_name,
             remaining_hit_points=10)
 
     def test_apply_log_record(self):
@@ -106,11 +106,11 @@ class TestBattle(object):
 
     def test_switch_ability_regenerator(self):
         self.set_up_hit_points_changed_record_handler()
-        self.battle.apply_log_record(self.switch_2_record)
+        self.battle.apply_log_record(self.opponents_pokemon_switches_in)
 
         pokemon = self.battle.get_all_players()[1].pokemon[0]
         assert_equal(pokemon.remaining_hit_points,
-                     self.switch_2_record.remaining_hit_points)
+                     self.opponents_pokemon_switches_in.remaining_hit_points)
 
     def test_handle_forme_changed_record(self):
         self.set_up_forme_changed_record_handler()
@@ -162,7 +162,7 @@ class TestBattle(object):
     def set_up_switch_record_handler(self):
         self.set_up_pokemon_record_handler()
         self.battle.apply_log_record(self.switch_1_record)
-        self.battle.apply_log_record(self.switch_2_record)
+        self.battle.apply_log_record(self.opponents_pokemon_switches_in)
 
     def set_up_forme_changed_record_handler(self):
         self.set_up_switch_record_handler()
