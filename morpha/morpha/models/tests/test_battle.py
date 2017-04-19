@@ -104,6 +104,14 @@ class TestBattle(object):
         assert_equal(targeted_pokemon.total_hit_points,
                      self.switch_1_record.total_hit_points)
 
+    def test_switch_ability_regenerator(self):
+        self.set_up_hit_points_changed_record_handler()
+        self.battle.apply_log_record(self.switch_2_record)
+
+        pokemon = self.battle.get_all_players()[1].pokemon[0]
+        assert_equal(pokemon.remaining_hit_points,
+                     self.switch_2_record.remaining_hit_points)
+
     def test_handle_forme_changed_record(self):
         self.set_up_forme_changed_record_handler()
 

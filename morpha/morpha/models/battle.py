@@ -112,8 +112,7 @@ class Battle(object):
 
         # Update the micro state of the Pokemon.
         targeted_pokemon.name = record.pokemon_name
-        targeted_pokemon.remaining_hit_points = (
-            targeted_pokemon.remaining_hit_points or record.remaining_hit_points)
+        targeted_pokemon.remaining_hit_points = record.remaining_hit_points
         targeted_pokemon.total_hit_points = record.total_hit_points
 
         # Apply the event.
