@@ -70,7 +70,7 @@ class BattleMetricsService(object):
         summary = self.summary.copy()
 
         fields = ['player_name', 'pokemon_name']
-        summary.loc[:, fields[0]], summary.loc[:, fields[2]] = ('', '')
+        summary.loc[:, fields[0]], summary.loc[:, fields[1]] = ('', '')
 
         for player in self._battle.get_all_players():
             for pokemon in player.pokemon:
