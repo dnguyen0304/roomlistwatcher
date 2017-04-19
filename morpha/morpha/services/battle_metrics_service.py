@@ -33,14 +33,15 @@ class BattleMetricsService(object):
                 self.summary = self._create_metrics()
             if isinstance(log_record, models.DamageRecord):
                 self.summary = self._update_damage_dealt(log_record=log_record)
+        self._update_index_labels()
 
     def _create_index(self):
         tuples = list()
         for player in self._battle.get_all_players():
-            pokemon_names = (pokemon.name for pokemon in player.pokemon)
-            tuples.extend(itertools.product([player.name], pokemon_names))
+            pokemon_sids = (pokemon.pokemon_sid for pokemon in player.pokemon)
+            tuples.extend(itertools.product([player.player_sid], pokemon_sids))
 
-        names = ['player_name', 'pokemon_name']
+        names = ('player_sid', 'pokemon_sid')
         index = pd.MultiIndex.from_tuples(tuples, names=names)
         summary = pd.DataFrame(index=index)
 
@@ -64,3 +65,19 @@ class BattleMetricsService(object):
         summary.loc[index, 'damage_dealt'] += hit_points_delta
 
         return summary
+
+    def _update_index_labels(self):
+        summary = self.summary.copy()
+
+        fields = ['player_name', 'pokemon_name']
+        summary.loc[:, fields[0]], summary.loc[:, fields[2]] = ('', '')
+
+        for player in self._battle.get_all_players():
+            for pokemon in player.pokemon:
+                index = (player.player_sid, pokemon.pokemon_sid)
+                summary.loc[index, fields] = (player.name, pokemon.name)
+
+        summary = summary.reset_index()
+        summary = summary.set_index(keys=fields)
+
+        self.summary = summary
