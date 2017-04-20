@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from nose.tools import assert_equal, raises
+from nose.tools import assert_equal, assert_true, raises
 
 from .. import HitPointsChangedRecord
 
@@ -34,6 +34,7 @@ class TestHitPointsChangedRecord(object):
         assert_equal(record.targeted_position, 1)
         assert_equal(record.targeted_pokemon_name, 'eggs')
         assert_equal(record.remaining_hit_points, 10)
+        assert_true(record.indirectly_caused_by)
 
     def test_from_message_wish(self):
         message = '|-heal|p1a: eggs|10\/100|[from] move: Wish|[wisher] ham'
@@ -41,6 +42,7 @@ class TestHitPointsChangedRecord(object):
         assert_equal(record.targeted_position, 1)
         assert_equal(record.targeted_pokemon_name, 'eggs')
         assert_equal(record.remaining_hit_points, 10)
+        assert_true(record.indirectly_caused_by)
 
     @raises(ValueError)
     def test_from_message_incorrect_format(self):

@@ -27,8 +27,10 @@ class BattleMetricsService(object):
             # Metric computation is time-sensitive. It matters when
             # the battle state is updated.
 
-            if isinstance(log_record, models.HitPointsChangedRecord):
-                self._update_damage_dealt(log_record=log_record)
+            if (isinstance(log_record, models.HitPointsChangedRecord) and
+                not log_record.indirectly_caused_by and
+                self._battle.current_action.used_by_pokemon != self._battle.current_action.targeted_pokemon):
+                    self._update_damage_dealt(log_record=log_record)
 
             self._battle.apply_log_record(log_record)
 
