@@ -4,7 +4,7 @@ import logging
 
 from nose.tools import assert_in
 
-import morpha
+import clare
 
 
 def test_package_logger_exists():
