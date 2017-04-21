@@ -16,7 +16,7 @@ class PokemonRecord(IRecord):
     def from_message(cls, message):
         pattern = ('\|poke'
                    '\|p(?P<position>\d)'
-                   '\|(?P<full_name>[^\n\r,]+)(?:, [F|M])?'
+                   '\|(?P<full_name>[^\n\r,]+)(?:, [^\n\r|]+)?'
                    '\|item')
         match = re.match(pattern=pattern, string=message)
 
