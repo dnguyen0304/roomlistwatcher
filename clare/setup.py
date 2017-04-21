@@ -4,7 +4,7 @@
 import setuptools
 
 if __name__ == '__main__':
-    package_name = 'morpha'
+    package_name = 'clare'
 
     description = ''
 
@@ -17,7 +17,7 @@ if __name__ == '__main__':
                      version='0.1.0',
                      description=description,
                      long_description=long_description,
-                     url='https://github.com/dnguyen0304/morpha.git',
+                     url='https://github.com/dnguyen0304/clare.git',
                      author='Duy Nguyen',
                      author_email='dnguyen0304@gmail.com',
                      license='MIT',

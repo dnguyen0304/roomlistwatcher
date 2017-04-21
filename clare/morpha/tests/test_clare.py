@@ -9,4 +9,4 @@ import morpha
 
 def test_package_logger_exists():
 
-    assert_in('morpha', logging.Logger.manager.loggerDict)
+    assert_in('clare', logging.Logger.manager.loggerDict)
