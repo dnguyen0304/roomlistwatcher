@@ -49,7 +49,11 @@ class MessageParser(object):
         logger = logging.getLogger('clare')
         records = list()
         for record_id, message in enumerate(data.split('\n')):
-            topic = message.split('|')[1]
+            try:
+                topic = message.split('|')[1]
+            except IndexError:
+                continue
+
             try:
                 record = self.record_mapping[topic].from_message(message)
             except KeyError:
