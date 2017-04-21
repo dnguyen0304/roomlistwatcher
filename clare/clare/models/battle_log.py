@@ -46,7 +46,7 @@ class MessageParser(object):
                       '-heal': HitPointsChangedRecord}
 
     def parse_all(self, data):
-        logger = logging.getLogger('morpha')
+        logger = logging.getLogger('clare')
         records = list()
         for record_id, message in enumerate(data.split('\n')):
             topic = message.split('|')[1]
