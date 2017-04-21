@@ -67,6 +67,10 @@ class TestMessageParser(object):
         assert_equal(len(records), 2)
         assert_true(all(isinstance(record, MockRecord) for record in records))
 
+    def test_parse_all_null_message(self):
+        data = ''
+        self.parser.parse_all(data=data)
+
     def test_parse_all_unmapped_topics_fail_silently(self):
         data = '|foo\n|bar'
         records = self.parser.parse_all(data=data)
