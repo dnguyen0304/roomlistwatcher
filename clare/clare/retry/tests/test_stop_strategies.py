@@ -41,17 +41,6 @@ def test_after_attempt_should_not_stop():
     assert_false(stop_strategy.should_stop(attempt=attempt))
 
 
-def test_after_attempt_prioritizes_success():
-
-    stop_strategy = AfterAttempt(maximum_attempt=None)
-    attempt = Attempt(number=None,
-                      was_successful=True,
-                      result=None,
-                      exception=None,
-                      first_attempt_start_time=None)
-    assert_true(stop_strategy.should_stop(attempt=attempt))
-
-
 def test_after_duration_should_stop_greater_than_maximum_duration():
 
     maximum_duration = 1
@@ -92,14 +81,3 @@ def test_after_duration_should_not_stop():
                       exception=None,
                       first_attempt_start_time=0)
     assert_false(stop_strategy.should_stop(attempt=attempt))
-
-
-def test_after_duration_prioritizes_success():
-
-    stop_strategy = AfterDuration(maximum_duration=None)
-    attempt = Attempt(number=None,
-                      was_successful=True,
-                      result=None,
-                      exception=None,
-                      first_attempt_start_time=None)
-    assert_true(stop_strategy.should_stop(attempt=attempt))

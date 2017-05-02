@@ -31,8 +31,7 @@ class AfterAttempt(IStopStrategy):
         self._maximum_attempt = maximum_attempt
 
     def should_stop(self, attempt):
-        return (attempt.was_successful or
-                attempt.number >= self._maximum_attempt)
+        return attempt.number >= self._maximum_attempt
 
     def __repr__(self):
         repr_ = '{}(maximum_attempt={})'
@@ -48,7 +47,7 @@ class AfterDuration(IStopStrategy):
         ----------
         maximum_duration : float
             The units are in seconds.
-        get_now_in_seconds : Callable
+        get_now_in_seconds : collections.Callable
             Defaults to time.time.
         """
 
@@ -59,12 +58,9 @@ class AfterDuration(IStopStrategy):
 
         # Stopping the execution of callable where a single attempt
         # takes longer than the maximum duration is not supported.
-        if attempt.was_successful:
-            should_stop = True
-        else:
-            now = self._get_now_in_seconds()
-            current_duration = now - attempt.first_attempt_start_time
-            should_stop = current_duration >= self._maximum_duration
+        now = self._get_now_in_seconds()
+        current_duration = now - attempt.first_attempt_start_time
+        should_stop = current_duration >= self._maximum_duration
 
         return should_stop
 
