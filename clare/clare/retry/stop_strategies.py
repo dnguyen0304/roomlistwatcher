@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import abc
+import time
 
 
 class IStopStrategy(object):
@@ -36,3 +37,39 @@ class AfterAttempt(IStopStrategy):
     def __repr__(self):
         repr_ = '{}(maximum_attempt={})'
         return repr_.format(self.__class__.__name__, self._maximum_attempt)
+
+
+class AfterDuration(IStopStrategy):
+
+    def __init__(self, maximum_duration, get_now_in_seconds=time.time):
+
+        """
+        Parameters
+        ----------
+        maximum_duration : float
+            The units are in seconds.
+        get_now_in_seconds : Callable
+            Defaults to time.time.
+        """
+
+        self._maximum_duration = maximum_duration
+        self._get_now_in_seconds = get_now_in_seconds
+
+    def should_stop(self, attempt):
+
+        # Stopping the execution of callable where a single attempt
+        # takes longer than the maximum duration is not supported.
+        if attempt.was_successful:
+            should_stop = True
+        else:
+            now = self._get_now_in_seconds()
+            current_duration = now - attempt.first_attempt_start_time
+            should_stop = current_duration >= self._maximum_duration
+
+        return should_stop
+
+    def __repr__(self):
+        repr_ = '{}(maximum_duration={}, get_now_in_seconds={})'
+        return repr_.format(self.__class__.__name__,
+                            self._maximum_duration,
+                            self._get_now_in_seconds)
