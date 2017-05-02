@@ -6,7 +6,7 @@
 - Fixed parsing null log messages (`ME-648`).
 
 ##### Features
-- Added Attempt (`ME-659`).
+- Added stopping after *n* attempts (`ME-659`).
 
 ## v0.2.0 (Pending)
 ##### Changes
