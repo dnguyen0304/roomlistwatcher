@@ -56,6 +56,9 @@ class RetryPolicy(object):
                 exception=exception,
                 first_attempt_start_time=self._attempt.first_attempt_start_time)
 
+        if self._attempt.was_successful:
+            return self._attempt.result
+
     def __repr__(self):
         repr_ = '{}(stop_strategy={}, handled_exceptions={})'
         return repr_.format(self.__class__.__name__,

@@ -22,6 +22,9 @@ class MockService(object):
         if self.call_count == 1:
             raise MockException
 
+    def call_and_return(self):
+        return 'foo'
+
 
 class TestRetryPolicy(object):
 
@@ -38,6 +41,12 @@ class TestRetryPolicy(object):
         retry_policy = RetryPolicy(stop_strategy=stop_strategy)
         retry_policy.execute(callable=self.service.call)
         assert_equal(self.service.call_count, 1)
+
+    def test_execute_successful_attempt_returns_result(self):
+        stop_strategy = AfterNever()
+        retry_policy = RetryPolicy(stop_strategy=stop_strategy)
+        result = retry_policy.execute(callable=self.service.call_and_return)
+        assert_equal(result, 'foo')
 
     def test_execute_continue_on_handled_exceptions(self):
         maximum_attempt = 2
