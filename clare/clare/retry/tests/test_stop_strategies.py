@@ -2,7 +2,7 @@
 
 from nose.tools import assert_false, assert_true
 
-from .. import Attempt, AfterAttempt, AfterDuration
+from .. import Attempt, AfterAttempt, AfterDuration, AfterNever
 
 
 def test_after_attempt_should_stop_greater_than_maximum_attempt():
@@ -80,4 +80,15 @@ def test_after_duration_should_not_stop():
                       result=None,
                       exception=None,
                       first_attempt_start_time=0)
+    assert_false(stop_strategy.should_stop(attempt=attempt))
+
+
+def test_after_never_should_not_stop():
+
+    stop_strategy = AfterNever()
+    attempt = Attempt(number=None,
+                      was_successful=None,
+                      result=None,
+                      exception=None,
+                      first_attempt_start_time=None)
     assert_false(stop_strategy.should_stop(attempt=attempt))

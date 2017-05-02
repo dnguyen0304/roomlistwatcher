@@ -8,6 +8,7 @@
 ##### Features
 - Added stopping after attempt (`ME-659`).
 - Added stopping after duration (`ME-659`).
+- Added stopping after never (`ME-659`).
 
 ## v0.2.0 (Pending)
 ##### Changes

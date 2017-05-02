@@ -69,3 +69,13 @@ class AfterDuration(IStopStrategy):
         return repr_.format(self.__class__.__name__,
                             self._maximum_duration,
                             self._get_now_in_seconds)
+
+
+class AfterNever(IStopStrategy):
+
+    def should_stop(self, attempt):
+        return False
+
+    def __repr__(self):
+        repr_ = '{}()'
+        return repr_.format(self.__class__.__name__)
