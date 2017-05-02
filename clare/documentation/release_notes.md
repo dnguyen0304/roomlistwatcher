@@ -5,6 +5,9 @@
 - Fixed parsing Pokemon log messages with multiple details (`ME-647`).
 - Fixed parsing null log messages (`ME-648`).
 
+##### Features
+- Added Attempt (`ME-659`).
+
 ## v0.2.0 (Pending)
 ##### Changes
 - Renamed morpha package to "clare".
