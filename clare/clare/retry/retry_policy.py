@@ -30,7 +30,7 @@ class RetryPolicy(object):
                                 exception=None,
                                 first_attempt_start_time=time.time())
 
-    def execute(self, callable, _sleep=None):
+    def execute(self, callable, _sleep=time.sleep):
 
         """
         Parameters
@@ -39,8 +39,6 @@ class RetryPolicy(object):
         _sleep : collections.Callable
             Used internally. Defaults to time.sleep.
         """
-
-        _sleep = time.sleep if _sleep is None else _sleep
 
         while True:
             attempt_number = self._attempt.number + 1
