@@ -22,7 +22,8 @@ class MockService(object):
         if self.call_count == 1:
             raise MockException
 
-    def call_and_return(self):
+    @staticmethod
+    def call_and_return():
         return 'foo'
 
 
