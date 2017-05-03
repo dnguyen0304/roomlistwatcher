@@ -6,6 +6,26 @@ from .. import stop_strategies
 from ..attempt import Attempt
 
 
+def test_after_success_should_stop():
+    stop_strategy = stop_strategies.AfterSuccess()
+    attempt = Attempt(number=None,
+                      was_successful=True,
+                      result=None,
+                      exception=None,
+                      first_attempt_start_time=None)
+    assert_true(stop_strategy.should_stop(attempt=attempt))
+
+
+def test_after_success_should_not_stop():
+    stop_strategy = stop_strategies.AfterSuccess()
+    attempt = Attempt(number=None,
+                      was_successful=False,
+                      result=None,
+                      exception=None,
+                      first_attempt_start_time=None)
+    assert_false(stop_strategy.should_stop(attempt=attempt))
+
+
 def test_after_attempt_should_stop_greater_than_maximum_attempt():
 
     maximum_attempt = 1
