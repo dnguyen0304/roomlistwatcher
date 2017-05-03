@@ -9,6 +9,8 @@ import uuid
 
 class IJsonSerializable(object):
 
+    __metaclass__ = abc.ABCMeta
+
     @abc.abstractmethod
     def to_json(self):
 
@@ -18,6 +20,15 @@ class IJsonSerializable(object):
         str
         """
 
+        pass
+
+
+class IEvent(object):
+
+    __metaclass__ = abc.ABCMeta
+
+    @abc.abstractproperty
+    def INTERFACE_VERSION(self):
         pass
 
 
@@ -43,9 +54,7 @@ class UTC(datetime.tzinfo):
         return 'UTC'
 
 
-class Event(IJsonSerializable):
-
-    INTERFACE_VERSION = '1.0.0'
+class Event(IEvent, IJsonSerializable):
 
     def __init__(self, topic, arguments):
 
@@ -62,6 +71,10 @@ class Event(IJsonSerializable):
         self.arguments = arguments
 
         self.created_at = datetime.datetime.utcnow().replace(tzinfo=utc)
+
+    @property
+    def INTERFACE_VERSION(self):
+        return '1.0.0'
 
     def to_json(self):
         data = collections.OrderedDict((
