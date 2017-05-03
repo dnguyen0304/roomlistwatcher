@@ -2,13 +2,14 @@
 
 from nose.tools import assert_false, assert_true
 
-from .. import Attempt, AfterAttempt, AfterDuration, AfterNever
+from .. import Attempt, stop_strategies
 
 
 def test_after_attempt_should_stop_greater_than_maximum_attempt():
 
     maximum_attempt = 1
-    stop_strategy = AfterAttempt(maximum_attempt=maximum_attempt)
+    stop_strategy = stop_strategies.AfterAttempt(
+        maximum_attempt=maximum_attempt)
     attempt = Attempt(number=maximum_attempt + 1,
                       was_successful=None,
                       result=None,
@@ -20,7 +21,8 @@ def test_after_attempt_should_stop_greater_than_maximum_attempt():
 def test_after_attempt_should_stop_equal_to_maximum_attempt():
 
     maximum_attempt = 1
-    stop_strategy = AfterAttempt(maximum_attempt=maximum_attempt)
+    stop_strategy = stop_strategies.AfterAttempt(
+        maximum_attempt=maximum_attempt)
     attempt = Attempt(number=maximum_attempt,
                       was_successful=None,
                       result=None,
@@ -32,7 +34,8 @@ def test_after_attempt_should_stop_equal_to_maximum_attempt():
 def test_after_attempt_should_not_stop():
 
     maximum_attempt = 1
-    stop_strategy = AfterAttempt(maximum_attempt=maximum_attempt)
+    stop_strategy = stop_strategies.AfterAttempt(
+        maximum_attempt=maximum_attempt)
     attempt = Attempt(number=maximum_attempt - 1,
                       was_successful=None,
                       result=None,
@@ -44,7 +47,7 @@ def test_after_attempt_should_not_stop():
 def test_after_duration_should_stop_greater_than_maximum_duration():
 
     maximum_duration = 1
-    stop_strategy = AfterDuration(
+    stop_strategy = stop_strategies.AfterDuration(
         maximum_duration=maximum_duration,
         _get_now_in_seconds=lambda: maximum_duration + 1)
     attempt = Attempt(number=None,
@@ -58,7 +61,7 @@ def test_after_duration_should_stop_greater_than_maximum_duration():
 def test_after_duration_should_stop_equal_to_maximum_duration():
 
     maximum_duration = 1
-    stop_strategy = AfterDuration(
+    stop_strategy = stop_strategies.AfterDuration(
         maximum_duration=maximum_duration,
         _get_now_in_seconds=lambda: maximum_duration)
     attempt = Attempt(number=None,
@@ -72,7 +75,7 @@ def test_after_duration_should_stop_equal_to_maximum_duration():
 def test_after_duration_should_not_stop():
 
     maximum_duration = 1
-    stop_strategy = AfterDuration(
+    stop_strategy = stop_strategies.AfterDuration(
         maximum_duration=maximum_duration,
         _get_now_in_seconds=lambda: maximum_duration - 1)
     attempt = Attempt(number=None,
@@ -85,7 +88,7 @@ def test_after_duration_should_not_stop():
 
 def test_after_never_should_not_stop():
 
-    stop_strategy = AfterNever()
+    stop_strategy = stop_strategies.AfterNever()
     attempt = Attempt(number=None,
                       was_successful=None,
                       result=None,
