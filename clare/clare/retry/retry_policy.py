@@ -2,7 +2,7 @@
 
 import time
 
-from . import Attempt
+from .attempt import Attempt
 
 
 class RetryPolicy(object):

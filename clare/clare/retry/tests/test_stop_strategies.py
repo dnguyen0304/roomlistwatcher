@@ -2,7 +2,8 @@
 
 from nose.tools import assert_false, assert_true
 
-from .. import Attempt, stop_strategies
+from .. import stop_strategies
+from ..attempt import Attempt
 
 
 def test_after_attempt_should_stop_greater_than_maximum_attempt():
