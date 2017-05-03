@@ -24,11 +24,6 @@ class RetryPolicy(object):
         self._stop_strategy = stop_strategy
         self._wait_strategy = wait_strategy
         self._handled_exceptions = handled_exceptions
-        self._attempt = Attempt(number=0,
-                                was_successful=None,
-                                result=None,
-                                exception=None,
-                                first_attempt_start_time=time.time())
 
     def execute(self, callable, _sleep=time.sleep):
 
@@ -40,14 +35,20 @@ class RetryPolicy(object):
             Used internally. Defaults to time.sleep.
         """
 
+        attempt = Attempt(number=0,
+                          was_successful=None,
+                          result=None,
+                          exception=None,
+                          first_attempt_start_time=time.time())
+
         while True:
-            attempt_number = self._attempt.number + 1
+            attempt_number = attempt.number + 1
             was_successful = False
             result = None
             exception = None
 
-            if (self._attempt.was_successful or
-                self._stop_strategy.should_stop(attempt=self._attempt)):
+            if (attempt.was_successful or
+                self._stop_strategy.should_stop(attempt=attempt)):
                     break
             try:
                 result = callable()
@@ -56,17 +57,17 @@ class RetryPolicy(object):
             else:
                 was_successful = True
 
-            self._attempt = Attempt(
+            attempt = Attempt(
                 number=attempt_number,
                 was_successful=was_successful,
                 result=result,
                 exception=exception,
-                first_attempt_start_time=self._attempt.first_attempt_start_time)
+                first_attempt_start_time=attempt.first_attempt_start_time)
 
-            _sleep(self._wait_strategy.compute_wait_time(attempt=self._attempt))
+            _sleep(self._wait_strategy.compute_wait_time(attempt=attempt))
 
-        if self._attempt.was_successful:
-            return self._attempt.result
+        if attempt.was_successful:
+            return attempt.result
 
     def __repr__(self):
         repr_ = '{}(stop_strategy={}, wait_strategy={}, handled_exceptions={})'
