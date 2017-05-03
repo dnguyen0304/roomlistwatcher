@@ -24,7 +24,7 @@ class IWaitStrategy(object):
         pass
 
 
-class FixedWaitStrategy(IWaitStrategy):
+class Fixed(IWaitStrategy):
 
     def __init__(self, wait_time):
         self._wait_time = wait_time
