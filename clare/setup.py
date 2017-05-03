@@ -11,7 +11,8 @@ if __name__ == '__main__':
     with open('./README.md', 'r') as file:
         long_description = file.read()
 
-    install_requires = ['pandas==0.19.2']
+    install_requires = ['enum34==1.1.6',
+                        'pandas==0.19.2']
 
     setuptools.setup(name=package_name,
                      version='0.2.1',
