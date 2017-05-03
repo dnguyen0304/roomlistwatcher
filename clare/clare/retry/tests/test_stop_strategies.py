@@ -46,7 +46,7 @@ def test_after_duration_should_stop_greater_than_maximum_duration():
     maximum_duration = 1
     stop_strategy = AfterDuration(
         maximum_duration=maximum_duration,
-        get_now_in_seconds=lambda: maximum_duration + 1)
+        _get_now_in_seconds=lambda: maximum_duration + 1)
     attempt = Attempt(number=None,
                       was_successful=None,
                       result=None,
@@ -60,7 +60,7 @@ def test_after_duration_should_stop_equal_to_maximum_duration():
     maximum_duration = 1
     stop_strategy = AfterDuration(
         maximum_duration=maximum_duration,
-        get_now_in_seconds=lambda: maximum_duration)
+        _get_now_in_seconds=lambda: maximum_duration)
     attempt = Attempt(number=None,
                       was_successful=None,
                       result=None,
@@ -74,7 +74,7 @@ def test_after_duration_should_not_stop():
     maximum_duration = 1
     stop_strategy = AfterDuration(
         maximum_duration=maximum_duration,
-        get_now_in_seconds=lambda: maximum_duration - 1)
+        _get_now_in_seconds=lambda: maximum_duration - 1)
     attempt = Attempt(number=None,
                       was_successful=None,
                       result=None,

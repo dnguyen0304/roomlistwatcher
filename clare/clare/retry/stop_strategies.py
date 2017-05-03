@@ -40,19 +40,19 @@ class AfterAttempt(IStopStrategy):
 
 class AfterDuration(IStopStrategy):
 
-    def __init__(self, maximum_duration, get_now_in_seconds=time.time):
+    def __init__(self, maximum_duration, _get_now_in_seconds=time.time):
 
         """
         Parameters
         ----------
         maximum_duration : float
             The units are in seconds.
-        get_now_in_seconds : collections.Callable
-            Defaults to time.time.
+        _get_now_in_seconds : collections.Callable
+            Used internally. Defaults to time.time.
         """
 
         self._maximum_duration = maximum_duration
-        self._get_now_in_seconds = get_now_in_seconds
+        self._get_now_in_seconds = _get_now_in_seconds
 
     def should_stop(self, attempt):
 
@@ -65,7 +65,7 @@ class AfterDuration(IStopStrategy):
         return should_stop
 
     def __repr__(self):
-        repr_ = '{}(maximum_duration={}, get_now_in_seconds={})'
+        repr_ = '{}(maximum_duration={}, _get_now_in_seconds={})'
         return repr_.format(self.__class__.__name__,
                             self._maximum_duration,
                             self._get_now_in_seconds)
