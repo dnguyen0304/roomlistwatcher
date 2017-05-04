@@ -25,16 +25,6 @@ class IStopStrategy(object):
         pass
 
 
-class AfterSuccess(IStopStrategy):
-
-    def should_stop(self, attempt):
-        return attempt.was_successful
-
-    def __repr__(self):
-        repr_ = '{}()'
-        return repr_.format(self.__class__.__name__)
-
-
 class AfterAttempt(IStopStrategy):
 
     def __init__(self, maximum_attempt):
@@ -85,6 +75,16 @@ class AfterNever(IStopStrategy):
 
     def should_stop(self, attempt):
         return False
+
+    def __repr__(self):
+        repr_ = '{}()'
+        return repr_.format(self.__class__.__name__)
+
+
+class AfterSuccess(IStopStrategy):
+
+    def should_stop(self, attempt):
+        return attempt.was_successful
 
     def __repr__(self):
         repr_ = '{}()'
