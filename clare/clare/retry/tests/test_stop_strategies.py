@@ -98,24 +98,24 @@ def test_after_never_should_not_stop():
     assert_false(stop_strategy.should_stop(attempt=attempt))
 
 
-def test_after_result_should_stop():
+def test_after_result_should_continue():
     stop_strategy = stop_strategies.AfterResult(predicate=lambda x: x == 'foo')
     attempt = Attempt(number=None,
                       was_successful=None,
                       result='foo',
                       exception=None,
                       first_attempt_start_time=None)
-    assert_true(stop_strategy.should_stop(attempt=attempt))
+    assert_true(stop_strategy.should_continue(attempt=attempt))
 
 
-def test_after_result_should_not_stop():
+def test_after_result_should_not_continue():
     stop_strategy = stop_strategies.AfterResult(predicate=lambda x: x == 'foo')
     attempt = Attempt(number=None,
                       was_successful=None,
                       result='bar',
                       exception=None,
                       first_attempt_start_time=None)
-    assert_false(stop_strategy.should_stop(attempt=attempt))
+    assert_false(stop_strategy.should_continue(attempt=attempt))
 
 
 @raises(TypeError)
@@ -126,7 +126,7 @@ def test_after_result_predicate_accepts_one_argument():
                       result=None,
                       exception=None,
                       first_attempt_start_time=None)
-    stop_strategy.should_stop(attempt=attempt)
+    stop_strategy.should_continue(attempt=attempt)
 
 
 def test_after_success_should_stop():

@@ -110,7 +110,7 @@ class AfterNever(After):
         return False
 
 
-class AfterResult(After):
+class AfterResult(IContinueStrategy):
 
     def __init__(self, predicate):
 
@@ -124,7 +124,7 @@ class AfterResult(After):
 
         self._predicate = predicate
 
-    def should_stop(self, attempt):
+    def should_continue(self, attempt):
         result = self._predicate(attempt.result)
         return result
 
