@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
+import sys
 import time
 
+from . import exceptions
 from .attempt import Attempt
 
 
@@ -50,15 +52,22 @@ class Policy(object):
             else:
                 attempt.was_successful = True
 
-            should_stop = any(
-                stop_strategy.should_stop(attempt=attempt)
-                for stop_strategy
-                in self._stop_strategies)
             should_continue = any(
                 continue_strategy.should_continue(attempt=attempt)
                 for continue_strategy
                 in self._continue_strategies)
 
+            for stop_strategy in self._stop_strategies:
+                try:
+                    stop_strategy.should_stop(attempt=attempt)
+                except exceptions.MaximumRetry:
+                    e = sys.exc_info()
+                    should_stop = True
+                    break
+            else:
+                should_stop = False
+
+            should_wait = not attempt.was_successful and not should_stop
             wait_time = self._wait_strategy.compute_wait_time(attempt=attempt)
 
             self._call_post_hooks(result=result,
@@ -67,8 +76,10 @@ class Policy(object):
 
             if attempt.was_successful and not should_continue:
                 break
-
-            _sleep(wait_time)
+            elif should_stop:
+                raise e
+            else:
+                _sleep(wait_time)
 
         if attempt.was_successful:
             return attempt.result
