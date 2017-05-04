@@ -6,7 +6,10 @@ from nose.tools import (assert_equal,
                         assert_items_equal,
                         raises)
 
-from .. import RetryPolicyBuilder, stop_strategies, wait_strategies
+from .. import (RetryPolicyBuilder,
+                exceptions,
+                stop_strategies,
+                wait_strategies)
 
 
 class MockException(Exception):
@@ -47,7 +50,7 @@ class TestRetryPolicy(object):
         retry_policy.execute(callable=self.service.call)
         assert_equal(self.service.call_count, 1)
 
-    def test_execute_wait(self):
+    def test_execute_failed_attempt_does_wait(self):
         _sleep = mock.MagicMock()
         retry_policy = RetryPolicyBuilder() \
             .with_stop_strategy(stop_strategies.AfterAttempt(maximum_attempt=2)) \
@@ -89,8 +92,10 @@ class TestRetryPolicy(object):
             .with_wait_strategy(wait_strategies.Fixed(wait_time=0)) \
             .continue_if_result(predicate=lambda x: x == 'foo') \
             .build()
-        retry_policy.execute(callable=self.service.call_and_return)
-        assert_greater(self.service.call_count, 1)
+        try:
+            retry_policy.execute(callable=self.service.call_and_return)
+        except exceptions.MaximumRetry:
+            assert_greater(self.service.call_count, 1)
 
     def test_execute_add_pre_hook(self):
         pre_hook = mock.MagicMock()
