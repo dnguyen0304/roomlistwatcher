@@ -6,7 +6,7 @@ from .. import stop_strategies
 from ..attempt import Attempt
 
 
-def test_after_attempt_should_stop_greater_than_maximum_attempt():
+def test_after_attempt_greater_than_threshold_should_stop():
 
     maximum_attempt = 1
     stop_strategy = stop_strategies.AfterAttempt(
@@ -19,7 +19,7 @@ def test_after_attempt_should_stop_greater_than_maximum_attempt():
     assert_true(stop_strategy.should_stop(attempt=attempt))
 
 
-def test_after_attempt_should_not_stop_equal_to_maximum_attempt():
+def test_after_attempt_equal_to_threshold_should_not_stop():
 
     maximum_attempt = 1
     stop_strategy = stop_strategies.AfterAttempt(
@@ -32,7 +32,7 @@ def test_after_attempt_should_not_stop_equal_to_maximum_attempt():
     assert_false(stop_strategy.should_stop(attempt=attempt))
 
 
-def test_after_attempt_should_not_stop_less_than_maximum_attempt():
+def test_after_attempt_less_than_threshold_should_not_stop():
 
     maximum_attempt = 1
     stop_strategy = stop_strategies.AfterAttempt(
