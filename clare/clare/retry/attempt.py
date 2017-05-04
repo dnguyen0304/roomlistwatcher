@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import time
+
 
 class Attempt(object):
 
@@ -15,6 +17,23 @@ class Attempt(object):
         self.result = result
         self.exception = exception
         self.first_attempt_start_time = first_attempt_start_time
+
+    @classmethod
+    def first(cls, _get_now_in_seconds=time.time):
+
+        """
+        Parameters
+        ----------
+        _get_now_in_seconds : collections.Callable
+            Used internally. Defaults to time.time.
+        """
+
+        attempt = cls(number=0,
+                      was_successful=None,
+                      result=None,
+                      exception=None,
+                      first_attempt_start_time=_get_now_in_seconds())
+        return attempt
 
     def __repr__(self):
         repr_ = ('{}('
