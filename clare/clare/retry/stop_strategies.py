@@ -60,9 +60,9 @@ class AfterDuration(IStopStrategy):
         # takes longer than the maximum duration is not supported.
         now = self._get_now_in_seconds()
         current_duration = now - attempt.first_attempt_start_time
-        should_stop = current_duration >= self._maximum_duration
+        result = current_duration >= self._maximum_duration
 
-        return should_stop
+        return result
 
     def __repr__(self):
         repr_ = '{}(maximum_duration={}, _get_now_in_seconds={})'
@@ -79,6 +79,29 @@ class AfterNever(IStopStrategy):
     def __repr__(self):
         repr_ = '{}()'
         return repr_.format(self.__class__.__name__)
+
+
+class AfterResult(IStopStrategy):
+
+    def __init__(self, predicate):
+
+        """
+        Parameters
+        ----------
+        predicate : callable
+            The callable must accept one argument and should return a
+            boolean.
+        """
+
+        self._predicate = predicate
+
+    def should_stop(self, attempt):
+        result = self._predicate(attempt.result)
+        return result
+
+    def __repr__(self):
+        repr_ = '{}(predicate={})'
+        return repr_.format(self.__class__.__name__, self._predicate)
 
 
 class AfterSuccess(IStopStrategy):
