@@ -7,21 +7,8 @@ from .attempt import Attempt
 
 class RetryPolicy(object):
 
-    def __init__(self,
-                 stop_strategy,
-                 wait_strategy,
-                 handled_exceptions=tuple()):
-
-        """
-        Parameters
-        ----------
-        stop_strategy : IStopStrategy
-        wait_strategy : IWaitStrategy
-        handled_exceptions : collections.Iterable
-            Defaults to an empty tuple.
-        """
-
-        self._stop_strategy = stop_strategy
+    def __init__(self, stop_strategies, wait_strategy, handled_exceptions):
+        self._stop_strategies = stop_strategies
         self._wait_strategy = wait_strategy
         self._handled_exceptions = handled_exceptions
 
@@ -30,8 +17,8 @@ class RetryPolicy(object):
         """
         Parameters
         ----------
-        callable : collections.Callable
-        _sleep : collections.Callable
+        callable : callable
+        _sleep : callable
             Used internally. Defaults to time.sleep.
         """
 
@@ -47,15 +34,19 @@ class RetryPolicy(object):
             result = None
             exception = None
 
-            if (attempt.was_successful or
-                self._stop_strategy.should_stop(attempt=attempt)):
-                    break
-            try:
-                result = callable()
-            except self._handled_exceptions as e:
-                exception = e
+            should_stop = any(stop_strategy.should_stop(attempt=attempt)
+                              for stop_strategy
+                              in self._stop_strategies)
+
+            if should_stop:
+                break
             else:
-                was_successful = True
+                try:
+                    result = callable()
+                except self._handled_exceptions as e:
+                    exception = e
+                else:
+                    was_successful = True
 
             attempt = Attempt(
                 number=attempt_number,
@@ -70,8 +61,11 @@ class RetryPolicy(object):
             return attempt.result
 
     def __repr__(self):
-        repr_ = '{}(stop_strategy={}, wait_strategy={}, handled_exceptions={})'
+        repr_ = ('{}('
+                 'stop_strategies={}, '
+                 'wait_strategy={}, '
+                 'handled_exceptions={})')
         return repr_.format(self.__class__.__name__,
-                            self._stop_strategy,
+                            self._stop_strategies,
                             self._wait_strategy,
                             self._handled_exceptions)

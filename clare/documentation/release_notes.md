@@ -6,10 +6,11 @@
 - Fixed parsing null log messages (`ME-648`).
 
 ##### Features
-- Added RetryPolicy (`ME-659`).
+- Added RetryPolicy and RetryPolicyBuilder (`ME-659`).
 - Added stopping after attempt (`ME-659`).
 - Added stopping after duration (`ME-659`).
 - Added stopping after never (`ME-659`).
+- Added stopping on multiple conditions (`ME-659`).
 - Added waiting for fixed duration (`ME-659`).
 - Added continuing on exceptions (`ME-659`).
 
