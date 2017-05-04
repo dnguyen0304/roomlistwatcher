@@ -4,6 +4,27 @@ import abc
 import time
 
 
+class IContinueStrategy(object):
+
+    __metaclass__ = abc.ABCMeta
+
+    @abc.abstractmethod
+    def should_continue(self, attempt):
+
+        """
+        Parameters
+        ----------
+        attempt : Attempt
+
+        Returns
+        -------
+        bool
+            True if the client should continue and False otherwise.
+        """
+
+        pass
+
+
 class IStopStrategy(object):
 
     __metaclass__ = abc.ABCMeta
@@ -25,7 +46,19 @@ class IStopStrategy(object):
         pass
 
 
-class AfterAttempt(IStopStrategy):
+class After(IContinueStrategy, IStopStrategy):
+
+    __metaclass__ = abc.ABCMeta
+
+    def should_continue(self, attempt):
+        return not self.should_stop(attempt=attempt)
+
+    def __repr__(self):
+        repr_ = '{}()'
+        return repr_.format(self.__class__.__name__)
+
+
+class AfterAttempt(After):
 
     def __init__(self, maximum_attempt):
         self._maximum_attempt = maximum_attempt
@@ -38,7 +71,7 @@ class AfterAttempt(IStopStrategy):
         return repr_.format(self.__class__.__name__, self._maximum_attempt)
 
 
-class AfterDuration(IStopStrategy):
+class AfterDuration(After):
 
     def __init__(self, maximum_duration, _get_now_in_seconds=time.time):
 
@@ -71,17 +104,13 @@ class AfterDuration(IStopStrategy):
                             self._get_now_in_seconds)
 
 
-class AfterNever(IStopStrategy):
+class AfterNever(After):
 
     def should_stop(self, attempt):
         return False
 
-    def __repr__(self):
-        repr_ = '{}()'
-        return repr_.format(self.__class__.__name__)
 
-
-class AfterResult(IStopStrategy):
+class AfterResult(After):
 
     def __init__(self, predicate):
 
@@ -104,11 +133,7 @@ class AfterResult(IStopStrategy):
         return repr_.format(self.__class__.__name__, self._predicate)
 
 
-class AfterSuccess(IStopStrategy):
+class AfterSuccess(After):
 
     def should_stop(self, attempt):
         return attempt.was_successful
-
-    def __repr__(self):
-        repr_ = '{}()'
-        return repr_.format(self.__class__.__name__)
