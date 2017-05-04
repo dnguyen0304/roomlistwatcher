@@ -15,11 +15,11 @@ class PolicyBuilder(object):
                  post_hooks=None):
 
         """
-        Retry policies must have the following:
+        Policies must have the following:
           - exactly 1 wait strategy
-        Retry policies should have the following:
+        Policies should have the following:
           - at least 1 stop strategy
-        Retry policies may have the following:
+        Policies may have the following:
           - 0 or more exceptions on which to continue
           - 0 or more results on which to continue
           - 0 or more pre-hooks
