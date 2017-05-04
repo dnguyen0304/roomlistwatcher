@@ -35,7 +35,7 @@ class RetryPolicy(object):
 
         while True:
             attempt_number = attempt.number + 1
-            was_successful = False
+            was_successful = None
             result = None
             exception = None
 
@@ -54,6 +54,7 @@ class RetryPolicy(object):
                 try:
                     result = callable()
                 except self._handled_exceptions as e:
+                    was_successful = False
                     exception = e
                 else:
                     was_successful = True
