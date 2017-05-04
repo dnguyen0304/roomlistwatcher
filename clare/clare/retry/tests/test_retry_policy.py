@@ -32,11 +32,9 @@ class TestRetryPolicy(object):
 
     def __init__(self):
         self.service = None
-        self.handled_exceptions = None
 
     def setup(self):
         self.service = MockService()
-        self.handled_exceptions = (MockException,)
 
     def test_execute_stop_after_success(self):
         retry_policy = RetryPolicyBuilder() \
@@ -65,7 +63,7 @@ class TestRetryPolicy(object):
         result = retry_policy.execute(callable=self.service.call_and_return)
         assert_equal(result, 'foo')
 
-    def test_execute_continue_on_handled_exceptions(self):
+    def test_execute_continue_on_exception(self):
         retry_policy = RetryPolicyBuilder() \
             .with_stop_strategy(stop_strategies.AfterAttempt(maximum_attempt=2)) \
             .with_wait_strategy(wait_strategies.Fixed(wait_time=0)) \
