@@ -4,7 +4,7 @@ from . import continue_strategies
 from .policy import Policy
 
 
-class RetryPolicyBuilder(object):
+class PolicyBuilder(object):
 
     def __init__(self,
                  stop_strategies=None,
