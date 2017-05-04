@@ -23,8 +23,8 @@ class MockService(object):
         if self.call_count == 1:
             raise MockException
 
-    @staticmethod
-    def call_and_return():
+    def call_and_return(self):
+        self.call_count += 1
         return 'foo'
 
 
@@ -72,4 +72,13 @@ class TestRetryPolicy(object):
             .continue_on_exception(MockException) \
             .build()
         retry_policy.execute(callable=self.service.call_and_raise)
+        assert_greater(self.service.call_count, 1)
+
+    def test_execute_continue_if_result(self):
+        retry_policy = RetryPolicyBuilder() \
+            .with_stop_strategy(stop_strategies.AfterAttempt(maximum_attempt=2)) \
+            .with_wait_strategy(wait_strategies.Fixed(wait_time=0)) \
+            .continue_if_result(predicate=lambda x: x == 'foo') \
+            .build()
+        retry_policy.execute(callable=self.service.call_and_return)
         assert_greater(self.service.call_count, 1)

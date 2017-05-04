@@ -7,9 +7,14 @@ from .attempt import Attempt
 
 class RetryPolicy(object):
 
-    def __init__(self, stop_strategies, wait_strategy, handled_exceptions):
+    def __init__(self,
+                 stop_strategies,
+                 wait_strategy,
+                 continue_strategies,
+                 handled_exceptions):
         self._stop_strategies = stop_strategies
         self._wait_strategy = wait_strategy
+        self._continue_strategies = continue_strategies
         self._handled_exceptions = handled_exceptions
 
     def execute(self, callable, _sleep=time.sleep):
@@ -34,11 +39,16 @@ class RetryPolicy(object):
             result = None
             exception = None
 
-            should_stop = any(stop_strategy.should_stop(attempt=attempt)
-                              for stop_strategy
-                              in self._stop_strategies)
+            should_stop = any(
+                stop_strategy.should_stop(attempt=attempt)
+                for stop_strategy
+                in self._stop_strategies)
+            should_continue = any(
+                continue_strategy.should_continue(attempt=attempt)
+                for continue_strategy
+                in self._continue_strategies)
 
-            if should_stop:
+            if should_stop or (attempt.was_successful and not should_continue):
                 break
             else:
                 try:
@@ -64,8 +74,10 @@ class RetryPolicy(object):
         repr_ = ('{}('
                  'stop_strategies={}, '
                  'wait_strategy={}, '
+                 'continue_strategies={}, '
                  'handled_exceptions={})')
         return repr_.format(self.__class__.__name__,
                             self._stop_strategies,
                             self._wait_strategy,
+                            self._continue_strategies,
                             self._handled_exceptions)
