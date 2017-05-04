@@ -31,11 +31,7 @@ class RetryPolicy(object):
             Used internally. Defaults to time.sleep.
         """
 
-        attempt = Attempt(number=0,
-                          was_successful=None,
-                          result=None,
-                          exception=None,
-                          first_attempt_start_time=time.time())
+        attempt = Attempt.first()
 
         while True:
             attempt_number = attempt.number + 1
