@@ -40,7 +40,7 @@ class AfterAttempt(After):
         self._maximum_attempt = maximum_attempt
 
     def should_stop(self, attempt):
-        return attempt.number >= self._maximum_attempt
+        return attempt.number > self._maximum_attempt
 
     def __repr__(self):
         repr_ = '{}(maximum_attempt={})'
