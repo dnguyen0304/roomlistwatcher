@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from . import continue_strategies
-from .retry_policy import RetryPolicy
+from .retry_policy import Policy
 
 
 class RetryPolicyBuilder(object):
@@ -78,7 +78,8 @@ class RetryPolicyBuilder(object):
     def add_pre_hook(self, pre_hook):
 
         """
-        Register a callable to be executed before each attempt.
+        Register a callable to be executed before each attempt,
+        including just before the algorithm stops.
 
         The hook receives a context object containing metadata about
         the current attempt number ("current_attempt_number"), whether
@@ -88,7 +89,7 @@ class RetryPolicyBuilder(object):
         continuing ("is_continuing").
 
         These hooks are read-only and therefore cannot affect the
-        runtime behavior of the RetryPolicy.
+        runtime behavior of the Policy.
 
         Parameters
         ----------
@@ -109,7 +110,7 @@ class RetryPolicyBuilder(object):
         ("exception"), and the next wait time ("next_wait_time").
 
         These hooks are read-only and therefore cannot affect the
-        runtime behavior of the RetryPolicy.
+        runtime behavior of the Policy.
 
         Parameters
         ----------
@@ -121,10 +122,10 @@ class RetryPolicyBuilder(object):
         return self
 
     def build(self):
-        retry_policy = RetryPolicy(stop_strategies=self._stop_strategies,
-                                   wait_strategy=self._wait_strategy,
-                                   continue_strategies=self._continue_strategies,
-                                   handled_exceptions=self._handled_exceptions,
-                                   pre_hooks=self._pre_hooks,
-                                   post_hooks=self._post_hooks)
+        retry_policy = Policy(stop_strategies=self._stop_strategies,
+                              wait_strategy=self._wait_strategy,
+                              continue_strategies=self._continue_strategies,
+                              handled_exceptions=self._handled_exceptions,
+                              pre_hooks=self._pre_hooks,
+                              post_hooks=self._post_hooks)
         return retry_policy

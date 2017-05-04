@@ -5,7 +5,7 @@ import time
 from .attempt import Attempt
 
 
-class RetryPolicy(object):
+class Policy(object):
 
     def __init__(self,
                  stop_strategies,
