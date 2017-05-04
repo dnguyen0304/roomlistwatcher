@@ -6,10 +6,7 @@ from nose.tools import (assert_equal,
                         assert_items_equal,
                         raises)
 
-from .. import (PolicyBuilder,
-                exceptions,
-                stop_strategies,
-                wait_strategies)
+from .. import PolicyBuilder, exceptions, stop_strategies, wait_strategies
 
 
 class MockException(Exception):
@@ -34,7 +31,7 @@ class MockService(object):
         return 'foo'
 
 
-class TestRetryPolicy(object):
+class TestPolicy(object):
 
     def __init__(self):
         self.service = None
@@ -43,68 +40,67 @@ class TestRetryPolicy(object):
         self.service = MockService()
 
     def test_execute_stop_after_success(self):
-        retry_policy = PolicyBuilder() \
+        policy = PolicyBuilder() \
             .with_stop_strategy(stop_strategies.AfterNever()) \
             .with_wait_strategy(wait_strategies.Fixed(wait_time=0)) \
             .build()
-        retry_policy.execute(callable=self.service.call)
+        policy.execute(callable=self.service.call)
         assert_equal(self.service.call_count, 1)
 
     def test_execute_failed_attempt_does_wait(self):
         _sleep = mock.MagicMock()
-        retry_policy = PolicyBuilder() \
+        policy = PolicyBuilder() \
             .with_stop_strategy(stop_strategies.AfterAttempt(maximum_attempt=2)) \
             .with_wait_strategy(wait_strategies.Fixed(wait_time=None)) \
             .continue_on_exception(MockException) \
             .build()
-        retry_policy.execute(callable=self.service.call_and_raise,
-                             _sleep=_sleep)
+        policy.execute(callable=self.service.call_and_raise, _sleep=_sleep)
         _sleep.assert_called()
 
     def test_execute_successful_attempt_returns_result(self):
-        retry_policy = PolicyBuilder() \
+        policy = PolicyBuilder() \
             .with_stop_strategy(stop_strategies.AfterNever()) \
             .with_wait_strategy(wait_strategies.Fixed(wait_time=0)) \
             .build()
-        result = retry_policy.execute(callable=self.service.call_and_return)
+        result = policy.execute(callable=self.service.call_and_return)
         assert_equal(result, 'foo')
 
     @raises(MockException)
     def test_execute_raises_exception(self):
-        retry_policy = PolicyBuilder() \
+        policy = PolicyBuilder() \
             .with_stop_strategy(stop_strategies.AfterNever()) \
             .with_wait_strategy(wait_strategies.Fixed(wait_time=0)) \
             .build()
-        retry_policy.execute(callable=self.service.call_and_raise)
+        policy.execute(callable=self.service.call_and_raise)
 
     def test_execute_continue_on_exception(self):
-        retry_policy = PolicyBuilder() \
+        policy = PolicyBuilder() \
             .with_stop_strategy(stop_strategies.AfterAttempt(maximum_attempt=2)) \
             .with_wait_strategy(wait_strategies.Fixed(wait_time=0)) \
             .continue_on_exception(MockException) \
             .build()
-        retry_policy.execute(callable=self.service.call_and_raise)
+        policy.execute(callable=self.service.call_and_raise)
         assert_greater(self.service.call_count, 1)
 
     def test_execute_continue_if_result(self):
-        retry_policy = PolicyBuilder() \
+        policy = PolicyBuilder() \
             .with_stop_strategy(stop_strategies.AfterAttempt(maximum_attempt=2)) \
             .with_wait_strategy(wait_strategies.Fixed(wait_time=0)) \
             .continue_if_result(predicate=lambda x: x == 'foo') \
             .build()
         try:
-            retry_policy.execute(callable=self.service.call_and_return)
+            policy.execute(callable=self.service.call_and_return)
         except exceptions.MaximumRetry:
             assert_greater(self.service.call_count, 1)
 
     def test_execute_add_pre_hook(self):
         pre_hook = mock.MagicMock()
-        retry_policy = PolicyBuilder() \
+        policy = PolicyBuilder() \
             .with_stop_strategy(stop_strategies.AfterNever()) \
             .with_wait_strategy(wait_strategies.Fixed(wait_time=0)) \
             .add_pre_hook(pre_hook) \
             .build()
-        retry_policy.execute(callable=self.service.call_and_return)
+        policy.execute(callable=self.service.call_and_return)
         assert_equal(pre_hook.call_count, 2)
 
     def test_execute_add_pre_hook_context(self):
@@ -114,30 +110,30 @@ class TestRetryPolicy(object):
                         'is_stopping',
                         'is_continuing')
             assert_items_equal(context, expected)
-        retry_policy = PolicyBuilder() \
+        policy = PolicyBuilder() \
             .with_stop_strategy(stop_strategies.AfterNever()) \
             .with_wait_strategy(wait_strategies.Fixed(wait_time=0)) \
             .add_pre_hook(pre_hook) \
             .build()
-        retry_policy.execute(callable=self.service.call_and_return)
+        policy.execute(callable=self.service.call_and_return)
 
     def test_execute_add_post_hook(self):
         post_hook = mock.MagicMock()
-        retry_policy = PolicyBuilder() \
+        policy = PolicyBuilder() \
             .with_stop_strategy(stop_strategies.AfterNever()) \
             .with_wait_strategy(wait_strategies.Fixed(wait_time=0)) \
             .add_post_hook(post_hook) \
             .build()
-        retry_policy.execute(callable=self.service.call_and_return)
+        policy.execute(callable=self.service.call_and_return)
         assert_equal(post_hook.call_count, 1)
 
     def test_execute_add_post_hook_context(self):
         def post_hook(context):
             expected = ('result', 'exception', 'next_wait_time')
             assert_items_equal(context, expected)
-        retry_policy = PolicyBuilder() \
+        policy = PolicyBuilder() \
             .with_stop_strategy(stop_strategies.AfterNever()) \
             .with_wait_strategy(wait_strategies.Fixed(wait_time=0)) \
             .add_post_hook(post_hook) \
             .build()
-        retry_policy.execute(callable=self.service.call_and_return)
+        policy.execute(callable=self.service.call_and_return)
