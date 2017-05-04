@@ -111,8 +111,8 @@ class TestRetryPolicy(object):
         def pre_hook(context):
             expected = ('previous_attempt_was_successful',
                         'current_attempt_number',
-                        'should_stop',
-                        'should_continue')
+                        'is_stopping',
+                        'is_continuing')
             assert_items_equal(context, expected)
         retry_policy = RetryPolicyBuilder() \
             .with_stop_strategy(stop_strategies.AfterNever()) \

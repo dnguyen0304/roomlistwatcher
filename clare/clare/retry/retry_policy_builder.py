@@ -84,8 +84,8 @@ class RetryPolicyBuilder(object):
         the current attempt number ("current_attempt_number"), whether
         the previous attempt was successful
         ("previous_attempt_was_successful"), whether the algorithm
-        should stop ("should_stop"), and whether the algorithm should
-        continue ("should_continue").
+        is stopping ("is_stopping"), and whether the algorithm is
+        continuing ("is_continuing").
 
         These hooks are read-only and therefore cannot affect the
         runtime behavior of the RetryPolicy.
