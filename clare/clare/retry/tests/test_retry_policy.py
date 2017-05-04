@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import mock
-from nose.tools import assert_equal, assert_greater, assert_items_equal
+from nose.tools import (assert_equal,
+                        assert_greater,
+                        assert_items_equal,
+                        raises)
 
 from .. import RetryPolicyBuilder, stop_strategies, wait_strategies
 
@@ -62,6 +65,14 @@ class TestRetryPolicy(object):
             .build()
         result = retry_policy.execute(callable=self.service.call_and_return)
         assert_equal(result, 'foo')
+
+    @raises(MockException)
+    def test_execute_raises_exception(self):
+        retry_policy = RetryPolicyBuilder() \
+            .with_stop_strategy(stop_strategies.AfterNever()) \
+            .with_wait_strategy(wait_strategies.Fixed(wait_time=0)) \
+            .build()
+        retry_policy.execute(callable=self.service.call_and_raise)
 
     def test_execute_continue_on_exception(self):
         retry_policy = RetryPolicyBuilder() \
