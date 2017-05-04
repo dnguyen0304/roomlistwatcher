@@ -52,10 +52,11 @@ class RetryPolicy(object):
                 for continue_strategy
                 in self._continue_strategies)
 
-            self._call_pre_hooks(attempt_number=attempt_number,
-                                 was_successful=attempt.was_successful,
-                                 should_stop=should_stop,
-                                 should_continue=should_continue)
+            self._call_pre_hooks(
+                previous_attempt_was_successful=attempt.was_successful,
+                current_attempt_number=attempt_number,
+                should_stop=should_stop,
+                should_continue=should_continue)
 
             if should_stop or (attempt.was_successful and not should_continue):
                 break
@@ -86,12 +87,12 @@ class RetryPolicy(object):
             return attempt.result
 
     def _call_pre_hooks(self,
-                        attempt_number,
-                        was_successful,
+                        previous_attempt_was_successful,
+                        current_attempt_number,
                         should_stop,
                         should_continue):
-        context = {'attempt_number': attempt_number,
-                   'was_successful': was_successful,
+        context = {'previous_attempt_was_successful': previous_attempt_was_successful,
+                   'current_attempt_number': current_attempt_number,
                    'should_stop': should_stop,
                    'should_continue': should_continue}
         for pre_hook in self._pre_hooks:

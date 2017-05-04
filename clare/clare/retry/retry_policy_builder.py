@@ -81,10 +81,11 @@ class RetryPolicyBuilder(object):
         Register a callable to be executed before each attempt.
 
         The hook receives a context object containing metadata about
-        the attempt number ("attempt_number"), whether the most recent
-        attempt was successful ("was_successful"), whether the
-        algorithm should stop ("should_stop"), and whether the
-        algorithm should continue ("should_continue").
+        the current attempt number ("current_attempt_number"), whether
+        the previous attempt was successful
+        ("previous_attempt_was_successful"), whether the algorithm
+        should stop ("should_stop"), and whether the algorithm should
+        continue ("should_continue").
 
         These hooks are read-only and therefore cannot affect the
         runtime behavior of the RetryPolicy.

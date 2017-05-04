@@ -109,8 +109,8 @@ class TestRetryPolicy(object):
 
     def test_execute_add_pre_hook_context(self):
         def pre_hook(context):
-            expected = ('attempt_number',
-                        'was_successful',
+            expected = ('previous_attempt_was_successful',
+                        'current_attempt_number',
                         'should_stop',
                         'should_continue')
             assert_items_equal(context, expected)
