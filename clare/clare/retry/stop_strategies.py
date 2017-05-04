@@ -3,6 +3,8 @@
 import abc
 import time
 
+from . import exceptions
+
 
 class IStopStrategy(object):
 
@@ -19,7 +21,12 @@ class IStopStrategy(object):
         Returns
         -------
         bool
-            True if the client should stop and False otherwise.
+            False if the client should not stop.
+
+        Raises
+        ------
+        MaximumRetry
+            If the client should stop.
         """
 
         pass
@@ -40,7 +47,11 @@ class AfterAttempt(After):
         self._maximum_attempt = maximum_attempt
 
     def should_stop(self, attempt):
-        return attempt.number > self._maximum_attempt
+        if attempt.number > self._maximum_attempt:
+            message = 'The number of attempts exceeded the maximum threshold.'
+            raise exceptions.MaximumRetry(message)
+        else:
+            return False
 
     def __repr__(self):
         repr_ = '{}(maximum_attempt={})'
@@ -69,9 +80,12 @@ class AfterDuration(After):
         # takes longer than the maximum duration is not supported.
         now = self._get_now_in_seconds()
         current_duration = now - attempt.first_attempt_start_time
-        result = current_duration >= self._maximum_duration
 
-        return result
+        if current_duration >= self._maximum_duration:
+            message = 'The duration of attempts exceeded the maximum threshold.'
+            raise exceptions.MaximumRetry(message)
+        else:
+            return False
 
     def __repr__(self):
         repr_ = '{}(maximum_duration={}, _get_now_in_seconds={})'

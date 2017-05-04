@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from nose.tools import assert_false, assert_true
+from nose.tools import assert_false, raises
 
-from .. import stop_strategies
+from .. import exceptions, stop_strategies
 from ..attempt import Attempt
 
 
+@raises(exceptions.MaximumRetry)
 def test_after_attempt_greater_than_threshold_should_stop():
 
     maximum_attempt = 1
@@ -16,7 +17,7 @@ def test_after_attempt_greater_than_threshold_should_stop():
                       result=None,
                       exception=None,
                       first_attempt_start_time=None)
-    assert_true(stop_strategy.should_stop(attempt=attempt))
+    stop_strategy.should_stop(attempt=attempt)
 
 
 def test_after_attempt_equal_to_threshold_should_not_stop():
@@ -45,6 +46,7 @@ def test_after_attempt_less_than_threshold_should_not_stop():
     assert_false(stop_strategy.should_stop(attempt=attempt))
 
 
+@raises(exceptions.MaximumRetry)
 def test_after_duration_should_stop_greater_than_maximum_duration():
 
     maximum_duration = 1
@@ -56,9 +58,10 @@ def test_after_duration_should_stop_greater_than_maximum_duration():
                       result=None,
                       exception=None,
                       first_attempt_start_time=0)
-    assert_true(stop_strategy.should_stop(attempt=attempt))
+    stop_strategy.should_stop(attempt=attempt)
 
 
+@raises(exceptions.MaximumRetry)
 def test_after_duration_should_stop_equal_to_maximum_duration():
 
     maximum_duration = 1
@@ -70,7 +73,7 @@ def test_after_duration_should_stop_equal_to_maximum_duration():
                       result=None,
                       exception=None,
                       first_attempt_start_time=0)
-    assert_true(stop_strategy.should_stop(attempt=attempt))
+    stop_strategy.should_stop(attempt=attempt)
 
 
 def test_after_duration_should_not_stop():
