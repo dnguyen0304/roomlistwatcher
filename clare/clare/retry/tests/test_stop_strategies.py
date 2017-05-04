@@ -96,14 +96,3 @@ def test_after_never_should_not_stop():
                       exception=None,
                       first_attempt_start_time=None)
     assert_false(stop_strategy.should_stop(attempt=attempt))
-
-
-def test_should_continue():
-
-    continue_strategy = stop_strategies.AfterNever()
-    attempt = Attempt(number=None,
-                      was_successful=None,
-                      result=None,
-                      exception=None,
-                      first_attempt_start_time=None)
-    assert_true(continue_strategy.should_continue(attempt=attempt))

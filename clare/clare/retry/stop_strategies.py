@@ -3,8 +3,6 @@
 import abc
 import time
 
-from . import continue_strategies
-
 
 class IStopStrategy(object):
 
@@ -27,12 +25,9 @@ class IStopStrategy(object):
         pass
 
 
-class After(continue_strategies.IContinueStrategy, IStopStrategy):
+class After(IStopStrategy):
 
     __metaclass__ = abc.ABCMeta
-
-    def should_continue(self, attempt):
-        return not self.should_stop(attempt=attempt)
 
     def __repr__(self):
         repr_ = '{}()'
