@@ -82,11 +82,7 @@ class PolicyBuilder(object):
         including just before the algorithm stops.
 
         The hook receives a context object containing metadata about
-        the current attempt number ("current_attempt_number"), whether
-        the previous attempt was successful
-        ("previous_attempt_was_successful"), whether the algorithm
-        is stopping ("is_stopping"), and whether the algorithm is
-        continuing ("is_continuing").
+        the current attempt number ("attempt_number").
 
         These hooks are read-only and therefore cannot affect the
         runtime behavior of the Policy.

@@ -101,14 +101,11 @@ class TestPolicy(object):
             .add_pre_hook(pre_hook) \
             .build()
         policy.execute(callable=self.service.call_and_return)
-        assert_equal(pre_hook.call_count, 2)
+        assert_equal(pre_hook.call_count, 1)
 
     def test_execute_add_pre_hook_context(self):
         def pre_hook(context):
-            expected = ('previous_attempt_was_successful',
-                        'current_attempt_number',
-                        'is_stopping',
-                        'is_continuing')
+            expected = ('attempt_number',)
             assert_items_equal(context, expected)
         policy = PolicyBuilder() \
             .with_stop_strategy(stop_strategies.AfterNever()) \

@@ -34,10 +34,21 @@ class Policy(object):
         attempt = Attempt.first()
 
         while True:
+            attempt = next(attempt)
             attempt_number = attempt.number + 1
             was_successful = None
             result = None
             exception = None
+
+            self._call_pre_hooks(attempt_number=attempt.number)
+
+            try:
+                attempt.result = callable()
+            except self._handled_exceptions as handled_exception:
+                attempt.was_successful = False
+                attempt.exception = handled_exception
+            else:
+                attempt.was_successful = True
 
             should_stop = any(
                 stop_strategy.should_stop(attempt=attempt)
@@ -48,49 +59,22 @@ class Policy(object):
                 for continue_strategy
                 in self._continue_strategies)
 
-            self._call_pre_hooks(
-                previous_attempt_was_successful=attempt.was_successful,
-                current_attempt_number=attempt_number,
-                is_stopping=should_stop,
-                is_continuing=should_continue)
-
-            if should_stop or (attempt.was_successful and not should_continue):
-                break
-            else:
-                try:
-                    result = callable()
-                except self._handled_exceptions as e:
-                    was_successful = False
-                    exception = e
-                else:
-                    was_successful = True
-
-            attempt = Attempt(
-                number=attempt_number,
-                was_successful=was_successful,
-                result=result,
-                exception=exception,
-                first_attempt_start_time=attempt.first_attempt_start_time)
-
             wait_time = self._wait_strategy.compute_wait_time(attempt=attempt)
 
             self._call_post_hooks(result=result,
                                   exception=exception,
                                   wait_time=wait_time)
+
+            if attempt.was_successful and not should_continue:
+                break
+
             _sleep(wait_time)
 
         if attempt.was_successful:
             return attempt.result
 
-    def _call_pre_hooks(self,
-                        previous_attempt_was_successful,
-                        current_attempt_number,
-                        is_stopping,
-                        is_continuing):
-        context = {'previous_attempt_was_successful': previous_attempt_was_successful,
-                   'current_attempt_number': current_attempt_number,
-                   'is_stopping': is_stopping,
-                   'is_continuing': is_continuing}
+    def _call_pre_hooks(self, attempt_number):
+        context = {'attempt_number': attempt_number}
         for pre_hook in self._pre_hooks:
             pre_hook(context)
 
