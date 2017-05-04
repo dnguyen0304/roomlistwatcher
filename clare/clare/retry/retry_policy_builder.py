@@ -10,12 +10,22 @@ class RetryPolicyBuilder(object):
                  stop_strategies=None,
                  wait_strategy=None,
                  continue_strategies=None,
-                 handled_exceptions=None):
+                 handled_exceptions=None,
+                 pre_hooks=None,
+                 post_hooks=None):
 
         """
-        Retry policies should have at least 1 stop strategy and at
-        least 1 wait strategy. A "successful" attempt is understood as
-        one where an exception was not thrown within the callable.
+        Retry policies should have the following:
+          - at least 1 stop strategy
+          - exactly 1 wait strategy
+        Retry policies may have the following:
+          - 0 or more exceptions on which to continue
+          - 0 or more results on which to continue
+          - 0 or more pre-hooks
+          - 0 or more post-hooks
+
+        A "successful" attempt is understood as one where an exception
+        was not thrown within the callable.
 
         Parameters
         ----------
@@ -29,12 +39,20 @@ class RetryPolicyBuilder(object):
             Defaults to an empty list.
         handled_exceptions : iterable of Exception
             Defaults to an empty tuple.
+        pre_hooks : iterable of callable
+            See the method docstring for more details. Defaults to an
+            empty list.
+        post_hooks : iterable of callable
+            See the method docstring for more details. Defaults to an
+            empty list.
         """
 
         self._stop_strategies = stop_strategies or list()
         self._wait_strategy = wait_strategy
         self._continue_strategies = continue_strategies or list()
         self._handled_exceptions = handled_exceptions or tuple()
+        self._pre_hooks = pre_hooks or list()
+        self._post_hooks = post_hooks or list()
 
     def with_stop_strategy(self, stop_strategy):
         self._stop_strategies.append(stop_strategy)
@@ -56,9 +74,55 @@ class RetryPolicyBuilder(object):
         continue_strategy = continue_strategies.AfterResult(predicate=predicate)
         return self._with_continue_strategy(continue_strategy)
 
+    def add_pre_hook(self, pre_hook):
+
+        """
+        Register a callable to be executed before each attempt.
+
+        The hook receives a context object containing metadata about
+        the attempt number ("attempt_number"), whether the most recent
+        attempt was successful ("was_successful"), whether the
+        algorithm should stop ("should_stop"), and whether the
+        algorithm should continue ("should_continue").
+
+        These hooks are read-only and therefore cannot affect the
+        runtime behavior of the RetryPolicy.
+
+        Parameters
+        ----------
+        pre_hook : callable
+            The callable must accept one argument of type Mapping.
+        """
+
+        self._pre_hooks.append(pre_hook)
+        return self
+
+    def add_post_hook(self, post_hook):
+
+        """
+        Register a callable to be executed after each attempt.
+
+        The hook receives a context object containing metadata about
+        the returned result ("result"), the thrown exception
+        ("exception"), and the next wait time ("next_wait_time").
+
+        These hooks are read-only and therefore cannot affect the
+        runtime behavior of the RetryPolicy.
+
+        Parameters
+        ----------
+        post_hook : callable
+            The callable must accept one argument of type Mapping.
+        """
+
+        self._post_hooks.append(post_hook)
+        return self
+
     def build(self):
         retry_policy = RetryPolicy(stop_strategies=self._stop_strategies,
                                    wait_strategy=self._wait_strategy,
                                    continue_strategies=self._continue_strategies,
-                                   handled_exceptions=self._handled_exceptions)
+                                   handled_exceptions=self._handled_exceptions,
+                                   pre_hooks=self._pre_hooks,
+                                   post_hooks=self._post_hooks)
         return retry_policy

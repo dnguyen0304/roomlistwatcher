@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import mock
-from nose.tools import assert_equal, assert_greater
+from nose.tools import assert_equal, assert_greater, assert_items_equal
 
 from .. import RetryPolicyBuilder, stop_strategies, wait_strategies
 
@@ -80,3 +80,48 @@ class TestRetryPolicy(object):
             .build()
         retry_policy.execute(callable=self.service.call_and_return)
         assert_greater(self.service.call_count, 1)
+
+    def test_execute_add_pre_hook(self):
+        pre_hook = mock.MagicMock()
+        retry_policy = RetryPolicyBuilder() \
+            .with_stop_strategy(stop_strategies.AfterNever()) \
+            .with_wait_strategy(wait_strategies.Fixed(wait_time=0)) \
+            .add_pre_hook(pre_hook) \
+            .build()
+        retry_policy.execute(callable=self.service.call_and_return)
+        assert_equal(pre_hook.call_count, 2)
+
+    def test_execute_add_pre_hook_context(self):
+        def pre_hook(context):
+            expected = ('attempt_number',
+                        'was_successful',
+                        'should_stop',
+                        'should_continue')
+            assert_items_equal(context, expected)
+        retry_policy = RetryPolicyBuilder() \
+            .with_stop_strategy(stop_strategies.AfterNever()) \
+            .with_wait_strategy(wait_strategies.Fixed(wait_time=0)) \
+            .add_pre_hook(pre_hook) \
+            .build()
+        retry_policy.execute(callable=self.service.call_and_return)
+
+    def test_execute_add_post_hook(self):
+        post_hook = mock.MagicMock()
+        retry_policy = RetryPolicyBuilder() \
+            .with_stop_strategy(stop_strategies.AfterNever()) \
+            .with_wait_strategy(wait_strategies.Fixed(wait_time=0)) \
+            .add_post_hook(post_hook) \
+            .build()
+        retry_policy.execute(callable=self.service.call_and_return)
+        assert_equal(post_hook.call_count, 1)
+
+    def test_execute_add_post_hook_context(self):
+        def post_hook(context):
+            expected = ('result', 'exception', 'next_wait_time')
+            assert_items_equal(context, expected)
+        retry_policy = RetryPolicyBuilder() \
+            .with_stop_strategy(stop_strategies.AfterNever()) \
+            .with_wait_strategy(wait_strategies.Fixed(wait_time=0)) \
+            .add_post_hook(post_hook) \
+            .build()
+        retry_policy.execute(callable=self.service.call_and_return)
