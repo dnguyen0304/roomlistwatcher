@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from . import continue_strategies
-from .retry_policy import Policy
+from .policy import Policy
 
 
 class RetryPolicyBuilder(object):
