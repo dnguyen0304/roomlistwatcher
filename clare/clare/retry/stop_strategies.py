@@ -89,9 +89,3 @@ class AfterNever(After):
 
     def should_stop(self, attempt):
         return False
-
-
-class AfterSuccess(After):
-
-    def should_stop(self, attempt):
-        return attempt.was_successful

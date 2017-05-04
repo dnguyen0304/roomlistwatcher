@@ -11,7 +11,6 @@
 - Added stopping after duration (`ME-659`).
 - Added stopping after never (`ME-659`).
 - Added stopping after result (`ME-659`).
-- Added stopping after success (`ME-659`).
 - Added stopping on multiple conditions (`ME-659`).
 - Added waiting for fixed duration (`ME-659`).
 - Added continuing on exceptions (`ME-659`).
