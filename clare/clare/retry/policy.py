@@ -1,10 +1,51 @@
 # -*- coding: utf-8 -*-
 
+import abc
 import sys
 import time
 
 from . import exceptions
 from .attempt import Attempt
+
+
+class INotifyable(object):
+
+    __metaclass__ = abc.ABCMeta
+
+    @abc.abstractmethod
+    def notify(self, context):
+
+        """
+        Parameters
+        ----------
+        context : collections.Mapping
+
+        Returns
+        ------
+        None
+        """
+
+        pass
+
+
+class Observable(INotifyable):
+
+    def __init__(self):
+        self._observers = set()
+
+    def register(self, observer):
+
+        """
+        Parameters
+        ----------
+        observer : INotifyable
+        """
+
+        self._observers.add(observer)
+
+    def notify(self, context):
+        for observer in self._observers:
+            observer.notify(context=context)
 
 
 class Policy(object):

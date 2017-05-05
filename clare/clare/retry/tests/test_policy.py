@@ -7,6 +7,39 @@ from nose.tools import (assert_equal,
                         raises)
 
 from .. import PolicyBuilder, exceptions, stop_strategies, wait_strategies
+from .. import policy
+
+
+class MockObserver(policy.INotifyable):
+
+    def notify(self, context):
+        pass
+
+
+class TestObservable(object):
+
+    def __init__(self):
+        self.observable = None
+        self.observer = None
+
+    def setup(self):
+        self.observable = policy.Observable()
+        self.observer = MockObserver()
+        self.observer.notify = mock.Mock()
+        self.observable.register(observer=self.observer)
+
+    def test_register_adds_only_unique_observers(self):
+        self.observable.register(observer=self.observer)
+        self.observable.notify(context=None)
+        assert_equal(self.observer.notify.call_count, 1)
+
+    def test_notify_calls_all_observers(self):
+        observer_2 = MockObserver()
+        observer_2.notify = mock.Mock()
+        self.observable.register(observer=observer_2)
+        self.observable.notify(context=None)
+        assert_equal(self.observer.notify.call_count, 1)
+        assert_equal(observer_2.notify.call_count, 1)
 
 
 class MockException(Exception):
