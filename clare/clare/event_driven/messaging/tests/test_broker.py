@@ -3,48 +3,17 @@
 import collections
 
 import mock
-from nose.tools import assert_equal, assert_is_instance, assert_in
+from nose.tools import assert_equal, assert_in, assert_is_instance
 
-from .. import policy_builder
+from .. import Broker
+from clare import event_driven
+from clare.event_driven import interfaces
 
 
-class MockObserver(policy_builder.INotifyable):
+class MockObserver(interfaces.INotifyable):
 
     def notify(self, event):
         pass
-
-
-class TestObservable(object):
-
-    def __init__(self):
-        self.observable = None
-        self.observer = None
-
-    def setup(self):
-        self.observable = policy_builder.Observable()
-        self.observer = MockObserver()
-        self.observer.notify = mock.Mock()
-        self.observable.register(observer=self.observer)
-
-    def test_register_adds_only_unique_observers(self):
-        self.observable.register(observer=self.observer)
-        self.observable.notify(event=None)
-        assert_equal(self.observer.notify.call_count, 1)
-
-    def test_notify_pushes_to_all_observers(self):
-        observer_2 = MockObserver()
-        observer_2.notify = mock.Mock()
-        self.observable.register(observer=observer_2)
-        self.observable.notify(event=None)
-        assert_equal(self.observer.notify.call_count, 1)
-        assert_equal(observer_2.notify.call_count, 1)
-
-
-def test_observable_factory_build_returns_i_notifyable():
-
-    observable_factory = policy_builder.ObservableFactory()
-    observable = observable_factory.build()
-    assert_is_instance(observable, policy_builder.INotifyable)
 
 
 class TestBroker(object):
@@ -55,9 +24,8 @@ class TestBroker(object):
         self.topic_name_2 = None
 
     def setup(self):
-        observable_factory = policy_builder.ObservableFactory()
-        self.broker = policy_builder.Broker(
-            observable_factory=observable_factory)
+        observable_factory = event_driven.ObservableFactory()
+        self.broker = Broker(observable_factory=observable_factory)
         self.topic_name_1 = 'foo'
         self.topic_name_2 = 'bar'
 
