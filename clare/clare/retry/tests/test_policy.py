@@ -3,14 +3,16 @@
 import json
 
 import mock
-from nose.tools import (assert_equal,
-                        assert_greater,
-                        assert_in,
-                        assert_items_equal,
-                        raises)
+from nose.tools import assert_equal, assert_greater, assert_in, raises
 
-from .. import PolicyBuilder, exceptions, stop_strategies, wait_strategies
+from .. import (PolicyBuilder,
+                Topic,
+                exceptions,
+                stop_strategies,
+                wait_strategies)
 from .. import policy
+from clare import event_driven
+from clare.event_driven import messaging
 
 
 def test_attempt_started_event_to_json_names():
@@ -69,9 +71,14 @@ class TestPolicy(object):
 
     def __init__(self):
         self.service = None
+        self.messaging_broker = None
 
     def setup(self):
         self.service = MockService()
+        self.messaging_broker = messaging.Broker(
+            observable_factory=event_driven.ObservableFactory())
+        self.messaging_broker.create_topic(name=Topic.ATTEMPT_STARTED.name)
+        self.messaging_broker.create_topic(name=Topic.ATTEMPT_COMPLETED.name)
 
     def test_execute_stop_after_success(self):
         policy = PolicyBuilder() \
@@ -127,44 +134,24 @@ class TestPolicy(object):
         except exceptions.MaximumRetry:
             assert_greater(self.service.call_count, 1)
 
-    def test_execute_add_pre_hook(self):
-        pre_hook = mock.MagicMock()
+    def test_execute_with_attempt_started_hook(self):
+        predicate = mock.MagicMock()
         policy = PolicyBuilder() \
             .with_stop_strategy(stop_strategies.AfterNever()) \
             .with_wait_strategy(wait_strategies.Fixed(wait_time=0)) \
-            .add_pre_hook(pre_hook) \
+            .with_messaging_broker(self.messaging_broker) \
+            .with_hook(predicate=predicate, topic=Topic.ATTEMPT_STARTED) \
             .build()
         policy.execute(callable=self.service.call_and_return)
-        assert_equal(pre_hook.call_count, 1)
+        assert_equal(predicate.call_count, 1)
 
-    def test_execute_add_pre_hook_context(self):
-        def pre_hook(context):
-            expected = ('attempt_number',)
-            assert_items_equal(context, expected)
+    def test_execute_with_attempt_completed_hook(self):
+        predicate = mock.MagicMock()
         policy = PolicyBuilder() \
             .with_stop_strategy(stop_strategies.AfterNever()) \
             .with_wait_strategy(wait_strategies.Fixed(wait_time=0)) \
-            .add_pre_hook(pre_hook) \
+            .with_messaging_broker(self.messaging_broker) \
+            .with_hook(predicate=predicate, topic=Topic.ATTEMPT_COMPLETED) \
             .build()
         policy.execute(callable=self.service.call_and_return)
-
-    def test_execute_add_post_hook(self):
-        post_hook = mock.MagicMock()
-        policy = PolicyBuilder() \
-            .with_stop_strategy(stop_strategies.AfterNever()) \
-            .with_wait_strategy(wait_strategies.Fixed(wait_time=0)) \
-            .add_post_hook(post_hook) \
-            .build()
-        policy.execute(callable=self.service.call_and_return)
-        assert_equal(post_hook.call_count, 1)
-
-    def test_execute_add_post_hook_context(self):
-        def post_hook(context):
-            expected = ('result', 'exception', 'next_wait_time')
-            assert_items_equal(context, expected)
-        policy = PolicyBuilder() \
-            .with_stop_strategy(stop_strategies.AfterNever()) \
-            .with_wait_strategy(wait_strategies.Fixed(wait_time=0)) \
-            .add_post_hook(post_hook) \
-            .build()
-        policy.execute(callable=self.service.call_and_return)
+        assert_equal(predicate.call_count, 1)

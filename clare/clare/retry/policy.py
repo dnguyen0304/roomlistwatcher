@@ -116,14 +116,12 @@ class Policy(object):
                  wait_strategy,
                  continue_strategies,
                  handled_exceptions,
-                 pre_hooks,
-                 post_hooks):
+                 messaging_broker):
         self._stop_strategies = stop_strategies
         self._wait_strategy = wait_strategy
         self._continue_strategies = continue_strategies
         self._handled_exceptions = handled_exceptions
-        self._pre_hooks = pre_hooks
-        self._post_hooks = post_hooks
+        self._messaging_broker = messaging_broker
 
     def execute(self, callable, _sleep=time.sleep):
 
@@ -144,7 +142,7 @@ class Policy(object):
             result = None
             exception = None
 
-            self._call_pre_hooks(attempt_number=attempt.number)
+            self.publish_attempt_started(attempt_number=attempt.number)
 
             try:
                 attempt.result = callable()
@@ -172,9 +170,9 @@ class Policy(object):
             should_wait = not attempt.was_successful and not should_stop
             wait_time = self._wait_strategy.compute_wait_time(attempt=attempt)
 
-            self._call_post_hooks(result=result,
-                                  exception=exception,
-                                  wait_time=wait_time)
+            self.publish_attempt_completed(result=result,
+                                           exception=exception,
+                                           next_wait_time=wait_time)
 
             if attempt.was_successful and not should_continue:
                 break
@@ -186,17 +184,19 @@ class Policy(object):
         if attempt.was_successful:
             return attempt.result
 
-    def _call_pre_hooks(self, attempt_number):
-        context = {'attempt_number': attempt_number}
-        for pre_hook in self._pre_hooks:
-            pre_hook(context)
+    def publish_attempt_started(self, attempt_number):
+        if self._messaging_broker is not None:
+            event = AttemptStartedEvent(attempt_number=attempt_number)
+            self._messaging_broker.publish(event=event.to_json(),
+                                           topic_name=event.topic.name)
 
-    def _call_post_hooks(self, result, exception, wait_time):
-        context = {'result': result,
-                   'exception': exception,
-                   'next_wait_time': wait_time}
-        for post_hook in self._post_hooks:
-            post_hook(context)
+    def publish_attempt_completed(self, result, exception, next_wait_time):
+        if self._messaging_broker is not None:
+            event = AttemptCompletedEvent(result=result,
+                                          exception=exception,
+                                          next_wait_time=next_wait_time)
+            self._messaging_broker.publish(event=event.to_json(),
+                                           topic_name=event.topic.name)
 
     def __repr__(self):
         repr_ = ('{}('
@@ -204,12 +204,10 @@ class Policy(object):
                  'wait_strategy={}, '
                  'continue_strategies={}, '
                  'handled_exceptions={}, '
-                 'pre_hooks={}, '
-                 'post_hooks={})')
+                 'messaging_broker={})')
         return repr_.format(self.__class__.__name__,
                             self._stop_strategies,
                             self._wait_strategy,
                             self._continue_strategies,
                             self._handled_exceptions,
-                            self._pre_hooks,
-                            self._post_hooks)
+                            self._messaging_broker)
