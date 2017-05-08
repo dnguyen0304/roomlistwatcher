@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import collections
+import json
 
 import mock
 from nose.tools import (assert_equal,
@@ -99,6 +100,36 @@ class TestBroker(object):
 
         assert_equal(subscriber_1.notify.call_count, 1)
         assert_equal(subscriber_2.notify.call_count, 0)
+
+
+def test_attempt_started_event_to_json_names():
+
+    event = policy.AttemptStartedEvent(attempt_number=None)
+    assert_in('topic_name', json.loads(event.to_json()))
+    assert_in('arguments', json.loads(event.to_json()))
+
+
+def test_attempt_started_event_to_json_arguments_names():
+
+    event = policy.AttemptStartedEvent(attempt_number=None)
+    assert_in('attempt_number', json.loads(event.to_json())['arguments'])
+
+
+def test_attempt_completed_event_to_json_names():
+
+    event = policy.AttemptStartedEvent(attempt_number=None)
+    assert_in('topic_name', event.to_json())
+    assert_in('arguments', json.loads(event.to_json()))
+
+
+def test_attempt_completed_event_to_json_arguments_names():
+
+    event = policy.AttemptCompletedEvent(result=None,
+                                         exception=None,
+                                         next_wait_time=None)
+    assert_in('result', json.loads(event.to_json())['arguments'])
+    assert_in('exception', json.loads(event.to_json())['arguments'])
+    assert_in('next_wait_time', json.loads(event.to_json())['arguments'])
 
 
 class MockException(Exception):

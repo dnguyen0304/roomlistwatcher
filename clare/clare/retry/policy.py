@@ -1,11 +1,28 @@
 # -*- coding: utf-8 -*-
 
 import abc
+import json
 import sys
 import time
 
+import enum
+
 from . import exceptions
 from .attempt import Attempt
+
+
+class AutomatedEnum(enum.Enum):
+
+    def __new__(cls):
+        value = len(cls.__members__) + 1
+        object_ = object.__new__(cls)
+        object_._value_ = value
+        return object_
+
+
+class Topic(AutomatedEnum):
+    ATTEMPT_STARTED = ()
+    ATTEMPT_COMPLETED = ()
 
 
 class IJsonSerializable(object):
@@ -153,6 +170,74 @@ class Broker(object):
     def __repr__(self):
         repr_ = '{}(observable_factory={})'
         return repr_.format(self.__class__.__name__, self._observable_factory)
+
+
+class AttemptStartedEvent(IJsonSerializable):
+
+    topic = Topic.ATTEMPT_STARTED
+
+    def __init__(self, attempt_number):
+
+        """
+        Parameters
+        ----------
+        attempt_number : int
+        """
+
+        self.arguments = {'attempt_number': attempt_number}
+
+    def to_json(self):
+
+        """
+        Returns
+        -------
+        str
+        """
+
+        data = {'topic_name': self.topic.name, 'arguments': self.arguments}
+        return json.dumps(data)
+
+    def __repr__(self):
+        repr_ = '{}(attempt_number={})'
+        return repr_.format(self.__class__.__name__,
+                            self.arguments['attempt_number'])
+
+
+class AttemptCompletedEvent(IJsonSerializable):
+
+    topic = Topic.ATTEMPT_COMPLETED
+
+    def __init__(self, result, exception, next_wait_time):
+
+        """
+        Parameters
+        ----------
+        result : typing.Any
+        exception : Exception
+        next_wait_time : float
+        """
+
+        self.arguments = {'result': result,
+                          'exception': exception,
+                          'next_wait_time': next_wait_time}
+
+    def to_json(self):
+
+        """
+        Returns
+        -------
+        str
+        """
+
+        data = {'topic_name': self.topic.name, 'arguments': self.arguments}
+        return json.dumps(data)
+
+    def __repr__(self):
+        repr_ = '{}(result={}, exception={}, next_wait_time={})'
+        return repr_.format(self.__class__.__name__,
+                            self.arguments['result'],
+                            self.arguments['exception'],
+                            self.arguments['next_wait_time'])
 
 
 class Policy(object):
