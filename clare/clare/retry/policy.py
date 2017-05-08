@@ -75,6 +75,20 @@ class Observable(INotifyable):
         return repr_.format(self.__class__.__name__)
 
 
+class ObservableFactory(object):
+
+    def build(self):
+
+        """
+        Returns
+        ----------
+        clare.retry.policy.INotifyable
+        """
+
+        observable = Observable()
+        return observable
+
+
 class Policy(object):
 
     def __init__(self,

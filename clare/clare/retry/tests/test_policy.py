@@ -3,6 +3,7 @@
 import mock
 from nose.tools import (assert_equal,
                         assert_greater,
+                        assert_is_instance,
                         assert_items_equal,
                         raises)
 
@@ -40,6 +41,13 @@ class TestObservable(object):
         self.observable.notify(event=None)
         assert_equal(self.observer.notify.call_count, 1)
         assert_equal(observer_2.notify.call_count, 1)
+
+
+def test_observable_factory_build_returns_i_notifyable():
+
+    observable_factory = policy.ObservableFactory()
+    observable = observable_factory.build()
+    assert_is_instance(observable, policy.INotifyable)
 
 
 class MockException(Exception):
