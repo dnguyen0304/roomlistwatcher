@@ -38,7 +38,7 @@ class Observable(INotifyable):
         """
         Parameters
         ----------
-        observer : INotifyable
+        observer : clare.retry.policy.INotifyable
         """
 
         self._observers.add(observer)
