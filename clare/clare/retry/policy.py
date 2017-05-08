@@ -8,6 +8,22 @@ from . import exceptions
 from .attempt import Attempt
 
 
+class IJsonSerializable(object):
+
+    __metaclass__ = abc.ABCMeta
+
+    @abc.abstractmethod
+    def to_json(self):
+
+        """
+        Returns
+        -------
+        str
+        """
+
+        pass
+
+
 class INotifyable(object):
 
     __metaclass__ = abc.ABCMeta
@@ -18,7 +34,7 @@ class INotifyable(object):
         """
         Parameters
         ----------
-        event : collections.Mapping
+        event : clare.retry.policy.IJsonSerializable
 
         Returns
         ------
@@ -44,6 +60,13 @@ class Observable(INotifyable):
         self._observers.add(observer)
 
     def notify(self, event):
+
+        """
+        Parameters
+        ----------
+        event : clare.retry.policy.IJsonSerializable
+        """
+
         for observer in self._observers:
             observer.notify(event=event)
 
