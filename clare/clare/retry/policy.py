@@ -13,12 +13,12 @@ class INotifyable(object):
     __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod
-    def notify(self, context):
+    def notify(self, event):
 
         """
         Parameters
         ----------
-        context : collections.Mapping
+        event : collections.Mapping
 
         Returns
         ------
@@ -43,9 +43,13 @@ class Observable(INotifyable):
 
         self._observers.add(observer)
 
-    def notify(self, context):
+    def notify(self, event):
         for observer in self._observers:
-            observer.notify(context=context)
+            observer.notify(event=event)
+
+    def __repr__(self):
+        repr_ = '{}()'
+        return repr_.format(self.__class__.__name__)
 
 
 class Policy(object):
