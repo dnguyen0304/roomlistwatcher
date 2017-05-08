@@ -23,7 +23,7 @@ class Observable(interfaces.INotifyable):
         """
         Parameters
         ----------
-        event : clare.retry.policy.IJsonSerializable
+        event : str
         """
 
         for observer in self._observers:

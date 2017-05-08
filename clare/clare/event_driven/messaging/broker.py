@@ -43,7 +43,7 @@ class Broker(object):
         """
         Parameters
         ----------
-        event : clare.retry.policy.IJsonSerializable
+        event : str
         topic_name : str
         """
 

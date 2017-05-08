@@ -13,7 +13,7 @@ class INotifyable(object):
         """
         Parameters
         ----------
-        event : clare.retry.policy.IJsonSerializable
+        event : str
 
         Returns
         ------
