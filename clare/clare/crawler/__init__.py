@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from .document import IElementLookup
-from .room import Room
+from . import download_strategies
 
-__all__ = ['IElementLookup',
-           'Room']
+__all__ = ['download_strategies']
