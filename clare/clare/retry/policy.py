@@ -128,8 +128,8 @@ class Policy(object):
         """
         Parameters
         ----------
-        callable : callable
-        _sleep : callable
+        callable : collections.Callable
+        _sleep : collections.Callable
             Used internally. Defaults to time.sleep.
         """
 
@@ -137,12 +137,8 @@ class Policy(object):
 
         while True:
             attempt = next(attempt)
-            attempt_number = attempt.number + 1
-            was_successful = None
-            result = None
-            exception = None
 
-            self.publish_attempt_started(attempt_number=attempt.number)
+            self._publish_attempt_started(attempt_number=attempt.number)
 
             try:
                 attempt.result = callable()
@@ -170,9 +166,9 @@ class Policy(object):
             should_wait = not attempt.was_successful and not should_stop
             wait_time = self._wait_strategy.compute_wait_time(attempt=attempt)
 
-            self.publish_attempt_completed(result=result,
-                                           exception=exception,
-                                           next_wait_time=wait_time)
+            self._publish_attempt_completed(result=attempt.result,
+                                            exception=attempt.exception,
+                                            next_wait_time=wait_time)
 
             if attempt.was_successful and not should_continue:
                 break
@@ -184,13 +180,13 @@ class Policy(object):
         if attempt.was_successful:
             return attempt.result
 
-    def publish_attempt_started(self, attempt_number):
+    def _publish_attempt_started(self, attempt_number):
         if self._messaging_broker is not None:
             event = AttemptStartedEvent(attempt_number=attempt_number)
             self._messaging_broker.publish(event=event.to_json(),
                                            topic_name=event.topic.name)
 
-    def publish_attempt_completed(self, result, exception, next_wait_time):
+    def _publish_attempt_completed(self, result, exception, next_wait_time):
         if self._messaging_broker is not None:
             event = AttemptCompletedEvent(result=result,
                                           exception=exception,
