@@ -14,8 +14,7 @@
 - Added waiting for fixed duration (`ME-659`).
 - Added continuing on exceptions (`ME-659`).
 - Added continuing on results (`ME-659`).
-- Added pre-hooks (`ME-659`).
-- Added post-hooks (`ME-659`).
+- Added event-driven hooks (`ME-659`).
 
 ## v0.2.0 (Pending)
 ##### Changes
