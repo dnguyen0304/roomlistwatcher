@@ -1,9 +1,60 @@
 # -*- coding: utf-8 -*-
 
-from nose.tools import assert_false, assert_is_none, assert_true
+from lxml import cssselect, etree
+from nose.tools import assert_equal, assert_false, assert_is_none, assert_true
 
-from .. import Room
-from .common import MockDocument
+from ..document import IElementLookup
+from ..room import Room
+
+
+class MockDocument(IElementLookup):
+
+    def __init__(self, element_tree):
+        self._element_tree = element_tree
+
+    @classmethod
+    def from_string(cls, string):
+        parser = etree.HTMLParser()
+        element_tree = etree.fromstring(string, parser=parser)
+        document = cls(element_tree=element_tree)
+        return document
+
+    def find_by_css_selector(self, css_selector):
+        apply_css_selector = cssselect.CSSSelector(css=css_selector,
+                                                   translator='html')
+        elements = apply_css_selector(self._element_tree)
+        return elements
+
+    def find_by_class_name(self, class_name):
+        css_selector = '.' + class_name
+        elements = self.find_by_css_selector(css_selector)
+        return elements
+
+
+class TestMockDocument(object):
+
+    def __init__(self):
+        self.document = None
+
+    def setup(self):
+        string = """
+<head>
+  <div class="foo">Foo</div>
+  <div class="bar">Bar</div>
+</head>"""
+        self.document = MockDocument.from_string(string)
+
+    def test_find_by_css_selector(self):
+        css_selector = '.foo'
+        elements = self.document.find_by_css_selector(css_selector)
+        assert_equal(len(elements), 1)
+        assert_equal(elements[0].attrib['class'], 'foo')
+
+    def test_find_by_class_name(self):
+        class_name = 'foo'
+        elements = self.document.find_by_class_name(class_name)
+        assert_equal(len(elements), 1)
+        assert_equal(elements[0].attrib['class'], 'foo')
 
 
 class TestRoom(object):
