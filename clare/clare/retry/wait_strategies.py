@@ -13,7 +13,7 @@ class IWaitStrategy(object):
         """
         Parameters
         ----------
-        attempt : Attempt
+        attempt : clare.retry.attempt.Attempt
 
         Returns
         -------
