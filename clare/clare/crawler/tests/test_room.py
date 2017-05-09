@@ -3,7 +3,7 @@
 from lxml import cssselect, etree
 from nose.tools import assert_equal, assert_false, assert_is_none, assert_true
 
-from ..document import IElementLookup
+from ..documents import IElementLookup
 from ..room import Room
 
 
