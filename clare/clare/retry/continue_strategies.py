@@ -13,7 +13,7 @@ class IContinueStrategy(object):
         """
         Parameters
         ----------
-        attempt : Attempt
+        attempt : clare.retry.attempt.Attempt
 
         Returns
         -------
@@ -31,9 +31,9 @@ class AfterResult(IContinueStrategy):
         """
         Parameters
         ----------
-        predicate : callable
-            The callable must accept one argument and should return a
-            boolean.
+        predicate : collections.Callable
+            The predicate must accept one argument and return a
+            Boolean.
         """
 
         self._predicate = predicate
