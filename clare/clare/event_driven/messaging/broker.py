@@ -12,7 +12,7 @@ class Broker(object):
         """
 
         self._observable_factory = observable_factory
-        self._topic_index = dict()
+        self._topics_index = dict()
 
     def create_topic(self, name):
 
@@ -25,8 +25,8 @@ class Broker(object):
         name : str
         """
 
-        if name not in self._topic_index:
-            self._topic_index[name] = self._observable_factory.build()
+        if name not in self._topics_index:
+            self._topics_index[name] = self._observable_factory.build()
 
     def list_topics(self):
 
@@ -36,7 +36,7 @@ class Broker(object):
         collections.Sequence
         """
 
-        return self._topic_index.keys()
+        return self._topics_index.keys()
 
     def publish(self, event, topic_name):
 
@@ -47,7 +47,7 @@ class Broker(object):
         topic_name : str
         """
 
-        observable = self._topic_index[topic_name]
+        observable = self._topics_index[topic_name]
         observable.notify(event=event)
 
     def subscribe(self, subscriber, topic_name):
@@ -59,7 +59,7 @@ class Broker(object):
         topic_name : str
         """
 
-        observable = self._topic_index[topic_name]
+        observable = self._topics_index[topic_name]
         observable.register(observer=subscriber)
 
     def __repr__(self):

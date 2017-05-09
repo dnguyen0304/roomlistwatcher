@@ -29,10 +29,6 @@ class TestBroker(object):
         self.topic_name_1 = 'foo'
         self.topic_name_2 = 'bar'
 
-    def test_list_topics_returns_sequence(self):
-        topic_names = self.broker.list_topics()
-        assert_is_instance(topic_names, collections.Sequence)
-
     def test_create_topic(self):
         self.broker.create_topic(name=self.topic_name_1)
         topic_names = self.broker.list_topics()
@@ -43,6 +39,10 @@ class TestBroker(object):
         self.broker.create_topic(name=self.topic_name_1)
         topic_names = self.broker.list_topics()
         assert_equal(len(topic_names), 1)
+
+    def test_list_topics_returns_sequence(self):
+        topic_names = self.broker.list_topics()
+        assert_is_instance(topic_names, collections.Sequence)
 
     def test_publish_pushes_to_all_subscribers_by_topic_name(self):
         self.broker.create_topic(name=self.topic_name_1)
@@ -58,7 +58,7 @@ class TestBroker(object):
         self.broker.subscribe(subscriber=subscriber_2,
                               topic_name=self.topic_name_2)
 
-        self.broker.publish(event=None, topic_name='foo')
+        self.broker.publish(event=None, topic_name=self.topic_name_1)
 
         assert_equal(subscriber_1.notify.call_count, 1)
         assert_equal(subscriber_2.notify.call_count, 0)
