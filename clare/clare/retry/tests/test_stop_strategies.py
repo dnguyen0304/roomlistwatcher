@@ -47,7 +47,7 @@ def test_after_attempt_less_than_threshold_should_not_stop():
 
 
 @raises(exceptions.MaximumRetry)
-def test_after_duration_should_stop_greater_than_maximum_duration():
+def test_after_duration_greater_than_maximum_duration_should_stop():
 
     maximum_duration = 1
     stop_strategy = stop_strategies.AfterDuration(
@@ -62,7 +62,7 @@ def test_after_duration_should_stop_greater_than_maximum_duration():
 
 
 @raises(exceptions.MaximumRetry)
-def test_after_duration_should_stop_equal_to_maximum_duration():
+def test_after_duration_equal_to_maximum_duration_should_stop():
 
     maximum_duration = 1
     stop_strategy = stop_strategies.AfterDuration(
