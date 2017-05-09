@@ -18,8 +18,7 @@ class IElementLookup(object):
 
         Returns
         -------
-        list
-            Iterable collection of elements.
+        collections.Sequence
         """
 
         pass
@@ -35,8 +34,7 @@ class IElementLookup(object):
 
         Returns
         -------
-        list
-            Iterable collection of elements.
+        collections.Sequence
         """
 
         pass
