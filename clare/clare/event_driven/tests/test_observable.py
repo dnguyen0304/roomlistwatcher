@@ -3,8 +3,7 @@
 import mock
 from nose.tools import assert_equal
 
-from .. import interfaces
-from ..observable import Observable
+from .. import interfaces, ObservableFactory
 
 
 class MockObserver(interfaces.INotifyable):
@@ -20,7 +19,7 @@ class TestObservable(object):
         self.observer = None
 
     def setup(self):
-        self.observable = Observable()
+        self.observable = ObservableFactory().build()
         self.observer = MockObserver()
         self.observer.notify = mock.Mock()
         self.observable.register(observer=self.observer)
