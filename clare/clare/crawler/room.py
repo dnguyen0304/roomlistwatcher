@@ -13,7 +13,7 @@ class Room(object):
         """
         Parameters
         ----------
-        document : IElementLookup
+        document : clare.crawler.documents.IElementLookup
         """
 
         css_selector = 'body a.roomtab.button.cur.closable span'
