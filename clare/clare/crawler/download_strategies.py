@@ -23,10 +23,6 @@ class IDownloadStrategy(object):
         -------
         str
             Path to the downloaded file.
-
-        Raises
-        ------
-        DownloadFailed
         """
 
         pass
@@ -35,9 +31,16 @@ class IDownloadStrategy(object):
         pass
 
 
-class Failed(IDownloadStrategy):
+class Fail(IDownloadStrategy):
 
     def execute(self, url):
+
+        """
+        Raises
+        ------
+        clare.crawler.download_strategies.DownloadFailed
+        """
+
         raise DownloadFailed
 
     def __repr__(self):

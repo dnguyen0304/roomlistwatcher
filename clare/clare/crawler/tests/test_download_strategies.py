@@ -2,10 +2,10 @@
 
 from nose.tools import raises
 
-from .. import DownloadFailed, strategies
+from ..download_strategies import DownloadFailed, Fail
 
 
 @raises(DownloadFailed)
-def test_failed():
-    strategy = strategies.Failed()
+def test_fail():
+    strategy = Fail()
     strategy.execute(url=None)
