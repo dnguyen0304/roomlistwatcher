@@ -80,23 +80,13 @@ class TestPolicy(object):
         self.messaging_broker.create_topic(name=Topic.ATTEMPT_STARTED.name)
         self.messaging_broker.create_topic(name=Topic.ATTEMPT_COMPLETED.name)
 
-    def test_execute_stop_after_success(self):
+    def test_execute_successful_attempt_stops(self):
         policy = PolicyBuilder() \
             .with_stop_strategy(stop_strategies.AfterNever()) \
             .with_wait_strategy(wait_strategies.Fixed(wait_time=0)) \
             .build()
         policy.execute(callable=self.service.call)
         assert_equal(self.service.call_count, 1)
-
-    def test_execute_failed_attempt_does_wait(self):
-        _sleep = mock.MagicMock()
-        policy = PolicyBuilder() \
-            .with_stop_strategy(stop_strategies.AfterAttempt(maximum_attempt=2)) \
-            .with_wait_strategy(wait_strategies.Fixed(wait_time=None)) \
-            .continue_on_exception(MockException) \
-            .build()
-        policy.execute(callable=self.service.call_and_raise, _sleep=_sleep)
-        _sleep.assert_called()
 
     def test_execute_successful_attempt_returns_result(self):
         policy = PolicyBuilder() \
@@ -107,12 +97,22 @@ class TestPolicy(object):
         assert_equal(result, 'foo')
 
     @raises(MockException)
-    def test_execute_raises_exception(self):
+    def test_execute_failed_attempt_raises_exception(self):
         policy = PolicyBuilder() \
             .with_stop_strategy(stop_strategies.AfterNever()) \
             .with_wait_strategy(wait_strategies.Fixed(wait_time=0)) \
             .build()
         policy.execute(callable=self.service.call_and_raise)
+
+    def test_execute_failed_attempt_waits(self):
+        _sleep = mock.Mock()
+        policy = PolicyBuilder() \
+            .with_stop_strategy(stop_strategies.AfterAttempt(maximum_attempt=2)) \
+            .with_wait_strategy(wait_strategies.Fixed(wait_time=0)) \
+            .continue_on_exception(MockException) \
+            .build()
+        policy.execute(callable=self.service.call_and_raise, _sleep=_sleep)
+        _sleep.assert_called()
 
     def test_execute_continue_on_exception(self):
         policy = PolicyBuilder() \
@@ -135,7 +135,7 @@ class TestPolicy(object):
             assert_greater(self.service.call_count, 1)
 
     def test_execute_with_attempt_started_hook(self):
-        predicate = mock.MagicMock()
+        predicate = mock.Mock()
         policy = PolicyBuilder() \
             .with_stop_strategy(stop_strategies.AfterNever()) \
             .with_wait_strategy(wait_strategies.Fixed(wait_time=0)) \
@@ -146,7 +146,7 @@ class TestPolicy(object):
         assert_equal(predicate.call_count, 1)
 
     def test_execute_with_attempt_completed_hook(self):
-        predicate = mock.MagicMock()
+        predicate = mock.Mock()
         policy = PolicyBuilder() \
             .with_stop_strategy(stop_strategies.AfterNever()) \
             .with_wait_strategy(wait_strategies.Fixed(wait_time=0)) \
