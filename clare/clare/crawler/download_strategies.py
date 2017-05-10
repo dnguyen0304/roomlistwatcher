@@ -92,10 +92,24 @@ class Simple(IDownloadStrategy):
 
         return newest_file_path
 
-    def _find_newest_file(self):
-        file_paths = (os.path.join(self._directory_path, file_path)
+    @staticmethod
+    def do_find_newest_file(directory_path):
+
+        """
+        This method may be extended or overridden by subclasses.
+
+        Parameters
+        ----------
+        directory_path : str
+
+        Returns
+        -------
+        str
+        """
+
+        file_paths = (os.path.join(directory_path, file_path)
                       for file_path
-                      in os.listdir(self._directory_path))
+                      in os.listdir(directory_path))
         try:
             newest_file_path = max(file_paths, key=os.path.getctime)
         except ValueError:
