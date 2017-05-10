@@ -4,8 +4,6 @@ import abc
 import functools
 import os
 
-from clare import retry
-
 
 class DownloadFailed(Exception):
     pass
