@@ -107,8 +107,8 @@ class Simple(IDownloadStrategy):
         str
         """
 
-        file_paths = (os.path.join(directory_path, file_path)
-                      for file_path
+        file_paths = (os.path.join(directory_path, file_name)
+                      for file_name
                       in os.listdir(directory_path))
         try:
             newest_file_path = max(file_paths, key=os.path.getctime)
