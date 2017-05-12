@@ -33,23 +33,6 @@ class IDownloadStrategy(object):
         pass
 
 
-class Fail(IDownloadStrategy):
-
-    def execute(self, url):
-
-        """
-        Raises
-        ------
-        clare.crawler.download_strategies.DownloadFailed
-        """
-
-        raise DownloadFailed
-
-    def __repr__(self):
-        repr_ = '{}()'
-        return repr_.format(self.__class__.__name__)
-
-
 class Simple(IDownloadStrategy):
 
     def __init__(self,
