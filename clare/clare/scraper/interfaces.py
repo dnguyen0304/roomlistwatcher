@@ -38,3 +38,44 @@ class IElementLookup(object):
         """
 
         pass
+
+
+class IRepository(object):
+
+    __metaclass__ = abc.ABCMeta
+
+    @abc.abstractmethod
+    def add(self, entity):
+
+        """
+        Parameters
+        ----------
+        entity : typing.Any
+
+        Returns
+        -------
+        str
+            Entity string ID.
+        """
+
+        pass
+
+    @abc.abstractmethod
+    def get(self, entity_id):
+
+        """
+        Parameters
+        ----------
+        entity_id : str
+
+        Returns
+        -------
+        entity: typing.Any
+
+        Raises
+        ------
+        EntityNotFound
+            If the entity cannot be found.
+        """
+
+        pass
