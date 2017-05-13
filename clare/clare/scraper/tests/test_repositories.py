@@ -35,7 +35,7 @@ def test_random_alphanumeric_strings_return_value_is_alphanumeric():
     assert_true(id.isalnum())
 
 
-class TestDefault:
+class TestDefault(object):
 
     def __init__(self):
         self.repository = None
