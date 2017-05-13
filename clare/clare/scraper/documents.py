@@ -5,7 +5,7 @@ from lxml import cssselect, etree
 from . import interfaces
 
 
-class Document(interfaces.IElementLookup):
+class LXmlDocument(interfaces.IElementLookup):
 
     def __init__(self, element_tree):
         self._element_tree = element_tree

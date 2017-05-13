@@ -2,7 +2,7 @@
 
 from nose.tools import assert_equal
 
-from ..documents import Document
+from .. import documents
 
 
 class TestDocument(object):
@@ -16,7 +16,7 @@ class TestDocument(object):
   <div class="foo">Foo</div>
   <div class="bar">Bar</div>
 </head>"""
-        self.document = Document.from_string(string)
+        self.document = documents.LXmlDocument.from_string(string)
 
     def test_find_by_css_selector(self):
         css_selector = '.foo'
