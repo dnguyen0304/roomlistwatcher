@@ -47,6 +47,10 @@ class MockServer(BaseHTTPServer.BaseHTTPRequestHandler):
   </div>
 </body>
 """,
+                       'battle_not_completed':
+"""
+<button class="" type="button"></button>
+""",
                        'title_correct_content':
 """
 <head>
@@ -165,6 +169,26 @@ class TestBase(MockServerUtilitiesMixin):
         encountered_server_error = self.strategy._confirm_server_error(
             timeout=None)
         assert_true(encountered_server_error)
+
+    def teardown(self):
+        self.strategy.dispose()
+
+
+class TestReplay(MockServerUtilitiesMixin):
+
+    def __init__(self):
+        self.web_driver = None
+        self.strategy = None
+
+    def setup(self):
+        self.web_driver = selenium.webdriver.Chrome()
+        self.strategy = download_strategies.Replay(web_driver=self.web_driver,
+                                                   timeout=None)
+
+    @raises(exceptions.BattleNotCompleted)
+    def test_do_download_battle_not_completed_raises_battle_not_completed(self):
+        self.set_web_driver_page(path='battle_not_completed')
+        self.strategy.do_download()
 
     def teardown(self):
         self.strategy.dispose()

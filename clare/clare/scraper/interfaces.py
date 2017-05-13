@@ -22,10 +22,10 @@ class IDownloadStrategy(object):
 
         Raises
         ------
-        clare.scraper.download_strategies.HttpError
-            If the server returned an error.
-        clare.scraper.download_strategies.DownloadFailed
+        clare.scraper.exceptions.DownloadFailed
             If the room expired.
+        clare.scraper.exceptions.HttpError
+            If the server returned an error.
         """
 
         pass

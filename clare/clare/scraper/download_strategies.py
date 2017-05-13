@@ -89,9 +89,20 @@ class Base(interfaces.IDownloadStrategy):
 class Replay(Base):
 
     def do_download(self):
+
+        """
+        Raises
+        ------
+        clare.scraper.exceptions.BattleNotCompleted
+            If the battle has not yet completed.
+        """
+
         download_button = find_download_button(web_driver=self._web_driver,
                                                timeout=self._timeout)
-        download_button.click()
+        try:
+            download_button.click()
+        except AttributeError:
+            raise exceptions.BattleNotCompleted
 
 
 def find_download_button(web_driver, timeout):
