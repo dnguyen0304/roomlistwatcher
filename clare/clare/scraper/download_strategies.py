@@ -10,43 +10,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from . import interfaces
 
 
-class SerializableDecorator(interfaces.IRepository):
-
-    def __init__(self, repository, serializable):
-
-        """
-        Parameters
-        ----------
-        repository : clare.scraper.interfaces.IRepository
-        serializable : clare.scraper.interfaces.ISerializable
-        """
-
-        self._repository = repository
-        self._serializable = serializable
-
-    def add(self, entity):
-
-        """
-        Parameters
-        ----------
-        entity : clare.scraper.interfaces.ISerializable
-        """
-
-        entity_id = self._repository.add(entity=entity.to_string())
-        return entity_id
-
-    def get(self, entity_id):
-        data = self._repository.get(entity_id=entity_id)
-        deserialized = self._serializable.from_string(data)
-        return deserialized
-
-    def __repr__(self):
-        repr_ = '{}(repository={}, serializable={})'
-        return repr_.format(self.__class__.__name__,
-                            self._repository,
-                            self._serializable)
-
-
 class DownloadFailed(Exception):
     pass
 
@@ -68,7 +31,7 @@ class Base(interfaces.IDownloadStrategy):
 
     __metaclass__ = abc.ABCMeta
 
-    def __init__(self, web_driver, page_timeout, repository):
+    def __init__(self, web_driver, page_timeout):
 
         """
         Parameters
@@ -76,12 +39,10 @@ class Base(interfaces.IDownloadStrategy):
         web_driver : selenium.webdriver.Chrome
         page_timeout : float
             Number of seconds to wait for the page to finish rendering.
-        repository : clare.scraper.interfaces.IRepository
         """
 
         self._web_driver = web_driver
         self._page_timeout = page_timeout
-        self._repository = repository
 
     def download(self, url):
         self._web_driver.get(url=url)
@@ -126,17 +87,7 @@ class Base(interfaces.IDownloadStrategy):
         self._web_driver.quit()
 
     def __repr__(self):
-        repr_ = '{}(web_driver={}, page_timeout={}, repository={}'
+        repr_ = '{}(web_driver={}, page_timeout={})'
         return repr_.format(self.__class__.__name__,
                             self._web_driver,
-                            self._page_timeout,
-                            self._repository)
-
-
-class Full(Base):
-
-    def do_download(self):
-        script = 'return document.documentElement.outerHTML'
-        outer_html = self._web_driver.execute_script(script)
-        download_id = self._repository.add(entity=outer_html)
-        return download_id
+                            self._page_timeout)

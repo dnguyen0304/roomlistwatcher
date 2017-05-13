@@ -27,7 +27,3 @@ class LXmlDocument(interfaces.IElementLookup, interfaces.ISerializable):
         css_selector = '.' + class_name
         elements = self.find_by_css_selector(css_selector)
         return elements
-
-    def to_string(self):
-        serialized = etree.tostring(element_or_tree=self._element_tree)
-        return serialized
