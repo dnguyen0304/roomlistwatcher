@@ -31,26 +31,27 @@ class Base(interfaces.IDownloadStrategy):
 
     __metaclass__ = abc.ABCMeta
 
-    def __init__(self, web_driver, page_timeout):
+    def __init__(self, web_driver, timeout):
 
         """
         Parameters
         ----------
         web_driver : selenium.webdriver.Chrome
-        page_timeout : float
+        timeout : float
             Number of seconds to wait for the page to finish rendering.
         """
 
         self._web_driver = web_driver
-        self._page_timeout = page_timeout
+        self._timeout = timeout
 
     def download(self, url):
+        # (duy): Should there be logic to refresh the page?
         self._web_driver.get(url=url)
 
         try:
-            self._confirm_rendered_page(timeout=self._page_timeout)
+            self._confirm_rendered_page(timeout=self._timeout)
         except selenium.common.exceptions.TimeoutException:
-            if self._confirm_server_error(timeout=self._page_timeout):
+            if self._confirm_server_error(timeout=self._timeout):
                 raise HttpError
             else:
                 raise DownloadFailed
@@ -86,17 +87,17 @@ class Base(interfaces.IDownloadStrategy):
         self._web_driver.quit()
 
     def __repr__(self):
-        repr_ = '{}(web_driver={}, page_timeout={})'
+        repr_ = '{}(web_driver={}, timeout={})'
         return repr_.format(self.__class__.__name__,
                             self._web_driver,
-                            self._page_timeout)
+                            self._timeout)
 
 
 class Replay(Base):
 
     def do_download(self):
         download_button = find_download_button(web_driver=self._web_driver,
-                                               timeout=self._page_timeout)
+                                               timeout=self._timeout)
         download_button.click()
 
 

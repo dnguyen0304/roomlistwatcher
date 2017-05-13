@@ -43,7 +43,7 @@ class TestBase(MockServerUtilitiesMixin):
     def setup(self):
         self.web_driver = selenium.webdriver.Chrome()
         self.strategy = NopDownloadStrategy(web_driver=self.web_driver,
-                                            page_timeout=None)
+                                            timeout=None)
 
     @raises(download_strategies.HttpError)
     def test_download_server_error_raises_http_error(self):
@@ -102,3 +102,6 @@ class TestFindDownloadButton(MockServerUtilitiesMixin):
             web_driver=self.web_driver,
             timeout=self.timeout)
         assert_is_none(download_button)
+
+    def teardown(self):
+        self.web_driver.quit()
