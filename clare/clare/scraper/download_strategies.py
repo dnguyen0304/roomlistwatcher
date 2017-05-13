@@ -55,8 +55,7 @@ class Base(interfaces.IDownloadStrategy):
             else:
                 raise DownloadFailed
 
-        download_id = self.do_download()
-        return download_id
+        self.do_download()
 
     def _confirm_rendered_page(self, timeout):
         wait = WebDriverWait(self._web_driver, timeout=timeout or 0)
@@ -91,3 +90,38 @@ class Base(interfaces.IDownloadStrategy):
         return repr_.format(self.__class__.__name__,
                             self._web_driver,
                             self._page_timeout)
+
+
+class Replay(Base):
+
+    def do_download(self):
+        download_button = find_download_button(web_driver=self._web_driver,
+                                               timeout=self._page_timeout)
+        download_button.click()
+
+
+def find_download_button(web_driver, timeout):
+
+    """
+    Parameters
+    ----------
+    web_driver : selenium.webdriver.Chrome
+    timeout : float
+        Number of seconds to wait for the button to be clickable.
+
+    Returns
+    -------
+    selenium.webdriver.remote.webelement.WebElement
+        If the battle has completed.
+    None
+        If the battle has not yet completed.
+    """
+
+    wait = WebDriverWait(web_driver, timeout=timeout or 0)
+    locator = (By.CLASS_NAME, 'replayDownloadButton')
+    condition = expected_conditions.element_to_be_clickable(locator=locator)
+    try:
+        download_button = wait.until(condition)
+    except selenium.common.exceptions.TimeoutException:
+        download_button = None
+    return download_button

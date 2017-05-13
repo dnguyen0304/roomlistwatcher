@@ -1,11 +1,31 @@
 # -*- coding: utf-8 -*-
 
+import abc
+
 import selenium.common
 import selenium.webdriver
 
-from nose.tools import assert_false, assert_true, raises
+from nose.tools import (assert_false,
+                        assert_is_none,
+                        assert_is_not_none,
+                        assert_true,
+                        raises)
 
 from .. import download_strategies
+
+
+class MockServerUtilitiesMixin(object):
+
+    __metaclass__ = abc.ABCMeta
+
+    def set_web_driver_page(self, path):
+        url = self.construct_url(path=path)
+        self.web_driver.get(url=url)
+
+    @staticmethod
+    def construct_url(path):
+        url = 'http://127.0.0.1:9090/{}/'.format(path)
+        return url
 
 
 class NopDownloadStrategy(download_strategies.Base):
@@ -14,7 +34,7 @@ class NopDownloadStrategy(download_strategies.Base):
         pass
 
 
-class TestBase(object):
+class TestBase(MockServerUtilitiesMixin):
 
     def __init__(self):
         self.web_driver = None
@@ -56,14 +76,29 @@ class TestBase(object):
             timeout=None)
         assert_true(encountered_server_error)
 
-    def set_web_driver_page(self, path):
-        url = self.construct_url(path=path)
-        self.web_driver.get(url=url)
-
-    @staticmethod
-    def construct_url(path):
-        url = 'http://127.0.0.1:9090/{}/'.format(path)
-        return url
-
     def teardown(self):
         self.strategy.dispose()
+
+
+class TestFindDownloadButton(MockServerUtilitiesMixin):
+
+    def __init__(self):
+        self.web_driver = None
+        self.timeout = None
+
+    def setup(self):
+        self.web_driver = selenium.webdriver.Chrome()
+
+    def test_correct_class_name(self):
+        self.set_web_driver_page(path='download_button_correct_class_name')
+        download_button = download_strategies.find_download_button(
+            web_driver=self.web_driver,
+            timeout=self.timeout)
+        assert_is_not_none(download_button)
+
+    def test_incorrect_class_name(self):
+        self.set_web_driver_page(path='download_button_incorrect_class_name')
+        download_button = download_strategies.find_download_button(
+            web_driver=self.web_driver,
+            timeout=self.timeout)
+        assert_is_none(download_button)
