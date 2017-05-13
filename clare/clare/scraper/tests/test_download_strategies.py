@@ -145,14 +145,14 @@ class TestBase(MockServerUtilitiesMixin):
         url = self.construct_url(path='expired_room')
         self.strategy.download(url=url)
 
-    def test_confirm_rendered_page_title_correct_content(self):
+    def test_confirm_no_redirect_title_correct_content(self):
         self.set_web_driver_page(path='title_correct_content')
-        self.strategy._confirm_rendered_page(timeout=None)
+        self.strategy._confirm_no_redirect(timeout=None)
 
     @raises(selenium.common.exceptions.TimeoutException)
-    def test_confirm_rendered_page_title_incorrect_content(self):
+    def test_confirm_no_redirect_title_incorrect_content(self):
         self.set_web_driver_page(path='title_incorrect_content')
-        self.strategy._confirm_rendered_page(timeout=None)
+        self.strategy._confirm_no_redirect(timeout=None)
 
     def test_confirm_server_error_correct_css_selector(self):
         self.set_web_driver_page(path='server_error_correct_css_selector')

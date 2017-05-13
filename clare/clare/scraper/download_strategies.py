@@ -42,7 +42,7 @@ class Base(interfaces.IDownloadStrategy):
         self._web_driver.get(url=url)
 
         try:
-            self._confirm_rendered_page(timeout=self._timeout)
+            self._confirm_no_redirect(timeout=self._timeout)
         except selenium.common.exceptions.TimeoutException:
             if self._confirm_server_error(timeout=self._timeout):
                 raise exceptions.HttpError
@@ -51,7 +51,7 @@ class Base(interfaces.IDownloadStrategy):
 
         self.do_download()
 
-    def _confirm_rendered_page(self, timeout):
+    def _confirm_no_redirect(self, timeout):
         wait = WebDriverWait(self._web_driver, timeout=timeout or 0)
         condition = title_not_equal('Showdown!')
         wait.until(condition)
