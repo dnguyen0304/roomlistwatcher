@@ -7,15 +7,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.ui import WebDriverWait
 
+from . import exceptions
 from . import interfaces
-
-
-class DownloadFailed(Exception):
-    pass
-
-
-class HttpError(Exception):
-    pass
 
 
 class title_not_equal(object):
@@ -52,9 +45,9 @@ class Base(interfaces.IDownloadStrategy):
             self._confirm_rendered_page(timeout=self._timeout)
         except selenium.common.exceptions.TimeoutException:
             if self._confirm_server_error(timeout=self._timeout):
-                raise HttpError
+                raise exceptions.HttpError
             else:
-                raise DownloadFailed
+                raise exceptions.DownloadFailed
 
         self.do_download()
 

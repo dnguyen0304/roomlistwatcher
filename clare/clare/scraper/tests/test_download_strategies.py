@@ -16,6 +16,7 @@ from nose.tools import (assert_false,
                         assert_true,
                         raises)
 
+from .. import exceptions
 from .. import download_strategies
 
 
@@ -134,12 +135,12 @@ class TestBase(MockServerUtilitiesMixin):
         self.strategy = NopDownloadStrategy(web_driver=self.web_driver,
                                             timeout=None)
 
-    @raises(download_strategies.HttpError)
+    @raises(exceptions.HttpError)
     def test_download_server_error_raises_http_error(self):
         url = self.construct_url(path='server_error')
         self.strategy.download(url=url)
 
-    @raises(download_strategies.DownloadFailed)
+    @raises(exceptions.DownloadFailed)
     def test_download_expired_room_raises_download_failed(self):
         url = self.construct_url(path='expired_room')
         self.strategy.download(url=url)
