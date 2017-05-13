@@ -94,7 +94,7 @@ class Base(interfaces.IDownloadStrategy):
             else:
                 raise DownloadFailed
 
-        download_id = self.do_download(url=url)
+        download_id = self.do_download()
         return download_id
 
     def _confirm_rendered_page(self, timeout):
@@ -131,3 +131,12 @@ class Base(interfaces.IDownloadStrategy):
                             self._web_driver,
                             self._page_timeout,
                             self._repository)
+
+
+class Full(Base):
+
+    def do_download(self):
+        script = 'return document.documentElement.outerHTML'
+        outer_html = self._web_driver.execute_script(script)
+        download_id = self._repository.add(entity=outer_html)
+        return download_id
