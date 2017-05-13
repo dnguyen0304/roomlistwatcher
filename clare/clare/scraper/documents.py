@@ -5,7 +5,7 @@ from lxml import cssselect, etree
 from . import interfaces
 
 
-class LXmlDocument(interfaces.IElementLookup):
+class LXmlDocument(interfaces.IElementLookup, interfaces.ISerializable):
 
     def __init__(self, element_tree):
         self._element_tree = element_tree
@@ -27,3 +27,7 @@ class LXmlDocument(interfaces.IElementLookup):
         css_selector = '.' + class_name
         elements = self.find_by_css_selector(css_selector)
         return elements
+
+    def to_string(self):
+        serialized = etree.tostring(element_or_tree=self._element_tree)
+        return serialized

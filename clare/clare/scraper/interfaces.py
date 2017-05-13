@@ -79,3 +79,21 @@ class IRepository(object):
         """
 
         pass
+
+
+class ISerializable(object):
+
+    @abc.abstractmethod
+    def from_string(cls, string):
+
+        """
+        Parameters
+        ----------
+        string : str
+        """
+
+        pass
+
+    @abc.abstractmethod
+    def to_string(self):
+        pass
