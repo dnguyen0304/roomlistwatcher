@@ -105,7 +105,14 @@ class AttemptCompletedEvent(BaseAttemptEvent):
 
     topic = Topic.ATTEMPT_COMPLETED
 
-    def __init__(self, result, exception, next_wait_time):
+    def __init__(self,
+                 result,
+                 exception,
+                 next_wait_time,
+                 was_successful,
+                 should_continue,
+                 should_stop,
+                 should_wait):
 
         """
         Parameters
@@ -113,11 +120,19 @@ class AttemptCompletedEvent(BaseAttemptEvent):
         result : typing.Any
         exception : Exception
         next_wait_time : float
+        was_successful : bool
+        should_continue : bool
+        should_stop : bool
+        should_wait : bool
         """
 
         self.arguments = {'result': result,
                           'exception': exception,
-                          'next_wait_time': next_wait_time}
+                          'next_wait_time': next_wait_time,
+                          'was_successful': was_successful,
+                          'should_continue': should_continue,
+                          'should_stop': should_stop,
+                          'should_wait': should_wait}
 
     def to_json(self):
         data = {'topic_name': self.topic.name, 'arguments': self.arguments}
@@ -125,11 +140,22 @@ class AttemptCompletedEvent(BaseAttemptEvent):
         return serialized
 
     def __repr__(self):
-        repr_ = '{}(result={}, exception={}, next_wait_time={})'
+        repr_ = ('{}('
+                 'result={}, '
+                 'exception={}, '
+                 'next_wait_time={}, '
+                 'was_successful={}, '
+                 'should_continue={}, '
+                 'should_stop={}, '
+                 'should_wait={})')
         return repr_.format(self.__class__.__name__,
                             self.arguments['result'],
                             self.arguments['exception'],
-                            self.arguments['next_wait_time'])
+                            self.arguments['next_wait_time'],
+                            self.arguments['was_successful'],
+                            self.arguments['should_continue'],
+                            self.arguments['should_stop'],
+                            self.arguments['should_wait'])
 
 
 class Policy(object):
@@ -191,7 +217,11 @@ class Policy(object):
 
             self._publish_attempt_completed(result=attempt.result,
                                             exception=attempt.exception,
-                                            next_wait_time=wait_time)
+                                            next_wait_time=wait_time,
+                                            was_successful=attempt.was_successful,
+                                            should_continue=should_continue,
+                                            should_stop=should_stop,
+                                            should_wait=should_wait)
 
             if attempt.was_successful and not should_continue:
                 break
@@ -209,11 +239,22 @@ class Policy(object):
             self._messaging_broker.publish(event=event.to_json(),
                                            topic_name=event.topic.name)
 
-    def _publish_attempt_completed(self, result, exception, next_wait_time):
+    def _publish_attempt_completed(self,
+                                   result,
+                                   exception,
+                                   next_wait_time,
+                                   was_successful,
+                                   should_continue,
+                                   should_stop,
+                                   should_wait):
         if self._messaging_broker is not None:
             event = AttemptCompletedEvent(result=result,
                                           exception=exception,
-                                          next_wait_time=next_wait_time)
+                                          next_wait_time=next_wait_time,
+                                          was_successful=was_successful,
+                                          should_continue=should_continue,
+                                          should_stop=should_stop,
+                                          should_wait=should_wait)
             self._messaging_broker.publish(event=event.to_json(),
                                            topic_name=event.topic.name)
 

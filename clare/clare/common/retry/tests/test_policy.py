@@ -46,10 +46,18 @@ def test_attempt_completed_event_to_json_arguments_names():
 
     event = policy.AttemptCompletedEvent(result=None,
                                          exception=None,
-                                         next_wait_time=None)
+                                         next_wait_time=None,
+                                         was_successful=None,
+                                         should_continue=None,
+                                         should_stop=None,
+                                         should_wait=None)
     assert_in('result', json.loads(event.to_json())['arguments'])
     assert_in('exception', json.loads(event.to_json())['arguments'])
     assert_in('next_wait_time', json.loads(event.to_json())['arguments'])
+    assert_in('was_successful', json.loads(event.to_json())['arguments'])
+    assert_in('should_continue', json.loads(event.to_json())['arguments'])
+    assert_in('should_stop', json.loads(event.to_json())['arguments'])
+    assert_in('should_wait', json.loads(event.to_json())['arguments'])
 
 
 class MockException(Exception):
