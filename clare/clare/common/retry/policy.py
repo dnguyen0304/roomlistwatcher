@@ -109,8 +109,6 @@ class AttemptCompletedEvent(IJsonSerializable):
                             self.arguments['next_wait_time'])
 
 
-# continue logging
-# pass arguments to execute
 class Policy(object):
 
     def __init__(self,
