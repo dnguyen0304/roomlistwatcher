@@ -16,7 +16,7 @@ class IStopStrategy(object):
         """
         Parameters
         ----------
-        attempt : clare.retry.attempt.Attempt
+        attempt : clare.common.retry.attempt.Attempt
 
         Returns
         -------
@@ -25,7 +25,7 @@ class IStopStrategy(object):
 
         Raises
         ------
-        clare.retry.exceptions.MaximumRetry
+        clare.common.retry.exceptions.MaximumRetry
             If the client should stop.
         """
 

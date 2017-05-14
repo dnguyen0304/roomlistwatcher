@@ -2,7 +2,7 @@
 
 from . import continue_strategies
 from .policy import Policy
-from clare import event_driven
+from .. import event_driven
 
 
 class HookAdapter(event_driven.interfaces.INotifyable):
@@ -50,7 +50,7 @@ class PolicyBuilder(object):
         """
         Parameters
         ----------
-        stop_strategy : clare.retry.stop_strategies.IStopStrategy
+        stop_strategy : clare.common.retry.stop_strategies.IStopStrategy
         """
 
         self._stop_strategies.append(stop_strategy)
@@ -61,7 +61,7 @@ class PolicyBuilder(object):
         """
         Parameters
         ----------
-        wait_strategy : clare.retry.wait_strategies.IWaitStrategy
+        wait_strategy : clare.common.retry.wait_strategies.IWaitStrategy
         """
 
         self._wait_strategy = wait_strategy
@@ -72,7 +72,7 @@ class PolicyBuilder(object):
         """
         Parameters
         ----------
-        continue_strategy : clare.retry.continue_strategies.IContinueStrategy
+        continue_strategy : clare.common.retry.continue_strategies.IContinueStrategy
         """
 
         self._continue_strategies.append(continue_strategy)
@@ -112,7 +112,7 @@ class PolicyBuilder(object):
         """
         Parameters
         ----------
-        messaging_broker : clare.event_driven.messaging.Broker
+        messaging_broker : clare.common.event_driven.messaging.Broker
         """
 
         self._messaging_broker = messaging_broker

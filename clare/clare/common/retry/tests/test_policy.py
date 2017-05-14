@@ -11,8 +11,7 @@ from .. import (PolicyBuilder,
                 stop_strategies,
                 wait_strategies)
 from .. import policy
-from clare import event_driven
-from clare.event_driven import messaging
+from clare import common
 
 
 def test_attempt_started_event_to_json_names():
@@ -75,8 +74,8 @@ class TestPolicy(object):
 
     def setup(self):
         self.service = MockService()
-        self.messaging_broker = messaging.Broker(
-            observable_factory=event_driven.ObservableFactory())
+        self.messaging_broker = common.event_driven.messaging.Broker(
+            observable_class=common.event_driven.Observable)
         self.messaging_broker.create_topic(name=Topic.ATTEMPT_STARTED.name)
         self.messaging_broker.create_topic(name=Topic.ATTEMPT_COMPLETED.name)
 
