@@ -45,9 +45,11 @@ class Base(interfaces.IDownloadStrategy):
             self._confirm_no_redirect(timeout=self._timeout)
         except selenium.common.exceptions.TimeoutException:
             if self._confirm_server_error(timeout=self._timeout):
-                raise exceptions.HttpError
+                message = 'The connection with the target server was lost.'
+                raise exceptions.HttpError(message)
             else:
-                raise exceptions.DownloadFailed
+                message = 'The room has expired.'
+                raise exceptions.DownloadFailed(message)
 
         self.do_download()
 
@@ -102,7 +104,8 @@ class Replay(Base):
         try:
             download_button.click()
         except AttributeError:
-            raise exceptions.BattleNotCompleted
+            message = 'The battle has not yet completed.'
+            raise exceptions.BattleNotCompleted(message)
 
 
 def find_download_button(web_driver, timeout):
