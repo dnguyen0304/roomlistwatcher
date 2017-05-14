@@ -12,7 +12,8 @@ if __name__ == '__main__':
         long_description = file.read()
 
     install_requires = ['enum34==1.1.6',
-                        'pandas==0.19.2']
+                        'pandas==0.19.2',
+                        'selenium==3.3.3']
 
     setuptools.setup(name=package_name,
                      version='0.2.1',
@@ -26,5 +27,5 @@ if __name__ == '__main__':
                      packages=setuptools.find_packages(exclude=['*.tests']),
                      install_requires=install_requires,
                      test_suite='nose.collector',
-                     tests_require=['cssselect', 'lxml', 'mock', 'nose'],
+                     tests_require=['mock', 'nose'],
                      include_package_data=True)
