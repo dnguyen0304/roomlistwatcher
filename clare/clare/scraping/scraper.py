@@ -56,7 +56,8 @@ class Scraper(object):
         try:
             self._retry_policy.execute(download)
         except (exceptions.DownloadFailed, common.retry.exceptions.MaximumRetry) as e:
-            self._logger.debug(msg=str(e))
+            message = format_exception(e=e)
+            self._logger.debug(msg=message)
         else:
             confirm_download = functools.partial(
                 find_newest_file,
@@ -64,7 +65,8 @@ class Scraper(object):
             try:
                 file_path = self._confirm_retry_policy.execute(confirm_download)
             except common.retry.exceptions.MaximumRetry as e:
-                self._logger.debug(msg=str(e))
+                message = format_exception(e=e)
+                self._logger.debug(msg=message)
             else:
                 self._log_scrape(url=url)
 
@@ -93,6 +95,14 @@ class Scraper(object):
                             self._retry_policy,
                             self._confirm_retry_policy,
                             self._logger)
+
+
+def format_exception(e):
+
+    class_path = type(e).__module__ + '.' + e.__class__.__name__
+    message = class_path + ': ' + e.message
+
+    return message
 
 
 def find_newest_file(directory_path):
