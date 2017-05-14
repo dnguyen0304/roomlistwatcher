@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import abc
+import collections
 import json
 import sys
 import time
@@ -81,17 +82,14 @@ class AttemptStartedEvent(BaseAttemptEvent):
         attempt_number : int
         """
 
-        self.arguments = {'attempt_number': attempt_number}
+        self.arguments = collections.OrderedDict()
+        self.arguments['attempt_number'] = attempt_number
 
     def to_json(self):
+        data = collections.OrderedDict()
+        data['topic_name'] = self.topic.name
+        data['arguments'] = self.arguments
 
-        """
-        Returns
-        -------
-        str
-        """
-
-        data = {'topic_name': self.topic.name, 'arguments': self.arguments}
         serialized = self.do_to_json(data=data)
         return serialized
 
@@ -126,16 +124,20 @@ class AttemptCompletedEvent(BaseAttemptEvent):
         should_wait : bool
         """
 
-        self.arguments = {'result': result,
-                          'exception': exception,
-                          'next_wait_time': next_wait_time,
-                          'was_successful': was_successful,
-                          'should_continue': should_continue,
-                          'should_stop': should_stop,
-                          'should_wait': should_wait}
+        self.arguments = collections.OrderedDict()
+        self.arguments['result'] = result
+        self.arguments['exception'] = exception
+        self.arguments['next_wait_time'] = next_wait_time
+        self.arguments['was_successful'] = was_successful
+        self.arguments['should_continue'] = should_continue
+        self.arguments['should_stop'] = should_stop
+        self.arguments['should_wait'] = should_wait
 
     def to_json(self):
-        data = {'topic_name': self.topic.name, 'arguments': self.arguments}
+        data = collections.OrderedDict()
+        data['topic_name'] = self.topic.name
+        data['arguments'] = self.arguments
+
         serialized = self.do_to_json(data=data)
         return serialized
 
@@ -207,6 +209,7 @@ class Policy(object):
                     stop_strategy.should_stop(attempt=attempt)
                 except exceptions.MaximumRetry:
                     e = sys.exc_info()
+                    e[1].message = 'There are no more allowable retries.'
                     should_stop = True
                     break
             else:
