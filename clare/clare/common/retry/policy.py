@@ -65,7 +65,7 @@ class BaseAttemptEvent(IJsonSerializable):
         data : collections.Mapping
         """
 
-        serialized = json.dumps(data, default=lambda x: x.__repr__())
+        serialized = json.dumps(data, default=repr)
         return serialized
 
 
