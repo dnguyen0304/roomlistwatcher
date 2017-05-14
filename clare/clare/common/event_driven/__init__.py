@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from . import interfaces
-from .observable import Observable
+from .observable_factory import ObservableFactory
 from . import messaging
 
-__all__ = ['Observable',
+__all__ = ['ObservableFactory',
            'interfaces',
            'messaging']
