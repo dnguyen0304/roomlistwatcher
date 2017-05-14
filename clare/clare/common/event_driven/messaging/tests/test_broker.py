@@ -23,8 +23,8 @@ class TestBroker(object):
         self.topic_name_2 = None
 
     def setup(self):
-        observable_factory = common.event_driven.ObservableFactory()
-        self.broker = Broker(observable_factory=observable_factory)
+        observable_class = common.event_driven.Observable
+        self.broker = Broker(observable_class=observable_class)
         self.topic_name_1 = 'foo'
         self.topic_name_2 = 'bar'
 

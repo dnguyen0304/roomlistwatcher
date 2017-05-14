@@ -3,15 +3,15 @@
 
 class Broker(object):
 
-    def __init__(self, observable_factory):
+    def __init__(self, observable_class):
 
         """
         Parameters
         ----------
-        observable_factory : clare.common.event_driven.ObservableFactory
+        observable_class : clare.common.event_driven.Observable
         """
 
-        self._observable_factory = observable_factory
+        self._observable_class = observable_class
         self._topics_index = dict()
 
     def create_topic(self, name):
@@ -26,7 +26,7 @@ class Broker(object):
         """
 
         if name not in self._topics_index:
-            self._topics_index[name] = self._observable_factory.build()
+            self._topics_index[name] = self._observable_class()
 
     def list_topics(self):
 
@@ -63,5 +63,5 @@ class Broker(object):
         observable.register(observer=subscriber)
 
     def __repr__(self):
-        repr_ = '{}(observable_factory={})'
-        return repr_.format(self.__class__.__name__, self._observable_factory)
+        repr_ = '{}(observable_class={})'
+        return repr_.format(self.__class__.__name__, self._observable_class)
