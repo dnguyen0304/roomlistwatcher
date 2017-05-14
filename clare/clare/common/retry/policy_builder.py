@@ -124,18 +124,14 @@ class PolicyBuilder(object):
         You must provide a messaging broker before creating a hook.
 
         For the Attempt Started event, the hook will be executed
-        before each attempt. It receives a serialized object
-        containing metadata about the current attempt number
-        ("attempt_number").
+        before each attempt.
 
         For the Attempt Completed event, the hook will be executed
-        after each attempt. It receives a serialized object
-        containing metadata about the returned result ("result"), the
-        thrown exception ("exception"), and the next wait time
-        ("next_wait_time").
+        after each attempt.
 
-        These hooks are read-only and therefore cannot affect the
-        runtime behavior of the Policy.
+        Hooks receive a serialized object containing runtime metadata.
+        They are also read-only and therefore cannot affect the runtime
+        behavior of the Policy.
 
         Parameters
         ----------
