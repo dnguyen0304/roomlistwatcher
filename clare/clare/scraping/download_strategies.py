@@ -95,7 +95,7 @@ class Replay(Base):
         """
         Raises
         ------
-        clare.scraper.exceptions.BattleNotCompleted
+        clare.scraping.exceptions.BattleNotCompleted
             If the battle has not yet completed.
         """
 

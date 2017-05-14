@@ -22,7 +22,7 @@ class Scraper(object):
         ----------
         directory_path : str
             Path to the directory where files will be downloaded.
-        strategy : clare.scraper.download_strategies.Base
+        strategy : clare.scraping.download_strategies.Base
         retry_policy : clare.common.retry.policy.Policy
             Retry policy when downloading.
         confirm_retry_policy : clare.common.retry.policy.Policy
