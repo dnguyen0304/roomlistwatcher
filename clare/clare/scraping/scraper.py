@@ -2,6 +2,7 @@
 
 import collections
 import functools
+import json
 import os
 
 from . import Topic, exceptions
@@ -99,10 +100,11 @@ class Scraper(object):
 
 def format_exception(e):
 
-    class_path = type(e).__module__ + '.' + e.__class__.__name__
-    message = class_path + ': ' + e.message
+    data = collections.OrderedDict()
+    data['exception_type'] = type(e).__module__ + '.' + e.__class__.__name__
+    data['exception_message'] = e.message
 
-    return message
+    return json.dumps(data)
 
 
 def find_newest_file(directory_path):
