@@ -41,7 +41,35 @@ class IJsonSerializable(object):
         pass
 
 
-class AttemptStartedEvent(IJsonSerializable):
+class BaseAttemptEvent(IJsonSerializable):
+
+    __metaclass__ = abc.ABCMeta
+
+    @abc.abstractmethod
+    def to_json(self):
+
+        """
+        Returns
+        -------
+        str
+        """
+
+        pass
+
+    @staticmethod
+    def do_to_json(data):
+
+        """
+        Parameters
+        ----------
+        data : collections.Mapping
+        """
+
+        serialized = json.dumps(data, default=lambda x: x.__repr__())
+        return serialized
+
+
+class AttemptStartedEvent(BaseAttemptEvent):
 
     topic = Topic.ATTEMPT_STARTED
 
@@ -64,7 +92,8 @@ class AttemptStartedEvent(IJsonSerializable):
         """
 
         data = {'topic_name': self.topic.name, 'arguments': self.arguments}
-        return json.dumps(data)
+        serialized = self.do_to_json(data=data)
+        return serialized
 
     def __repr__(self):
         repr_ = '{}(attempt_number={})'
@@ -72,7 +101,7 @@ class AttemptStartedEvent(IJsonSerializable):
                             self.arguments['attempt_number'])
 
 
-class AttemptCompletedEvent(IJsonSerializable):
+class AttemptCompletedEvent(BaseAttemptEvent):
 
     topic = Topic.ATTEMPT_COMPLETED
 
@@ -91,15 +120,9 @@ class AttemptCompletedEvent(IJsonSerializable):
                           'next_wait_time': next_wait_time}
 
     def to_json(self):
-
-        """
-        Returns
-        -------
-        str
-        """
-
         data = {'topic_name': self.topic.name, 'arguments': self.arguments}
-        return json.dumps(data)
+        serialized = self.do_to_json(data=data)
+        return serialized
 
     def __repr__(self):
         repr_ = '{}(result={}, exception={}, next_wait_time={})'

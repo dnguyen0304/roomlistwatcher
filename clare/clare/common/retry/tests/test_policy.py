@@ -14,6 +14,14 @@ from .. import policy
 from clare import common
 
 
+def test_BaseAttemptEvent_do_to_json_default_serializer():
+
+    class Foo(object):
+        pass
+    data = {'foo': Foo()}
+    policy.BaseAttemptEvent.do_to_json(data=data)
+
+
 def test_attempt_started_event_to_json_names():
 
     event = policy.AttemptStartedEvent(attempt_number=None)
