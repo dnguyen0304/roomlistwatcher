@@ -3,7 +3,11 @@
 import json
 
 import mock
-from nose.tools import assert_equal, assert_greater, assert_in, raises
+from nose.tools import (assert_equal,
+                        assert_false,
+                        assert_greater,
+                        assert_in,
+                        raises)
 
 from .. import (PolicyBuilder,
                 Topic,
@@ -102,6 +106,15 @@ class TestPolicy(object):
             .build()
         policy.execute(callable=self.service.call)
         assert_equal(self.service.call_count, 1)
+
+    def test_execute_successful_attempt_does_not_wait(self):
+        _sleep = mock.Mock()
+        policy = PolicyBuilder() \
+            .with_stop_strategy(stop_strategies.AfterNever()) \
+            .with_wait_strategy(wait_strategies.Fixed(wait_time=None)) \
+            .build()
+        policy.execute(callable=self.service.call, _sleep=_sleep)
+        assert_false(_sleep.called)
 
     def test_execute_successful_attempt_returns_result(self):
         policy = PolicyBuilder() \
