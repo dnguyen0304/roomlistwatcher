@@ -7,6 +7,7 @@ from nose.tools import (assert_equal,
                         assert_false,
                         assert_greater,
                         assert_in,
+                        assert_true,
                         raises)
 
 from .. import (PolicyBuilder,
@@ -140,7 +141,7 @@ class TestPolicy(object):
             .continue_on_exception(MockException) \
             .build()
         policy.execute(callable=self.service.call_and_raise, _sleep=_sleep)
-        _sleep.assert_called()
+        assert_true(_sleep.called)
 
     def test_execute_continue_on_exception(self):
         policy = PolicyBuilder() \
