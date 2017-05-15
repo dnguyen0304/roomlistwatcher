@@ -98,15 +98,6 @@ class Scraper(object):
                             self._logger)
 
 
-def format_exception(e):
-
-    data = collections.OrderedDict()
-    data['exception_type'] = type(e).__module__ + '.' + e.__class__.__name__
-    data['exception_message'] = e.message
-
-    return json.dumps(data)
-
-
 def find_newest_file(directory_path):
 
     """
@@ -127,3 +118,12 @@ def find_newest_file(directory_path):
     except ValueError:
         newest_file_path = ''
     return newest_file_path
+
+
+def format_exception(e):
+
+    data = collections.OrderedDict()
+    data['exception_type'] = type(e).__module__ + '.' + e.__class__.__name__
+    data['exception_message'] = e.message
+
+    return json.dumps(data)
