@@ -1,13 +1,15 @@
 # Release Notes
 
-## v0.2.1 (Pending)
+## v0.2.0 (2017-05-15)
+##### Changes
+- Changed morpha package name to "clare".
+
 ##### Fixes
 - Fixed parsing Pokemon log messages with multiple details (`ME-647`).
 - Fixed parsing null log messages (`ME-648`).
 
-## v0.2.0 (Pending)
-##### Changes
-- Renamed morpha package to "clare".
+##### Features
+- Added Scraper (`ME-637`).
 
 ## v0.1.0 (2017-04-20)
 ##### Features
