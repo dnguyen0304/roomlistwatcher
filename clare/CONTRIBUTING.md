@@ -26,3 +26,6 @@ Models
 - Packages **should** have a `__all__` index.
 - Modules **should not** have a `__all__` index.
 - `__all__` indices **should** be sorted alphabetically.
+
+### Testing
+- Black-box testing **should** be favored over white-box testing.
