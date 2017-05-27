@@ -29,15 +29,16 @@ class Base(interfaces.IDisposable, interfaces.IExtractStrategy):
         self._wait_context = wait_context
 
     def extract(self, url):
-        self._web_driver.get(url=url)
-
-        if self._confirm_server_error():
-            message = 'The connection with the target server was lost.'
-            raise scraping.exceptions.HttpError(message)
-
+        self.do_set_up(url=url)
         elements = self.do_extract()
         serialized_elements = self._serialize(elements=elements)
         return serialized_elements
+
+    def do_set_up(self, url):
+        self._web_driver.get(url=url)
+        if self._confirm_server_error():
+            message = 'The connection with the target server was lost.'
+            raise scraping.exceptions.HttpError(message)
 
     def _confirm_server_error(self):
         css_selector = 'body > div.ps-overlay > div > form > p:first-child'
@@ -53,6 +54,21 @@ class Base(interfaces.IDisposable, interfaces.IExtractStrategy):
         else:
             encountered_server_error = True
         return encountered_server_error
+
+    @abc.abstractmethod
+    def do_extract(self):
+
+        """
+        Returns
+        -------
+        collections.Iterable
+
+        Raises
+        ------
+        clare.watching.scraping.exceptions.ExtractFailed
+        """
+
+        pass
 
     @staticmethod
     def _serialize(elements):
@@ -72,21 +88,6 @@ class Base(interfaces.IDisposable, interfaces.IExtractStrategy):
                                in elements]
         return serialized_elements
 
-    @abc.abstractmethod
-    def do_extract(self):
-
-        """
-        Returns
-        -------
-        collections.Iterable
-
-        Raises
-        ------
-        clare.watching.scraping.exceptions.ExtractFailed
-        """
-
-        pass
-
     def dispose(self):
         self._web_driver.quit()
 
@@ -97,9 +98,32 @@ class Base(interfaces.IDisposable, interfaces.IExtractStrategy):
                             self._wait_context)
 
 
-class RoomList(Base):
+class PollingBase(Base):
 
-    def do_extract(self):
+    __metaclass__ = abc.ABCMeta
+
+    def __init__(self, web_driver, wait_context):
+        super(PollingBase, self).__init__(web_driver=web_driver,
+                                          wait_context=wait_context)
+        self._with_setup = True
+
+    def extract(self, url):
+        if self._with_setup:
+            try:
+                self.do_set_up(url=url)
+            except scraping.exceptions.HttpError:
+                raise
+            else:
+                self._with_setup = False
+        elements = self.do_extract()
+        serialized_elements = self._serialize(elements=elements)
+        return serialized_elements
+
+
+class RoomList(PollingBase):
+
+    def do_set_up(self, url):
+        super(RoomList, self).do_set_up(url=url)
         locator = (By.CSS_SELECTOR, 'button[name="roomlist"]')
         button = utilities.find_button(locator=locator,
                                        wait_context=self._wait_context)
@@ -109,6 +133,28 @@ class RoomList(Base):
             message = 'The room list button could not be found.'
             raise exceptions.ExtractFailed(message)
 
+    def do_extract(self):
+        # Refresh the room list.
+        locator = (By.CSS_SELECTOR, 'button[name="refresh"]')
+        button = utilities.find_button(locator=locator,
+                                       wait_context=self._wait_context)
+        try:
+            button.click()
+        except AttributeError:
+            message = 'The room list refresh button could not be found.'
+            raise exceptions.ExtractFailed(message)
+
+        # Confirm the refresh operation completed.
+        css_selector = 'div.roomlist > div > div:last-of-type'
+        element = self._web_driver.find_element_by_css_selector(css_selector)
+        condition = expected_conditions.staleness_of(element=element)
+        try:
+            self._wait_context.until(condition)
+        except selenium.common.exceptions.TimeoutException:
+            message = 'The room list refresh operation timed out.'
+            raise exceptions.ExtractFailed(message)
+
+        # Extract the room list.
         locator = (By.CSS_SELECTOR, 'div.roomlist > div > div > a')
         condition = expected_conditions.presence_of_all_elements_located(
             locator=locator)
@@ -116,4 +162,5 @@ class RoomList(Base):
             elements = self._wait_context.until(condition)
         except selenium.common.exceptions.TimeoutException:
             elements = list()
+
         return elements
