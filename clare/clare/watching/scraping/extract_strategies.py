@@ -29,12 +29,12 @@ class Base(interfaces.IDisposable, interfaces.IScraper):
         self._wait_context = wait_context
 
     def scrape(self, url):
-        self.initialize(url=url)
+        self._initialize(url=url)
         elements = self._extract()
         serialized_elements = self._serialize(elements=elements)
         return serialized_elements
 
-    def initialize(self, url):
+    def _initialize(self, url):
         self._web_driver.get(url=url)
         if self._confirm_server_error():
             message = 'The connection with the target server was lost.'
@@ -110,7 +110,7 @@ class PollingBase(Base):
     def scrape(self, url):
         if self._with_setup:
             try:
-                self.initialize(url=url)
+                self._initialize(url=url)
             except scraping.exceptions.HttpError:
                 raise
             else:
@@ -122,8 +122,8 @@ class PollingBase(Base):
 
 class RoomList(PollingBase):
 
-    def initialize(self, url):
-        super(RoomList, self).initialize(url=url)
+    def _initialize(self, url):
+        super(RoomList, self)._initialize(url=url)
         locator = (By.CSS_SELECTOR, 'button[name="roomlist"]')
         button = utilities.find_button(locator=locator,
                                        wait_context=self._wait_context)
