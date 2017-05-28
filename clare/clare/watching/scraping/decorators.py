@@ -31,4 +31,4 @@ class SerializedElements(interfaces.IDisposable):
 
     def __repr__(self):
         repr_ = '{}(scraper={})'
-        return repr_.format(self._scraper)
+        return repr_.format(self.__class__.__name__, self._scraper)
