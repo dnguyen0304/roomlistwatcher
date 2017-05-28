@@ -30,7 +30,7 @@ class Base(interfaces.IDisposable, interfaces.IScraper):
 
     def scrape(self, url):
         self.initialize(url=url)
-        elements = self.do_extract()
+        elements = self._extract()
         serialized_elements = self._serialize(elements=elements)
         return serialized_elements
 
@@ -56,7 +56,7 @@ class Base(interfaces.IDisposable, interfaces.IScraper):
         return encountered_server_error
 
     @abc.abstractmethod
-    def do_extract(self):
+    def _extract(self):
 
         """
         Returns
@@ -115,7 +115,7 @@ class PollingBase(Base):
                 raise
             else:
                 self._with_setup = False
-        elements = self.do_extract()
+        elements = self._extract()
         serialized_elements = self._serialize(elements=elements)
         return serialized_elements
 
@@ -133,7 +133,7 @@ class RoomList(PollingBase):
             message = 'The room list button could not be found.'
             raise exceptions.ExtractFailed(message)
 
-    def do_extract(self):
+    def _extract(self):
         # Refresh the room list.
         locator = (By.CSS_SELECTOR, 'button[name="refresh"]')
         button = utilities.find_button(locator=locator,
