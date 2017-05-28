@@ -36,24 +36,6 @@ class Base(interfaces.IDisposable, interfaces.IScraper):
 
     def _initialize(self, url):
         self._web_driver.get(url=url)
-        if self._confirm_server_error():
-            message = 'The connection with the target server was lost.'
-            raise scraping.exceptions.HttpError(message)
-
-    def _confirm_server_error(self):
-        css_selector = 'body > div.ps-overlay > div > form > p:first-child'
-        locator = (By.CSS_SELECTOR, css_selector)
-        text_ = 'disconnected'
-        condition = expected_conditions.text_to_be_present_in_element(
-            locator=locator,
-            text_=text_)
-        try:
-            self._wait_context.until(condition)
-        except selenium.common.exceptions.TimeoutException:
-            encountered_server_error = False
-        else:
-            encountered_server_error = True
-        return encountered_server_error
 
     @abc.abstractmethod
     def _extract(self):
@@ -120,7 +102,33 @@ class PollingBase(Base):
         return serialized_elements
 
 
-class RoomList(PollingBase):
+class PokemonShowdownBase(Base):
+
+    __metaclass__ = abc.ABCMeta
+
+    def _initialize(self, url):
+        super(PokemonShowdownBase, self)._initialize(url=url)
+        if self._confirm_server_error():
+            message = 'The connection with the target server was lost.'
+            raise scraping.exceptions.HttpError(message)
+
+    def _confirm_server_error(self):
+        css_selector = 'body > div.ps-overlay > div > form > p:first-child'
+        locator = (By.CSS_SELECTOR, css_selector)
+        text_ = 'disconnected'
+        condition = expected_conditions.text_to_be_present_in_element(
+            locator=locator,
+            text_=text_)
+        try:
+            self._wait_context.until(condition)
+        except selenium.common.exceptions.TimeoutException:
+            encountered_server_error = False
+        else:
+            encountered_server_error = True
+        return encountered_server_error
+
+
+class RoomList(PokemonShowdownBase, PollingBase):
 
     def _initialize(self, url):
         super(RoomList, self)._initialize(url=url)
