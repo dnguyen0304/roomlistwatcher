@@ -3,7 +3,7 @@
 from . import interfaces
 
 
-class SerializedElements(interfaces.IDisposable, interfaces.IScraper):
+class SerializedElements(interfaces.IDisposable):
 
     def __init__(self, scraper):
 
@@ -23,7 +23,7 @@ class SerializedElements(interfaces.IDisposable, interfaces.IScraper):
         return serialized_elements
 
     def dispose(self):
-        return self._scraper.dispose()
+        self._scraper.dispose()
 
     def __repr__(self):
         repr_ = '{}(scraper={})'
