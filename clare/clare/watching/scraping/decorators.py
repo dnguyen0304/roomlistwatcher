@@ -16,6 +16,14 @@ class SerializedElements(interfaces.IDisposable):
         self._scraper = scraper
 
     def scrape(self, url):
+
+        """
+        Returns
+        -------
+        collections.Sequence
+            Sequence of serialized elements.
+        """
+
         elements = self._scraper.scrape(url=url)
         serialized_elements = [element.get_attribute('outerHTML')
                                for element
