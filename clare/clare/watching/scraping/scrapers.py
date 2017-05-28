@@ -61,13 +61,20 @@ class Base(interfaces.IDisposable, interfaces.IScraper):
                             self._wait_context)
 
 
-class PollingBase(Base):
+class RepeatableBase(Base):
 
     __metaclass__ = abc.ABCMeta
 
     def __init__(self, web_driver, wait_context):
-        super(PollingBase, self).__init__(web_driver=web_driver,
-                                          wait_context=wait_context)
+
+        """
+        Scrape the same web page multiple times.
+
+        The web page is initialized only once.
+        """
+
+        super(RepeatableBase, self).__init__(web_driver=web_driver,
+                                             wait_context=wait_context)
         self._with_initialization = True
 
     def scrape(self, url):
@@ -104,7 +111,7 @@ class PokemonShowdownBase(Base):
         return encountered_server_error
 
 
-class RoomList(PokemonShowdownBase, PollingBase):
+class RoomList(PokemonShowdownBase, RepeatableBase):
 
     def _initialize(self, url):
         super(RoomList, self)._initialize(url=url)
