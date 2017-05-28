@@ -87,16 +87,12 @@ class PollingBase(Base):
     def __init__(self, web_driver, wait_context):
         super(PollingBase, self).__init__(web_driver=web_driver,
                                           wait_context=wait_context)
-        self._with_setup = True
+        self._with_initialization = True
 
     def scrape(self, url):
-        if self._with_setup:
-            try:
-                self._initialize(url=url)
-            except scraping.exceptions.HttpError:
-                raise
-            else:
-                self._with_setup = False
+        if self._with_initialization:
+            self._initialize(url=url)
+            self._with_initialization = False
         elements = self._extract()
         serialized_elements = self._serialize(elements=elements)
         return serialized_elements
