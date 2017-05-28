@@ -8,22 +8,18 @@ class SerializedElements(interfaces.IDisposable):
     def __init__(self, scraper):
 
         """
+        Change the scrape behavior to return a sequence of serialized
+        elements instead.
+
         Parameters
         ----------
-        scraper : clare.watching.scraping.scrapers.Base
+        scraper : clare.watching.scraping.interfaces.IDisposable and
+                  clare.watching.scraping.interfaces.IScraper
         """
 
         self._scraper = scraper
 
     def scrape(self, url):
-
-        """
-        Returns
-        -------
-        collections.Sequence
-            Sequence of serialized elements.
-        """
-
         elements = self._scraper.scrape(url=url)
         serialized_elements = [element.get_attribute('outerHTML')
                                for element
