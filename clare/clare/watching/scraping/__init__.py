@@ -3,11 +3,11 @@
 from . import exceptions
 from . import interfaces
 from . import utilities
-from . import extract_strategies
+from . import scrapers
 from . import decorators
 
 __all__ = ['decorators',
            'exceptions',
-           'extract_strategies',
            'interfaces',
+           'scrapers',
            'utilities']
