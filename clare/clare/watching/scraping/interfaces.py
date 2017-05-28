@@ -12,12 +12,12 @@ class IDisposable(object):
         pass
 
 
-class IExtractStrategy(object):
+class IScraper(object):
 
     __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod
-    def extract(self, url):
+    def scrape(self, url):
 
         """
         Parameters

@@ -12,7 +12,7 @@ from . import utilities
 from clare import scraping
 
 
-class Base(interfaces.IDisposable, interfaces.IExtractStrategy):
+class Base(interfaces.IDisposable, interfaces.IScraper):
 
     __metaclass__ = abc.ABCMeta
 
@@ -28,7 +28,7 @@ class Base(interfaces.IDisposable, interfaces.IExtractStrategy):
         self._web_driver = web_driver
         self._wait_context = wait_context
 
-    def extract(self, url):
+    def scrape(self, url):
         self.initialize(url=url)
         elements = self.do_extract()
         serialized_elements = self._serialize(elements=elements)
@@ -107,7 +107,7 @@ class PollingBase(Base):
                                           wait_context=wait_context)
         self._with_setup = True
 
-    def extract(self, url):
+    def scrape(self, url):
         if self._with_setup:
             try:
                 self.initialize(url=url)
