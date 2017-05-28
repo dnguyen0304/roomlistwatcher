@@ -4,8 +4,10 @@ from . import exceptions
 from . import interfaces
 from . import utilities
 from . import extract_strategies
+from . import decorators
 
-__all__ = ['exceptions',
+__all__ = ['decorators',
+           'exceptions',
            'extract_strategies',
            'interfaces',
            'utilities']

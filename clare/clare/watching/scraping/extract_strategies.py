@@ -31,8 +31,7 @@ class Base(interfaces.IDisposable, interfaces.IScraper):
     def scrape(self, url):
         self._initialize(url=url)
         elements = self._extract()
-        serialized_elements = self._serialize(elements=elements)
-        return serialized_elements
+        return elements
 
     def _initialize(self, url):
         self._web_driver.get(url=url)
@@ -51,24 +50,6 @@ class Base(interfaces.IDisposable, interfaces.IScraper):
         """
 
         pass
-
-    @staticmethod
-    def _serialize(elements):
-
-        """
-        Parameters
-        ----------
-        elements : collections.Iterable
-
-        Returns
-        -------
-        collections.Sequence
-        """
-
-        serialized_elements = [element.get_attribute('outerHTML')
-                               for element
-                               in elements]
-        return serialized_elements
 
     def dispose(self):
         self._web_driver.quit()
@@ -94,8 +75,7 @@ class PollingBase(Base):
             self._initialize(url=url)
             self._with_initialization = False
         elements = self._extract()
-        serialized_elements = self._serialize(elements=elements)
-        return serialized_elements
+        return elements
 
 
 class PokemonShowdownBase(Base):
