@@ -80,3 +80,21 @@ class TestAfterDuration(object):
             _get_now_in_seconds=mock.get_now_in_seconds)
         flush_strategy.should_flush(sequence=self.sequence)
         assert_false(flush_strategy.should_flush(sequence=self.sequence))
+
+
+def test_after_size_should_flush_greater_than_maximum_size_should_flush():
+    flush_strategy = flush_strategies.AfterSize(maximum_size=0)
+    sequence = ['foo']
+    assert_true(flush_strategy.should_flush(sequence=sequence))
+
+
+def test_after_size_should_flush_equal_to_maximum_size_should_flush():
+    flush_strategy = flush_strategies.AfterSize(maximum_size=1)
+    sequence = ['foo']
+    assert_true(flush_strategy.should_flush(sequence=sequence))
+
+
+def test_after_size_should_flush_less_than_maximum_size_should_not_flush():
+    flush_strategy = flush_strategies.AfterSize(maximum_size=2)
+    sequence = ['foo']
+    assert_false(flush_strategy.should_flush(sequence=sequence))

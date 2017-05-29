@@ -38,3 +38,27 @@ class AfterDuration(interfaces.IFlushStrategy):
     def __repr__(self):
         repr_ = '{}(maximum_duration={})'
         return repr_.format(self.__class__.__name__, self._maximum_duration)
+
+
+class AfterSize(interfaces.IFlushStrategy):
+
+    def __init__(self, maximum_size):
+
+        """
+        Parameters
+        ----------
+        maximum_size : int
+        """
+
+        self._maximum_size = maximum_size
+
+    def should_flush(self, sequence):
+        if len(sequence) >= self._maximum_size:
+            should_flush = True
+        else:
+            should_flush = False
+        return should_flush
+
+    def __repr__(self):
+        repr_ = '{}(maximum_size={})'
+        return repr_.format(self.__class__.__name__, self._maximum_size)
