@@ -76,7 +76,7 @@ def test_after_duration_equal_to_maximum_duration_should_stop():
     stop_strategy.should_stop(attempt=attempt)
 
 
-def test_after_duration_should_not_stop():
+def test_after_duration_less_than_maximum_duration_should_not_stop():
 
     maximum_duration = 1
     stop_strategy = stop_strategies.AfterDuration(
