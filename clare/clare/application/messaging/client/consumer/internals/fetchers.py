@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from .. import records
+from clare.application.messaging.client import records
 
 
 class Fetcher(object):
