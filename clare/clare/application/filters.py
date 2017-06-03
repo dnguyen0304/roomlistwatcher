@@ -18,7 +18,7 @@ class Base(interfaces.IFilter):
         """
         Parameters
         ----------
-        record : clare.application.messaging.client.record.Record
+        record : clare.application.messaging.client.records.Record
 
         Returns
         -------
@@ -34,11 +34,11 @@ class Base(interfaces.IFilter):
         """
         Parameters
         ----------
-        record : clare.application.messaging.client.record.Record
+        record : clare.application.messaging.client.records.Record
 
         Returns
         -------
-        clare.application.messaging.client.record.Record
+        clare.application.messaging.client.records.Record
         """
 
         pass
