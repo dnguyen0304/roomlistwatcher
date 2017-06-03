@@ -8,20 +8,16 @@ if sys.version_info[:2] == (2, 7):
 from nose.tools import assert_equal
 
 from .. import fetchers
-from clare.application.messaging import deserializers
 
 
 def test_fetcher_pop():
 
     queue_ = queue.Queue()
-    value_deserializer = deserializers.StringDeserializer()
-    fetcher = fetchers.Fetcher(queue=queue_,
-                               value_deserializer=value_deserializer)
+    fetcher = fetchers.Fetcher(queue=queue_)
     data = {
         'queue_name': 'foo',
         'timestamp': 'bar',
-        'key': 'eggs',
-        'value': 'ham'
+        'value': 'foobar'
     }
     queue_.put(item=data)
     record = fetcher.pop(timeout=None)
