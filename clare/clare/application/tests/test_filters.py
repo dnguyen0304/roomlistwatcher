@@ -2,7 +2,7 @@
 
 from nose.tools import assert_false, assert_true
 
-from .. import filters
+from .. import flush_strategies
 
 
 class Mock(object):
@@ -52,14 +52,14 @@ class TestAfterDuration(object):
         self.maximum_duration = 0.0
 
     def test_should_flush_first_call_should_not_flush(self):
-        flush_strategy = filters._AfterDuration(
+        flush_strategy = flush_strategies.AfterDuration(
             maximum_duration=None,
             _get_now_in_seconds=lambda: None)
         assert_false(flush_strategy.should_flush(collection=self.collection))
 
     def test_should_flush_greater_than_maximum_duration_should_flush(self):
         mock = Mock.greater_than(self.maximum_duration)
-        flush_strategy = filters._AfterDuration(
+        flush_strategy = flush_strategies.AfterDuration(
             maximum_duration=self.maximum_duration,
             _get_now_in_seconds=mock.get_now_in_seconds)
         flush_strategy.should_flush(collection=self.collection)
@@ -67,7 +67,7 @@ class TestAfterDuration(object):
 
     def test_should_flush_equal_to_maximum_duration_should_flush(self):
         mock = Mock.equal_to(self.maximum_duration)
-        flush_strategy = filters._AfterDuration(
+        flush_strategy = flush_strategies.AfterDuration(
             maximum_duration=self.maximum_duration,
             _get_now_in_seconds=mock.get_now_in_seconds)
         flush_strategy.should_flush(collection=self.collection)
@@ -75,7 +75,7 @@ class TestAfterDuration(object):
 
     def test_should_flush_less_than_maximum_duration_should_not_flush(self):
         mock = Mock.less_than(self.maximum_duration)
-        flush_strategy = filters._AfterDuration(
+        flush_strategy = flush_strategies.AfterDuration(
             maximum_duration=self.maximum_duration,
             _get_now_in_seconds=mock.get_now_in_seconds)
         flush_strategy.should_flush(collection=self.collection)
@@ -83,18 +83,18 @@ class TestAfterDuration(object):
 
 
 def test_after_size_should_flush_greater_than_maximum_size_should_flush():
-    flush_strategy = filters._AfterSize(maximum_size=0)
+    flush_strategy = flush_strategies.AfterSize(maximum_size=0)
     collection = ['foo']
     assert_true(flush_strategy.should_flush(collection=collection))
 
 
 def test_after_size_should_flush_equal_to_maximum_size_should_flush():
-    flush_strategy = filters._AfterSize(maximum_size=1)
+    flush_strategy = flush_strategies.AfterSize(maximum_size=1)
     collection = ['foo']
     assert_true(flush_strategy.should_flush(collection=collection))
 
 
 def test_after_size_should_flush_less_than_maximum_size_should_not_flush():
-    flush_strategy = filters._AfterSize(maximum_size=2)
+    flush_strategy = flush_strategies.AfterSize(maximum_size=2)
     collection = ['foo']
     assert_false(flush_strategy.should_flush(collection=collection))

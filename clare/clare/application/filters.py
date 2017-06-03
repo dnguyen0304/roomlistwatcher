@@ -3,7 +3,7 @@
 import time
 
 
-class _AfterDuration(object):
+class AfterDuration(object):
 
     def __init__(self, maximum_duration, _get_now_in_seconds=None):
 
@@ -50,7 +50,7 @@ class _AfterDuration(object):
         return repr_.format(self.__class__.__name__, self._maximum_duration)
 
 
-class _AfterSize(object):
+class AfterSize(object):
 
     def __init__(self, maximum_size):
 
