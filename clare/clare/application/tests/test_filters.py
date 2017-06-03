@@ -4,7 +4,7 @@ from nose.tools import assert_false, assert_is_not_none, assert_true
 
 from .. import filters
 from clare.application import flush_strategies
-from clare.application.messaging.client import Record
+from clare.application.messaging.client import records
 
 
 class TestNoDuplicate(object):
@@ -13,9 +13,10 @@ class TestNoDuplicate(object):
         self.first_record = self.duplicate_record = None
 
     def setup(self):
-        self.first_record = self.duplicate_record = Record(queue_name=None,
-                                                           timestamp=None,
-                                                           value='foo')
+        self.first_record = self.duplicate_record = records.Record(
+            queue_name=None,
+            timestamp=None,
+            value='foo')
 
     def test_flush_strategy(self):
         flush_strategy = flush_strategies.AfterSize(maximum_size=1)
@@ -27,7 +28,9 @@ class TestNoDuplicate(object):
     def test_should_filter_unique_value_should_not_filter(self):
         filter_ = filters.NoDuplicate(flush_strategy=None)
         filter_._should_filter(record=self.first_record)
-        new_record = Record(queue_name=None, timestamp=None, value='bar')
+        new_record = records.Record(queue_name=None,
+                                    timestamp=None,
+                                    value='bar')
         should_filter = filter_._should_filter(record=new_record)
         assert_false(should_filter)
 

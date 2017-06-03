@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from .record import Record
+from . import records
 from . import consumer
 
-__all__ = ['Record',
-           'consumer']
+__all__ = ['consumer',
+           'records']
