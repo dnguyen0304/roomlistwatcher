@@ -2,6 +2,8 @@
 
 from . import interfaces
 from . import fetchers
+from . import consumers
 
-__all__ = ['fetchers',
+__all__ = ['consumers',
+           'fetchers',
            'interfaces']
