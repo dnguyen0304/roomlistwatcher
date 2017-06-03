@@ -2,12 +2,10 @@
 
 import time
 
-from . import interfaces
 
+class AfterDuration(object):
 
-class AfterDuration(interfaces.IFlushStrategy):
-
-    def __init__(self, maximum_duration, _get_now_in_seconds=time.time):
+    def __init__(self, maximum_duration, _get_now_in_seconds=None):
 
         """
         Parameters
@@ -19,10 +17,22 @@ class AfterDuration(interfaces.IFlushStrategy):
         """
 
         self._maximum_duration = maximum_duration
-        self._get_now_in_seconds = _get_now_in_seconds
+        self._get_now_in_seconds = _get_now_in_seconds or time.time
         self._start_time = 0.0
 
-    def should_flush(self, sequence):
+    def should_flush(self, collection):
+
+        """
+        Parameters
+        ----------
+        collection : typing.Any
+
+        Returns
+        -------
+        bool
+            True if the collection should be flushed.
+        """
+
         if not self._start_time:
             self._start_time = self._get_now_in_seconds()
             should_flush = False
@@ -40,7 +50,7 @@ class AfterDuration(interfaces.IFlushStrategy):
         return repr_.format(self.__class__.__name__, self._maximum_duration)
 
 
-class AfterSize(interfaces.IFlushStrategy):
+class AfterSize(object):
 
     def __init__(self, maximum_size):
 
@@ -52,8 +62,20 @@ class AfterSize(interfaces.IFlushStrategy):
 
         self._maximum_size = maximum_size
 
-    def should_flush(self, sequence):
-        if len(sequence) >= self._maximum_size:
+    def should_flush(self, collection):
+
+        """
+        Parameters
+        ----------
+        collection : collections.Sized
+
+        Returns
+        -------
+        bool
+            True if the collection should be flushed.
+        """
+
+        if len(collection) >= self._maximum_size:
             should_flush = True
         else:
             should_flush = False

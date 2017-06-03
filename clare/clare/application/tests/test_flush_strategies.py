@@ -46,7 +46,7 @@ class TestAfterDuration(object):
 
     def __init__(self):
         self.maximum_duration = None
-        self.sequence = None
+        self.collection = None
 
     def setup(self):
         self.maximum_duration = 0.0
@@ -55,46 +55,46 @@ class TestAfterDuration(object):
         flush_strategy = flush_strategies.AfterDuration(
             maximum_duration=None,
             _get_now_in_seconds=lambda: None)
-        assert_false(flush_strategy.should_flush(sequence=self.sequence))
+        assert_false(flush_strategy.should_flush(collection=self.collection))
 
     def test_should_flush_greater_than_maximum_duration_should_flush(self):
         mock = Mock.greater_than(self.maximum_duration)
         flush_strategy = flush_strategies.AfterDuration(
             maximum_duration=self.maximum_duration,
             _get_now_in_seconds=mock.get_now_in_seconds)
-        flush_strategy.should_flush(sequence=self.sequence)
-        assert_true(flush_strategy.should_flush(sequence=self.sequence))
+        flush_strategy.should_flush(collection=self.collection)
+        assert_true(flush_strategy.should_flush(collection=self.collection))
 
     def test_should_flush_equal_to_maximum_duration_should_flush(self):
         mock = Mock.equal_to(self.maximum_duration)
         flush_strategy = flush_strategies.AfterDuration(
             maximum_duration=self.maximum_duration,
             _get_now_in_seconds=mock.get_now_in_seconds)
-        flush_strategy.should_flush(sequence=self.sequence)
-        assert_true(flush_strategy.should_flush(sequence=self.sequence))
+        flush_strategy.should_flush(collection=self.collection)
+        assert_true(flush_strategy.should_flush(collection=self.collection))
 
     def test_should_flush_less_than_maximum_duration_should_not_flush(self):
         mock = Mock.less_than(self.maximum_duration)
         flush_strategy = flush_strategies.AfterDuration(
             maximum_duration=self.maximum_duration,
             _get_now_in_seconds=mock.get_now_in_seconds)
-        flush_strategy.should_flush(sequence=self.sequence)
-        assert_false(flush_strategy.should_flush(sequence=self.sequence))
+        flush_strategy.should_flush(collection=self.collection)
+        assert_false(flush_strategy.should_flush(collection=self.collection))
 
 
 def test_after_size_should_flush_greater_than_maximum_size_should_flush():
     flush_strategy = flush_strategies.AfterSize(maximum_size=0)
-    sequence = ['foo']
-    assert_true(flush_strategy.should_flush(sequence=sequence))
+    collection = ['foo']
+    assert_true(flush_strategy.should_flush(collection=collection))
 
 
 def test_after_size_should_flush_equal_to_maximum_size_should_flush():
     flush_strategy = flush_strategies.AfterSize(maximum_size=1)
-    sequence = ['foo']
-    assert_true(flush_strategy.should_flush(sequence=sequence))
+    collection = ['foo']
+    assert_true(flush_strategy.should_flush(collection=collection))
 
 
 def test_after_size_should_flush_less_than_maximum_size_should_not_flush():
     flush_strategy = flush_strategies.AfterSize(maximum_size=2)
-    sequence = ['foo']
-    assert_false(flush_strategy.should_flush(sequence=sequence))
+    collection = ['foo']
+    assert_false(flush_strategy.should_flush(collection=collection))
