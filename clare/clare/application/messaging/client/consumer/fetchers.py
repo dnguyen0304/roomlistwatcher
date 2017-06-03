@@ -20,6 +20,17 @@ class Fetcher(object):
         self._value_deserializer = value_deserializer
 
     def pop(self, timeout):
+
+        """
+        Parameters
+        ----------
+        timeout : float
+
+        Returns
+        -------
+        clare.application.messaging.client.records.Record
+        """
+
         data = self._queue.get(timeout=timeout)
         record = records.Record(
             queue_name=data['queue_name'],
