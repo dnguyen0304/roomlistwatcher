@@ -2,8 +2,10 @@
 
 import time
 
+from . import interfaces
 
-class AfterDuration(object):
+
+class AfterDuration(interfaces.IFlushStrategy):
 
     def __init__(self, maximum_duration, _get_now_in_seconds=None):
 
@@ -50,7 +52,7 @@ class AfterDuration(object):
         return repr_.format(self.__class__.__name__, self._maximum_duration)
 
 
-class AfterSize(object):
+class AfterSize(interfaces.IFlushStrategy):
 
     def __init__(self, maximum_size):
 
