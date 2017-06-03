@@ -24,3 +24,19 @@ class IFilter(object):
         """
 
         pass
+
+
+class IHandler(object):
+
+    __metaclass__ = abc.ABCMeta
+
+    @abc.abstractmethod
+    def handle(self, record):
+
+        """
+        Parameters
+        ----------
+        record : clare.application.messaging.client.record.Record
+        """
+
+        pass
