@@ -7,7 +7,7 @@ from . import interfaces
 
 class Polling(object):
 
-    def __init__(self, scraper, wait_time, buffer):
+    def __init__(self, scraper, wait_time, message_queue):
 
         """
         Change the scrape behavior to poll the web page instead.
@@ -18,12 +18,12 @@ class Polling(object):
                   clare.watching.scraping.interfaces.IScraper
         wait_time : float
             Wait time in seconds.
-        buffer : Queue.Queue
+        message_queue : queue.Queue
         """
 
         self._scraper = scraper
         self.wait_time = wait_time
-        self._buffer = buffer
+        self._message_queue = message_queue
 
     def scrape(self, url, _sleep=time.sleep):
 
@@ -39,15 +39,15 @@ class Polling(object):
         while True:
             data = self._scraper.scrape(url=url)
             for item in data:
-                self._buffer.put(item=item)
+                self._message_queue.put(item=item)
             _sleep(self.wait_time)
 
     def __repr__(self):
-        repr_ = '{}(scraper={}, wait_time={}, buffer={})'
+        repr_ = '{}(scraper={}, wait_time={}, message_queue={})'
         return repr_.format(self.__class__.__name__,
                             self._scraper,
                             self.wait_time,
-                            self._buffer)
+                            self._message_queue)
 
 
 class SerializedElements(interfaces.IDisposable):
