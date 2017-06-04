@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from clare.application.messaging.client import records
-
 
 class Fetcher(object):
 
@@ -27,10 +25,7 @@ class Fetcher(object):
         clare.application.messaging.client.records.Record
         """
 
-        data = self._queue.get(timeout=timeout)
-        record = records.Record(queue_name=data['queue_name'],
-                                timestamp=data['timestamp'],
-                                value=data['value'])
+        record = self._queue.get(timeout=timeout)
         return record
 
     def __repr__(self):
