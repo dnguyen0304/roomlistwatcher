@@ -18,7 +18,7 @@ class Polling(object):
                   clare.watching.scraping.interfaces.IScraper
         wait_time : float
             Wait time in seconds.
-        message_queue : queue.Queue
+        message_queue : Queue.Queue
         """
 
         self._scraper = scraper
