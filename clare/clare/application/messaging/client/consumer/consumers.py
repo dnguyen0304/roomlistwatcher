@@ -5,19 +5,19 @@ import time
 
 class Consumer(object):
 
-    def __init__(self, fetcher, handlers, filters=None):
+    def __init__(self, fetcher, handler, filters=None):
 
         """
         Parameters
         ----------
         fetcher : clare.application.messaging.client.consumer.internals.fetchers.Fetcher
-        handlers : collections.Iterable
+        handler : clare.application.messaging.client.consumer.internals.interfaces.IHandler
         filters : collections.Iterable
             Defaults to list.
         """
 
         self._fetcher = fetcher
-        self._handlers = handlers
+        self._handler = handler
         self._filters = filters or list()
 
     def consume(self, interval, timeout, _sleep=None):
@@ -44,12 +44,11 @@ class Consumer(object):
             if record is None:
                 break
         else:
-            for handler in self._handlers:
-                handler.handle(record=record)
+            self._handler.handle(record=record)
 
     def __repr__(self):
-        repr_ = '{}(fetcher={}, handlers={}, filters={})'
+        repr_ = '{}(fetcher={}, handler={}, filters={})'
         return repr_.format(self.__class__.__name__,
                             self._fetcher,
-                            self._handlers,
+                            self._handler,
                             self._filters)
