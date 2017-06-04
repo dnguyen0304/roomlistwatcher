@@ -2,10 +2,10 @@
 
 import abc
 
-from .messaging.client import consumer
+from .messaging.client import common
 
 
-class Base(consumer.internals.interfaces.IFilter):
+class Base(common.internals.interfaces.IFilter):
 
     def filter(self, record):
         if not self._should_filter(record=record):
