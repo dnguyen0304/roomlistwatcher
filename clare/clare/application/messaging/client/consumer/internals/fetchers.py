@@ -3,15 +3,15 @@
 
 class Fetcher(object):
 
-    def __init__(self, queue):
+    def __init__(self, message_queue):
 
         """
         Parameters
         ----------
-        queue : Queue.Queue
+        message_queue : Queue.Queue
         """
 
-        self._queue = queue
+        self._message_queue = message_queue
 
     def pop(self, timeout):
 
@@ -25,9 +25,9 @@ class Fetcher(object):
         clare.application.messaging.client.records.Record
         """
 
-        record = self._queue.get(timeout=timeout)
+        record = self._message_queue.get(timeout=timeout)
         return record
 
     def __repr__(self):
-        repr_ = '{}(queue={})'
-        return repr_.format(self.__class__.__name__, self._queue)
+        repr_ = '{}(message_queue={})'
+        return repr_.format(self.__class__.__name__, self._message_queue)
