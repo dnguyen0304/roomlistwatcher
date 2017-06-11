@@ -9,7 +9,7 @@ class Record(object):
         Parameters
         ----------
         queue_name : str
-        timestamp : float
+        timestamp : datetime.datetime
         value : typing.Any
             Defaults to None.
         """
