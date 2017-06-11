@@ -4,10 +4,8 @@ from . import exceptions
 from . import interfaces
 from . import utilities
 from . import scrapers
-from . import decorators
 
-__all__ = ['decorators',
-           'exceptions',
+__all__ = ['exceptions',
            'interfaces',
            'scrapers',
            'utilities']
