@@ -20,22 +20,18 @@ class Consumer(object):
         self._handler = handler
         self._filters = filters or list()
 
-    def consume(self, interval, timeout, _sleep=None):
+    def consume(self, interval, timeout):
 
         """
         Parameters
         ----------
         interval : float
         timeout : float
-        _sleep : collections.Callable
-            Used internally. Defaults to time.sleep.
         """
-
-        _sleep = _sleep or time.sleep
 
         while True:
             self._consume_once(timeout=timeout)
-            _sleep(interval)
+            time.sleep(interval)
 
     def _consume_once(self, timeout):
         record = self._fetcher.pop(timeout=timeout)
