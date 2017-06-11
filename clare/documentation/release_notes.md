@@ -2,7 +2,7 @@
 
 ## v0.3.0 (Pending)
 ##### Features
--
+- Added Room List Watcher application.
 
 ## v0.2.0 (2017-05-15)
 ##### Changes
