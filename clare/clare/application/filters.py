@@ -55,7 +55,7 @@ class NoDuplicate(Base):
         Parameters
         ----------
         flush_strategy : clare.application.interfaces.IFlushStrategy
-            Strategy for deciding if the collection of seen paths
+            Strategy for deciding if the collection of seen values
             should be flushed.
         """
 
