@@ -1,0 +1,25 @@
+# -*- coding: utf-8 -*-
+
+import json
+
+from nose.tools import assert_equal
+
+from .. import utilities
+
+
+class Mock(Exception):
+    pass
+
+
+def test_format_exception():
+
+    try:
+        raise Mock('foo')
+    except Mock as e:
+        pass
+
+    message = utilities.format_exception(e=e)
+    data = json.loads(message)
+
+    assert_equal(data['exception_type'], __name__ + '.' + Mock.__name__)
+    assert_equal(data['exception_message'], 'foo')

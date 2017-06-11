@@ -9,7 +9,7 @@ def format_exception(e):
     """
     Parameters
     ----------
-    e : exceptions.BaseException
+    e : exceptions.Exception
 
     Returns
     -------
