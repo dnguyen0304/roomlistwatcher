@@ -4,6 +4,50 @@ import clare.common
 from . import scraping
 
 
+class Marshalled(object):
+
+    def __init__(self, scraper, record_factory):
+
+        """
+        Wrap the scrape behavior to return a sequence of marshalled
+        records instead.
+
+        Parameters
+        ----------
+        scraper : clare.watching.scraping.interfaces.IDisposable and
+                  clare.watching.scraping.interfaces.IScraper
+        record_factory : clare.application.factories.Record
+        """
+
+        self._scraper = scraper
+        self._record_factory = record_factory
+
+    def scrape(self, url):
+
+        """
+        Returns
+        -------
+        collections.Iterable
+        """
+
+        elements = self._scraper.scrape(url=url)
+        records = list()
+        for element in elements:
+            html = element.get_attribute('outerHTML')
+            record = self._record_factory.create_from_html(html)
+            records.append(record)
+        return records
+
+    def dispose(self):
+        self._scraper.dispose()
+
+    def __repr__(self):
+        repr_ = '{}(scraper={}, record_factory={})'
+        return repr_.format(self.__class__.__name__,
+                            self._scraper,
+                            self._record_factory)
+
+
 class Orchestration(object):
 
     def __init__(self, scraper, logger):
