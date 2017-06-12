@@ -18,6 +18,7 @@ from . import filters
 from . import flush_strategies
 from . import handlers
 from . import scrapers
+from . import senders
 from . import sources
 
 
@@ -68,8 +69,10 @@ class Application(object):
         source = sources.Batched(worker_thread=worker_thread,
                                  message_queue=source_message_queue)
 
-        # Construct the producer sender.
+        # Construct the producer sender with logging.
         sender = producer.internals.senders.Sender(message_queue=message_queue)
+        logger = logging.getLogger(name=configuration['scraper']['logger']['name'])
+        sender = senders.Logged(sender=sender, logger=logger)
 
         # Construct the producer filter.
         maximum_duration = configuration['filter']['maximum_duration']
