@@ -22,5 +22,5 @@ class Record(object):
         repr_ = '{}(queue_name="{}", timestamp={}, value={})'
         return repr_.format(self.__class__.__name__,
                             self.queue_name,
-                            self.timestamp,
+                            repr(self.timestamp),
                             self.value)
