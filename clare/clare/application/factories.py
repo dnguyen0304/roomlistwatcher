@@ -14,6 +14,8 @@ from .messaging.client import consumer
 from .messaging.client import producer
 from . import scraping
 from . import applications
+from . import filters
+from . import flush_strategies
 from . import handlers
 from . import scrapers
 from . import sources
@@ -37,6 +39,8 @@ class Application(object):
         return application_factory
 
     def create(self):
+        configuration = self._configuration['room_list_watcher']
+
         # Construct the message queue.
         message_queue = queue.Queue()
 
@@ -67,9 +71,16 @@ class Application(object):
         # Construct the producer sender.
         sender = producer.internals.senders.Sender(message_queue=message_queue)
 
+        # Construct the producer filter.
+        maximum_duration = configuration['filter']['maximum_duration']
+        after_duration = flush_strategies.AfterDuration(
+            maximum_duration=maximum_duration)
+        no_duplicate = filters.NoDuplicate(flush_strategy=after_duration)
+
         # Construct the producer.
         room_list_watcher = producer.builders.Builder().with_source(source) \
                                                        .with_sender(sender) \
+                                                       .with_filter(no_duplicate) \
                                                        .build()
         room_list_watcher = threading.Thread(name='room_list_watcher',
                                              target=room_list_watcher.produce)
