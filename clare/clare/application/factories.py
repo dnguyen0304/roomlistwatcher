@@ -72,8 +72,6 @@ class Application(object):
         return application_factory
 
     def create(self):
-        configuration = self._configuration['room_list_watcher']
-
         # Construct the message queue.
         message_queue = queue.Queue()
 
@@ -88,7 +86,7 @@ class Application(object):
                                              wait_context=wait_context)
 
         # Include marshalling.
-        queue_name = configuration['queue']['name']
+        queue_name = self._configuration['room_list_watcher']['queue']['name']
         name = self._configuration['common']['time_zone']['name']
         time_zone = common.utilities.TimeZone.from_name(name)
         record_factory = Record(queue_name=queue_name, time_zone=time_zone)
@@ -114,11 +112,12 @@ class Application(object):
 
         # Construct the producer sender with logging.
         sender = producer.internals.senders.Sender(message_queue=message_queue)
-        logger = logging.getLogger(name=configuration['scraper']['logger']['name'])
+        name = self._configuration['room_list_watcher']['scraper']['logger']['name']
+        logger = logging.getLogger(name=name)
         sender = senders.Logged(sender=sender, logger=logger)
 
         # Construct the producer filter.
-        maximum_duration = configuration['filter']['maximum_duration']
+        maximum_duration = self._configuration['room_list_watcher']['filter']['maximum_duration']
         after_duration = flush_strategies.AfterDuration(
             maximum_duration=maximum_duration)
         no_duplicate = filters.NoDuplicate(flush_strategy=after_duration)
