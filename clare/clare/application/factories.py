@@ -12,6 +12,7 @@ import lxml.html
 import selenium.webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 
+from clare import common
 from .messaging.client import consumer
 from .messaging.client import producer
 from .messaging.client import records
@@ -23,7 +24,6 @@ from . import handlers
 from . import scrapers
 from . import senders
 from . import sources
-from clare import common
 
 
 class Record(object):
