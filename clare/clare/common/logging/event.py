@@ -5,29 +5,8 @@ import datetime
 import json
 import uuid
 
+import clare.common
 from . import interfaces
-
-
-# This implementation closely mirrors the UTC class in pytz and
-# subsequently also the one in the Python Standard Library
-# documentation.
-class UTC(datetime.tzinfo):
-
-    def utcoffset(self, dt):
-        return datetime.timedelta(0)
-
-    def tzname(self, dt):
-        return 'UTC'
-
-    def dst(self, dt):
-        return datetime.timedelta(0)
-
-    def __repr__(self):
-        repr_ = '{}()'
-        return repr_.format(self.__class__.__name__)
-
-    def __str__(self):
-        return 'UTC'
 
 
 class Event(interfaces.IEvent, interfaces.IJsonSerializable):
@@ -46,7 +25,8 @@ class Event(interfaces.IEvent, interfaces.IJsonSerializable):
         self.topic = topic
         self.arguments = arguments
 
-        self.created_at = datetime.datetime.utcnow().replace(tzinfo=utc)
+        time_zone = clare.common.utilities.TimeZone.from_name('UTC')
+        self.created_at = datetime.datetime.utcnow().replace(tzinfo=time_zone)
 
     @property
     def INTERFACE_VERSION(self):
@@ -67,6 +47,3 @@ class Event(interfaces.IEvent, interfaces.IJsonSerializable):
         return repr_.format(self.__class__.__name__,
                             self.topic,
                             self.arguments)
-
-
-utc = UTC()
