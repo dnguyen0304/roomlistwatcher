@@ -110,19 +110,21 @@ class Application(object):
         source = sources.Batched(worker_thread=worker_thread,
                                  message_queue=source_message_queue)
 
-        # Construct the producer sender with logging.
+        # Construct the default sender.
         sender = producer.internals.senders.Sender(message_queue=message_queue)
+
+        # Include logging.
         name = self._configuration['room_list_watcher']['scraper']['logger']['name']
         logger = logging.getLogger(name=name)
         sender = senders.Logged(sender=sender, logger=logger)
 
-        # Construct the producer filter.
+        # Construct the no duplicate filter.
         maximum_duration = self._configuration['room_list_watcher']['filter']['maximum_duration']
         after_duration = flush_strategies.AfterDuration(
             maximum_duration=maximum_duration)
         no_duplicate = filters.NoDuplicate(flush_strategy=after_duration)
 
-        # Construct the producer.
+        # Construct the room list watcher.
         room_list_watcher = producer.builders.Builder().with_source(source) \
                                                        .with_sender(sender) \
                                                        .with_filter(no_duplicate) \
