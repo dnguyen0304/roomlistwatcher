@@ -133,22 +133,22 @@ class Application(object):
                                              target=room_list_watcher.produce)
         room_list_watcher.daemon = True
 
-        # Construct the consumer fetcher.
+        # Construct the default fetcher.
         fetcher = consumer.internals.fetchers.Fetcher(message_queue=message_queue)
 
-        # Construct the consumer handler.
+        # Construct the print handler.
         handler = handlers.Print()
 
-        # Construct the consumer.
-        simple_consumer = consumer.builders.Builder().with_fetcher(fetcher) \
-                                                     .with_handler(handler) \
-                                                     .build()
-        simple_consumer = threading.Thread(target=simple_consumer.consume,
-                                           kwargs={'interval': 0.1, 'timeout': None})
-        simple_consumer.daemon = True
+        # Construct the debugger.
+        debugger = consumer.builders.Builder().with_fetcher(fetcher) \
+                                              .with_handler(handler) \
+                                              .build()
+        debugger = threading.Thread(target=debugger.consume,
+                                    kwargs={'interval': 0.1, 'timeout': None})
+        debugger.daemon = True
 
         # Construct the application.
         application = applications.Default(producer=room_list_watcher,
-                                           consumer=simple_consumer)
+                                           consumer=debugger)
 
         return application
