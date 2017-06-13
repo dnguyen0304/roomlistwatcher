@@ -77,8 +77,7 @@ class Application(object):
         # Construct the message queue.
         message_queue = queue.Queue()
 
-        # Construct the room list scraper with marshalling, polling,
-        # and orchestration.
+        # Construct the room list scraper.
         source_message_queue = queue.Queue()
 
         web_driver = selenium.webdriver.Chrome()
@@ -87,16 +86,22 @@ class Application(object):
             timeout=self._configuration['room_list_watcher']['scraper']['wait_context']['timeout'])
         scraper = scraping.scrapers.RoomList(web_driver=web_driver,
                                              wait_context=wait_context)
+
+        # Include marshalling.
         queue_name = configuration['queue']['name']
         name = self._configuration['common']['time_zone']['name']
         time_zone = common.utilities.TimeZone.from_name(name)
         record_factory = Record(queue_name=queue_name, time_zone=time_zone)
         scraper = scrapers.Marshalling(scraper=scraper,
                                        record_factory=record_factory)
+
+        # Include polling.
         scraper = scraping.scrapers.Polling(
             scraper=scraper,
             wait_time=self._configuration['room_list_watcher']['scraper']['wait_time'],
             message_queue=source_message_queue)
+
+        # Include orchestration.
         logger = logging.getLogger(
             name=self._configuration['room_list_watcher']['scraper']['logger']['name'])
         scraper = scrapers.Orchestration(scraper=scraper, logger=logger)
