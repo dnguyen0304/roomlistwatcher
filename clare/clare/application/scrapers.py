@@ -4,7 +4,7 @@ import clare.common
 from . import scraping
 
 
-class Marshalled(object):
+class Marshalling(object):
 
     def __init__(self, scraper, record_factory):
 
