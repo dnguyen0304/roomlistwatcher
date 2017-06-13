@@ -103,7 +103,7 @@ class Application(object):
         worker_thread = threading.Thread(
             name='room_list_watcher.scraper',
             target=scraper.scrape,
-            kwargs={'url': self._configuration['room_list_watcher']['kwargs']['url']})
+            kwargs={'url': self._configuration['room_list_watcher']['scraper']['url']})
         source = sources.Batched(worker_thread=worker_thread,
                                  message_queue=source_message_queue)
 
