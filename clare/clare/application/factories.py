@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import datetime
 import logging
 import sys
 import threading
@@ -7,11 +8,13 @@ import threading
 if sys.version_info[:2] == (2, 7):
     import Queue as queue
 
+import lxml.html
 import selenium.webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 
 from .messaging.client import consumer
 from .messaging.client import producer
+from .messaging.client import records
 from . import scraping
 from . import applications
 from . import filters
@@ -20,6 +23,35 @@ from . import handlers
 from . import scrapers
 from . import senders
 from . import sources
+from clare import common
+
+
+class Record(object):
+
+    _record_class = records.Record
+
+    def __init__(self, queue_name, time_zone):
+        self._queue_name = queue_name
+        self._time_zone = time_zone
+
+    def create(self, value=None):
+        timestamp = datetime.datetime.utcnow().replace(tzinfo=self._time_zone)
+        record = records.Record(queue_name=self._queue_name,
+                                timestamp=timestamp,
+                                value=value)
+        return record
+
+    def create_from_html(self, html):
+        element = lxml.html.fragment_fromstring(html=html)
+        room_path = element.get(key='href')
+        record = self.create(value=room_path)
+        return record
+
+    def __repr__(self):
+        repr_ = '{}(queue_name="{}", time_zone={})'
+        return repr_.format(self.__class__.__name__,
+                            self._queue_name,
+                            self._time_zone)
 
 
 class Application(object):
@@ -45,7 +77,8 @@ class Application(object):
         # Construct the message queue.
         message_queue = queue.Queue()
 
-        # Construct the producer source.
+        # Construct the room list scraper with marshalling, polling,
+        # and orchestration.
         source_message_queue = queue.Queue()
 
         web_driver = selenium.webdriver.Chrome()
@@ -54,7 +87,12 @@ class Application(object):
             timeout=self._configuration['room_list_watcher']['scraper']['wait_context']['timeout'])
         scraper = scraping.scrapers.RoomList(web_driver=web_driver,
                                              wait_context=wait_context)
-        scraper = scraping.scrapers.SerializedElements(scraper=scraper)
+        queue_name = configuration['queue']['name']
+        name = self._configuration['common']['time_zone']['name']
+        time_zone = common.utilities.TimeZone.from_name(name)
+        record_factory = Record(queue_name=queue_name, time_zone=time_zone)
+        scraper = scrapers.Marshalling(scraper=scraper,
+                                       record_factory=record_factory)
         scraper = scraping.scrapers.Polling(
             scraper=scraper,
             wait_time=self._configuration['room_list_watcher']['scraper']['wait_time'],
