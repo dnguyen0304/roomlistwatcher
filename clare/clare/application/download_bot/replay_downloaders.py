@@ -92,7 +92,8 @@ class Validating(interfaces.IReplayDownloader):
         self._validator = validator
 
     def run(self, url):
-        self._replay_downloader.run(url=url)
+        self._replay_downloader._initialize(url=url)
+        self._do_run()
 
     def _do_run(self):
 
@@ -106,7 +107,7 @@ class Validating(interfaces.IReplayDownloader):
         """
 
         try:
-            self._validator.check_no_redirect()
+            self._validator.check_room_was_entered()
         except common.automation.exceptions.ValidationFailed:
             try:
                 self._validator.check_no_server_error()

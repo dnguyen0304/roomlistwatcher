@@ -31,14 +31,12 @@ class PokemonShowdown(object):
 
         self._wait_context = wait_context
 
-    def check_no_redirect(self):
+    def check_room_was_entered(self):
         condition = title_not_equal(title='Showdown!')
         try:
             self._wait_context.until(condition)
         except selenium.common.exceptions.TimeoutException:
-            pass
-        else:
-            message = 'The browser was redirected to the home page.'
+            message = 'The room could not be entered.'
             raise exceptions.ValidationFailed(message)
 
     def check_no_server_error(self):
