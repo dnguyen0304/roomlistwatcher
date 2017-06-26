@@ -1,0 +1,99 @@
+# -*- coding: utf-8 -*-
+
+import collections
+import os
+import uuid
+
+import selenium.webdriver
+from selenium.webdriver.support.ui import WebDriverWait
+
+from . import download_bots
+from . import download_validators
+from . import exceptions
+from . import replay_downloaders
+from clare import common
+
+
+class Factory(object):
+
+    def __init__(self, properties):
+
+        """
+        Parameters
+        ----------
+        properties : collections.Mapping
+        """
+
+        self._properties = properties
+
+    def create(self):
+        directory_path = os.path.join(
+            self._properties['factory']['root_directory_path'],
+            str(uuid.uuid4()))
+
+        # Construct the replay downloader with validation and retrying.
+        chrome_options = selenium.webdriver.ChromeOptions()
+        chrome_options.add_experimental_option(
+            name='prefs',
+            value={'download.default_directory': directory_path})
+        web_driver = selenium.webdriver.Chrome(chrome_options=chrome_options)
+        wait_context = WebDriverWait(
+            web_driver,
+            timeout=self._properties['replay_downloader']['wait_context']['timeout'])
+        replay_downloader = replay_downloaders.ReplayDownloader(
+            web_driver=web_driver,
+            wait_context=wait_context)
+        wait_context = WebDriverWait(
+            web_driver,
+            timeout=self._properties['validator']['wait_context']['timeout'])
+        validator = common.automation.validators.PokemonShowdown(
+            wait_context=wait_context)
+        replay_downloader = replay_downloaders.Validating(
+            replay_downloader=replay_downloader,
+            validator=validator)
+        stop_strategy = common.retry.stop_strategies.AfterDuration(
+            maximum_duration=self._properties['replay_downloader']['policy']['stop_strategy']['maximum_duration'])
+        wait_strategy = common.retry.wait_strategies.Fixed(
+            wait_time=self._properties['replay_downloader']['policy']['wait_strategy']['wait_time'])
+        policy = common.retry.PolicyBuilder() \
+            .with_stop_strategy(stop_strategy) \
+            .with_wait_strategy(wait_strategy) \
+            .continue_on_exception(exceptions.ConnectionLost) \
+            .continue_on_exception(exceptions.BattleNotCompleted) \
+            .build()
+        replay_downloader = replay_downloaders.Retrying(
+            replay_downloader=replay_downloader,
+            policy=policy)
+
+        # Construct the download validator with retrying.
+        download_validator = download_validators.DownloadValidator(
+            directory_path=directory_path)
+        stop_strategy = common.retry.stop_strategies.AfterDuration(
+            maximum_duration=self._properties['download_validator']['policy']['stop_strategy']['maximum_duration'])
+        wait_strategy = common.retry.wait_strategies.Fixed(
+            wait_time=self._properties['download_validator']['policy']['wait_strategy']['wait_time'])
+        policy_builder = common.retry.PolicyBuilder() \
+            .with_stop_strategy(stop_strategy) \
+            .with_wait_strategy(wait_strategy)
+        # Exclude intermediary and temporary files.
+        policy_builder = policy_builder \
+            .continue_if_result(predicate=lambda x: x == '') \
+            .continue_if_result(predicate=lambda x: '.html' not in x) \
+            .continue_if_result(predicate=lambda x: '.crdownload' in x)
+        # Wait until the replay downloader has completed.
+        policy_builder = policy_builder.continue_on_exception(OSError)
+        policy = policy_builder.build()
+        download_validator = download_validators.Retrying(
+            download_validator=download_validator,
+            policy=policy)
+
+        # Construct the download bot.
+        download_bot = download_bots.DownloadBot(
+            replay_downloader=replay_downloader,
+            download_validator=download_validator)
+
+        return download_bot
+
+    def __repr__(self):
+        repr_ = '{}(properties={})'
+        return repr_.format(self.__class__.__name__, self._properties)
