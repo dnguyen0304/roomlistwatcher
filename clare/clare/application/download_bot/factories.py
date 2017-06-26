@@ -10,6 +10,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from . import download_bots
 from . import download_validators
 from . import exceptions
+from . import filters
 from . import handlers
 from . import replay_downloaders
 from clare import common
@@ -122,10 +123,18 @@ class Consumer(object):
         handler = handlers.Download(download_bot=download_bot)
         handler = handlers.Printing(handler=handler)
 
+        # Construct the only generation seven metagame filter.
+        only_generation_seven_metagame = filters.OnlyGenerationSevenMetagame()
+
+        # Construct the only overused metagame filter.
+        only_overused_metagame = filters.OnlyOverusedMetagame()
+
         # Construct the consumer.
         consumer_ = consumer.builders.Builder() \
             .with_fetcher(self._fetcher) \
             .with_handler(handler) \
+            .with_filter(only_generation_seven_metagame) \
+            .with_filter(only_overused_metagame) \
             .build()
 
         return consumer_
