@@ -10,8 +10,10 @@ from selenium.webdriver.support.ui import WebDriverWait
 from . import download_bots
 from . import download_validators
 from . import exceptions
+from . import handlers
 from . import replay_downloaders
 from clare import common
+from clare.common.messaging.client import consumer
 
 
 class Factory(object):
@@ -97,3 +99,39 @@ class Factory(object):
     def __repr__(self):
         repr_ = '{}(properties={})'
         return repr_.format(self.__class__.__name__, self._properties)
+
+
+class Consumer(object):
+
+    def __init__(self, properties, fetcher):
+
+        """
+        Parameters
+        ----------
+        properties : collections.Mapping
+        fetcher : clare.common.messaging.client.consumer.internals.fetchers.Fetcher
+        """
+
+        self._factory = Factory(properties=properties)
+        self._properties = properties
+        self._fetcher = fetcher
+
+    def create(self):
+        # Construct the download handler with printing.
+        download_bot = self._factory.create()
+        handler = handlers.Download(download_bot=download_bot)
+        handler = handlers.Printing(handler=handler)
+
+        # Construct the consumer.
+        consumer_ = consumer.builders.Builder() \
+            .with_fetcher(self._fetcher) \
+            .with_handler(handler) \
+            .build()
+
+        return consumer_
+
+    def __repr__(self):
+        repr_ = '{}(properties={}, fetcher={})'
+        return repr_.format(self.__class__.__name__,
+                            self._properties,
+                            self._fetcher)
