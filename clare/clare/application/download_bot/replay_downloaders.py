@@ -100,22 +100,22 @@ class Validating(interfaces.IReplayDownloader):
         """
         Raises
         ------
-        clare.application.download_bot.exceptions.ResourceExpired
-            If the room has expired.
-        common.automation.exceptions.ValidationFailed:
+        clare.application.download_bot.exceptions.ConnectionLost
             If the connection with the target server was lost.
+        clare.application.download_bot.exceptions.RoomExpired
+            If the room has expired.
         """
 
         try:
             self._validator.check_room_was_entered()
         except common.automation.exceptions.ValidationFailed:
             try:
-                self._validator.check_no_server_error()
+                self._validator.check_connection_exists()
             except common.automation.exceptions.ValidationFailed as e:
                 raise exceptions.ConnectionLost(e.message)
             else:
                 message = 'The room has expired.'
-                raise exceptions.ResourceExpired(message)
+                raise exceptions.RoomExpired(message)
         self._replay_downloader._do_run()
 
     def dispose(self):

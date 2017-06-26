@@ -5,9 +5,9 @@ class ConnectionLost(Exception):
     pass
 
 
-class ResourceExpired(Exception):
+class BattleNotCompleted(Exception):
     pass
 
 
-class BattleNotCompleted(Exception):
+class RoomExpired(Exception):
     pass

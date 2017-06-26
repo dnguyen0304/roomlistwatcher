@@ -39,7 +39,7 @@ class PokemonShowdown(object):
             message = 'The room could not be entered.'
             raise exceptions.ValidationFailed(message)
 
-    def check_no_server_error(self):
+    def check_connection_exists(self):
         css_selector = 'body > div.ps-overlay > div > form > p:first-child'
         locator = (By.CSS_SELECTOR, css_selector)
         text_ = 'disconnected'
