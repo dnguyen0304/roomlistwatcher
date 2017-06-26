@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import collections
+import logging
 import os
 import uuid
 
@@ -121,7 +122,8 @@ class Consumer(object):
         # Construct the download handler with printing.
         download_bot = self._factory.create()
         handler = handlers.Download(download_bot=download_bot)
-        handler = handlers.Printing(handler=handler)
+        logger = logging.getLogger(name=self._properties['handler']['logger']['name'])
+        handler = handlers.Orchestrating(handler=handler, logger=logger)
 
         # Construct the only generation seven metagame filter.
         only_generation_seven_metagame = filters.OnlyGenerationSevenMetagame()
