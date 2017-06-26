@@ -111,8 +111,8 @@ class Validating(interfaces.IReplayDownloader):
         except common.automation.exceptions.ValidationFailed:
             try:
                 self._validator.check_no_server_error()
-            except common.automation.exceptions.ValidationFailed:
-                raise
+            except common.automation.exceptions.ValidationFailed as e:
+                raise exceptions.ConnectionLost(e.message)
             else:
                 message = 'The room has expired.'
                 raise exceptions.ResourceExpired(message)
