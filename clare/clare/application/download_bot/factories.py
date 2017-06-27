@@ -149,7 +149,7 @@ class Factory(object):
             .with_messaging_broker(messaging_broker)
         # Exclude intermediary and temporary files.
         policy_builder = policy_builder \
-            .continue_if_result(predicate=lambda x: x == '') \
+            .continue_if_result(predicate=lambda x: not x) \
             .continue_if_result(predicate=lambda x: '.html' not in x) \
             .continue_if_result(predicate=lambda x: '.crdownload' in x)
         # Wait until the replay downloader has completed.
