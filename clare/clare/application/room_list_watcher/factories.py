@@ -90,6 +90,12 @@ class Factory(object):
             scraper=scraper,
             wait_time=self._properties['scraper']['wait_time'])
 
+        # Include orchestration.
+        logger = logging.getLogger(name=self._properties['scraper']['logger']['name'])
+        scraper = scrapers.OrchestratingDecorator(
+            scraper=scraper,
+            logger=logger)
+
         return scraper
 
     def __repr__(self):
