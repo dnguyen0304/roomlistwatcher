@@ -8,6 +8,8 @@ from clare.common import event_driven
 
 class Subscriber(event_driven.interfaces.INotifyable):
 
+    _event_suffix = ''
+
     def __init__(self, event_name):
 
         """
@@ -20,7 +22,7 @@ class Subscriber(event_driven.interfaces.INotifyable):
 
     def notify(self, event):
         data = json.loads(event, object_pairs_hook=collections.OrderedDict)
-        data['topic_name'] = self._event_name + self.__class__.__name__
+        data['topic_name'] = self._event_name + '_' + self._event_suffix
         message = json.dumps(data)
         return message
 
@@ -30,11 +32,11 @@ class Subscriber(event_driven.interfaces.INotifyable):
 
 
 class AttemptStarted(Subscriber):
-    pass
+    _event_suffix = 'ATTEMPT_STARTED'
 
 
 class AttemptCompleted(Subscriber):
-    pass
+    _event_suffix = 'ATTEMPT_COMPLETED'
 
 
 class Logging(event_driven.interfaces.INotifyable):

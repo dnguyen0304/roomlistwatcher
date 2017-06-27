@@ -63,7 +63,7 @@ class Factory(object):
         messaging_broker_factory = common.retry.messaging.broker_factories.Logging(
             logger=logger)
         messaging_broker = messaging_broker_factory.create(
-            event_name='ReplayDownload')
+            event_name='REPLAY_DOWNLOAD')
         policy = common.retry.PolicyBuilder() \
             .with_stop_strategy(stop_strategy) \
             .with_wait_strategy(wait_strategy) \
@@ -86,7 +86,7 @@ class Factory(object):
         messaging_broker_factory = common.retry.messaging.broker_factories.Logging(
             logger=logger)
         messaging_broker = messaging_broker_factory.create(
-            event_name='DownloadValidate')
+            event_name='DOWNLOAD_VALIDATE')
         policy_builder = common.retry.PolicyBuilder() \
             .with_stop_strategy(stop_strategy) \
             .with_wait_strategy(wait_strategy) \
