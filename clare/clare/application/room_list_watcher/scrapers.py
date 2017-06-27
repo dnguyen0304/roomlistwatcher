@@ -4,6 +4,7 @@ from __future__ import print_function
 
 import time
 
+import lxml.html
 import selenium.common
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
@@ -175,6 +176,48 @@ class Validating(interfaces.IScraper):
                             self._validator)
 
 
+class RecordMarshallingDecorator(object):
+
+    def __init__(self, scraper, factory):
+
+        """
+        Parameters
+        ----------
+        scraper : clare.application.room_list_watcher.interfaces.IScraper
+        factory : clare.application.room_list_watcher.record_factories.RecordFactory
+        """
+
+        self._scraper = scraper
+        self._factory = factory
+
+    def run(self, url):
+
+        """
+        Returns
+        -------
+        collections.Sequence
+        """
+
+        records = list()
+        elements = self._scraper.run(url=url)
+        for element in elements:
+            html = element.get_attribute('outerHTML')
+            element = lxml.html.fragment_fromstring(html=html)
+            room_path = element.get(key='href')
+            record = self._factory.create(value=room_path)
+            records.append(record)
+        return records
+
+    def dispose(self):
+        self._scraper.dispose()
+
+    def __repr__(self):
+        repr_ = '{}(scraper={}, factory={})'
+        return repr_.format(self.__class__.__name__,
+                            self._scraper,
+                            self._factory)
+
+
 class PollingDecorator(object):
 
     def __init__(self, scraper, wait_time):
@@ -191,6 +234,13 @@ class PollingDecorator(object):
         self.wait_time = wait_time
 
     def run(self, url):
+
+        """
+        Returns
+        -------
+        None
+        """
+
         while True:
             self._run_once(url=url)
             time.sleep(self.wait_time)
@@ -224,10 +274,6 @@ class ProfilingDecorator(object):
     def run(self, url):
 
         """
-        Parameters
-        ----------
-        url : str
-
         Returns
         -------
         None
@@ -263,10 +309,6 @@ class QueuingDecorator(object):
     def run(self, url):
 
         """
-        Parameters
-        ----------
-        url : str
-
         Returns
         -------
         None
