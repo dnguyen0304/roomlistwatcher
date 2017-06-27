@@ -91,6 +91,36 @@ class RoomList(interfaces.IScraper):
                             self._wait_context)
 
 
+class Repeating(interfaces.IScraper):
+
+    def __init__(self, scraper):
+
+        """
+        The web page is initialized only once.
+
+        Parameters
+        ----------
+        scraper : clare.application.room_list_watcher.interfaces.IScraper
+        """
+
+        self._scraper = scraper
+        self._with_initialization = True
+
+    def run(self, url):
+        if self._with_initialization:
+            self._scraper._initialize(url=url)
+            self._with_initialization = False
+        data = self._scraper._extract()
+        return data
+
+    def dispose(self):
+        self._scraper.dispose()
+
+    def __repr__(self):
+        repr_ = '{}(scraper={})'
+        return repr_.format(self.__class__.__name__, self._scraper)
+
+
 class Validating(interfaces.IScraper):
 
     def __init__(self, scraper, validator):
