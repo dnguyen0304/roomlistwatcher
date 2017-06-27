@@ -213,6 +213,44 @@ class Validating(interfaces.IScraper):
                             self._validator)
 
 
+class OrchestratingDecorator(object):
+
+    def __init__(self, scraper, logger):
+
+        """
+        Parameters
+        ----------
+        scraper : clare.application.room_list_watcher.interfaces.IScraper
+        logger : logging.Logger
+        """
+
+        self._scraper = scraper
+        self._logger = logger
+
+    def run(self, url):
+
+        """
+        Returns
+        -------
+        None
+        """
+
+        try:
+            self._scraper.run(url=url)
+        except common.retry.exceptions.MaximumRetry as e:
+            message = common.logging.utilities.format_exception(e=e)
+            self._logger.debug(msg=message)
+
+    def dispose(self):
+        self._scraper.dispose()
+
+    def __repr__(self):
+        repr_ = '{}(scraper={}, logger={})'
+        return repr_.format(self.__class__.__name__,
+                            self._scraper,
+                            self._logger)
+
+
 class PollingDecorator(object):
 
     def __init__(self, scraper, wait_time):
