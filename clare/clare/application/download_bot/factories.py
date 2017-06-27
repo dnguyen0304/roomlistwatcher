@@ -14,9 +14,8 @@ from . import exceptions
 from . import filters
 from . import handlers
 from . import replay_downloaders
-from . import subscribers
 from clare import common
-from clare.common.messaging.client import consumer
+from clare.common.messaging import consumer
 
 
 class Factory(object):

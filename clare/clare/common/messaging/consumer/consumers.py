@@ -10,8 +10,8 @@ class Consumer(object):
         """
         Parameters
         ----------
-        fetcher : clare.application.messaging.client.consumer.internals.fetchers.Fetcher
-        handler : clare.application.messaging.client.consumer.internals.interfaces.IHandler
+        fetcher : clare.application.messaging.consumer.fetchers.Fetcher
+        handler : clare.application.messaging.consumer.interfaces.IHandler
         filters : collections.Iterable
             Defaults to list.
         """

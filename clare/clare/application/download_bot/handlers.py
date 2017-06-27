@@ -9,7 +9,7 @@ from .topic import Topic
 from clare import common
 
 
-class Download(common.messaging.client.consumer.internals.interfaces.IHandler):
+class Download(common.messaging.consumer.interfaces.IHandler):
 
     def __init__(self, download_bot):
 
@@ -31,7 +31,7 @@ class Download(common.messaging.client.consumer.internals.interfaces.IHandler):
         return repr_.format(self.__class__.__name__, self._download_bot)
 
 
-class Orchestrating(common.messaging.client.consumer.internals.interfaces.IHandler):
+class Orchestrating(common.messaging.consumer.interfaces.IHandler):
 
     def __init__(self, handler, logger):
 
@@ -65,7 +65,7 @@ class Orchestrating(common.messaging.client.consumer.internals.interfaces.IHandl
                             self._logger)
 
 
-class Printing(common.messaging.client.consumer.internals.interfaces.IHandler):
+class Printing(common.messaging.consumer.interfaces.IHandler):
 
     def __init__(self, handler):
 

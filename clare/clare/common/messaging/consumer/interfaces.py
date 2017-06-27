@@ -13,7 +13,7 @@ class IHandler(object):
         """
         Parameters
         ----------
-        record : clare.application.messaging.client.records.Record
+        record : clare.application.messaging.records.Record
         """
 
         pass

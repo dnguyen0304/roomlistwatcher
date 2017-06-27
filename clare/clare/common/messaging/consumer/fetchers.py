@@ -22,7 +22,7 @@ class Fetcher(object):
 
         Returns
         -------
-        clare.application.messaging.client.records.Record
+        clare.application.messaging.records.Record
         """
 
         record = self._message_queue.get(timeout=timeout)
