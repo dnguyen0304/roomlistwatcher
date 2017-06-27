@@ -3,5 +3,5 @@
 from clare import common
 
 
-class RoomListWatcher(common.enumerations.Automated):
+class Topic(common.enumerations.Automated):
     ROOM_CREATED = ()
