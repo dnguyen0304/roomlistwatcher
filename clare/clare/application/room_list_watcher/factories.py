@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 
+import sys
+
+if sys.version_info[:2] == (2, 7):
+    import Queue as queue
+
 import selenium.webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 
@@ -20,7 +25,7 @@ class Factory(object):
         self._properties = properties
 
     def create(self):
-        # Construct the scraper with validation.
+        # Construct the scraper with validation and queuing.
         web_driver = selenium.webdriver.Chrome()
         wait_context = WebDriverWait(
             driver=web_driver,
@@ -33,6 +38,9 @@ class Factory(object):
         validator = common.automation.validators.PokemonShowdown(
             wait_context=wait_context)
         scraper = scrapers.Validating(scraper=scraper, validator=validator)
+        message_queue = queue.Queue()
+        scraper = scrapers.QueuingDecorator(scraper=scraper,
+                                            message_queue=message_queue)
 
         return scraper
 
