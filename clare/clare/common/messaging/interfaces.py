@@ -13,11 +13,11 @@ class IFilter(object):
         """
         Parameters
         ----------
-        record : clare.application.messaging.client.records.Record
+        record : clare.common.messaging.records.Record
 
         Returns
         -------
-        clare.application.messaging.client.records.Record
+        clare.common.messaging.records.Record
             If the record should not be filtered.
         None
             If the record should be filtered.

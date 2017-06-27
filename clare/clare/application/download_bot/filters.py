@@ -5,7 +5,7 @@ import abc
 from clare.common import messaging
 
 
-class Base(messaging.client.common.internals.interfaces.IFilter):
+class Base(messaging.interfaces.IFilter):
 
     def filter(self, record):
         if not self._should_filter(record=record):
@@ -18,7 +18,7 @@ class Base(messaging.client.common.internals.interfaces.IFilter):
         """
         Parameters
         ----------
-        record : clare.common.messaging.client.records.Record
+        record : clare.common.messaging.records.Record
 
         Returns
         -------
@@ -33,11 +33,11 @@ class Base(messaging.client.common.internals.interfaces.IFilter):
         """
         Parameters
         ----------
-        record : clare.common.messaging.client.records.Record
+        record : clare.common.messaging.records.Record
 
         Returns
         -------
-        clare.common.messaging.client.records.Record
+        clare.common.messaging.records.Record
         """
 
         return record
