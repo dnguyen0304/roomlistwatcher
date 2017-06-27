@@ -87,3 +87,44 @@ class RoomList(interfaces.IScraper):
         return repr_.format(self.__class__.__name__,
                             self._web_driver,
                             self._wait_context)
+
+
+class Validating(interfaces.IScraper):
+
+    def __init__(self, scraper, validator):
+
+        """
+        Parameters
+        ----------
+        scraper : clare.application.room_list_watcher.interfaces.IScraper
+        validator : clare.common.automation.validators.PokemonShowdown
+        """
+
+        self._scraper = scraper
+        self._validator = validator
+
+    def run(self, url):
+
+        """
+        Raises
+        ------
+        clare.common.automation.exceptions.ConnectionLost
+            If the connection with the target server was lost.
+        """
+
+        self._initialize(url=url)
+        elements = self._scraper._extract()
+        return elements
+
+    def _initialize(self, url):
+        self._scraper._initialize(url=url)
+        self._validator.check_connection_exists()
+
+    def dispose(self):
+        self._scraper.dispose()
+
+    def __repr__(self):
+        repr_ = '{}(scraper={}, validator={})'
+        return repr_.format(self.__class__.__name__,
+                            self._scraper,
+                            self._validator)
