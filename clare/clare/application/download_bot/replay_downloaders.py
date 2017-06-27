@@ -41,31 +41,14 @@ class ReplayDownloader(interfaces.IReplayDownloader):
         self._web_driver.get(url=url)
 
     def _do_run(self):
-        download_button = self._find_download_button()
+        download_button = common.automation.utilities.find_button(
+            locator=(By.CLASS_NAME, 'replayDownloadButton'),
+            wait_context=self._wait_context)
         try:
             download_button.click()
         except AttributeError:
             message = 'The battle has not yet completed.'
             raise exceptions.BattleNotCompleted(message)
-
-    def _find_download_button(self):
-
-        """
-        Returns
-        -------
-        selenium.webdriver.remote.webelement.WebElement
-            If the battle has completed.
-        None
-            If the battle has not yet completed.
-        """
-
-        locator = (By.CLASS_NAME, 'replayDownloadButton')
-        condition = expected_conditions.element_to_be_clickable(locator=locator)
-        try:
-            download_button = self._wait_context.until(condition)
-        except selenium.common.exceptions.TimeoutException:
-            download_button = None
-        return download_button
 
     def dispose(self):
         self._web_driver.quit()
