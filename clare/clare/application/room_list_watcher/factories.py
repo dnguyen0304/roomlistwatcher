@@ -25,22 +25,36 @@ class Factory(object):
         self._properties = properties
 
     def create(self):
-        # Construct the scraper with validation and queuing.
+        # Construct the scraper.
         web_driver = selenium.webdriver.Chrome()
         wait_context = WebDriverWait(
             driver=web_driver,
             timeout=self._properties['scraper']['wait_context']['timeout'])
         scraper = scrapers.RoomList(web_driver=web_driver,
                                     wait_context=wait_context)
+
+        # Include repeating.
+        # This should be composed before validation so that validation
+        # occurs each time.
+        scraper = scrapers.Repeating(scraper=scraper)
+
+        # Include validation.
         wait_context = WebDriverWait(
             web_driver,
-            timeout=self._properties['wait_context']['timeout'])
+            timeout=self._properties['scraper']['validator']['wait_context']['timeout'])
         validator = common.automation.validators.PokemonShowdown(
             wait_context=wait_context)
         scraper = scrapers.Validating(scraper=scraper, validator=validator)
+
+        # Include queuing.
         message_queue = queue.Queue()
         scraper = scrapers.QueuingDecorator(scraper=scraper,
                                             message_queue=message_queue)
+
+        # Include polling.
+        scraper = scrapers.PollingDecorator(
+            scraper=scraper,
+            wait_time=self._properties['scraper']['wait_time'])
 
         return scraper
 
