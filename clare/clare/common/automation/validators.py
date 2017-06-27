@@ -52,7 +52,7 @@ class PokemonShowdown(object):
             pass
         else:
             message = 'The connection with the target server was lost.'
-            raise exceptions.ValidationFailed(message)
+            raise exceptions.ConnectionLost(message)
 
     def __repr__(self):
         repr_ = '{}(wait_context={})'

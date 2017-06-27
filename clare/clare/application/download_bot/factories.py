@@ -126,7 +126,7 @@ class Factory(object):
         policy = common.retry.PolicyBuilder() \
             .with_stop_strategy(stop_strategy) \
             .with_wait_strategy(wait_strategy) \
-            .continue_on_exception(exceptions.ConnectionLost) \
+            .continue_on_exception(common.automation.exceptions.ConnectionLost) \
             .continue_on_exception(exceptions.BattleNotCompleted) \
             .with_messaging_broker(messaging_broker) \
             .build()
