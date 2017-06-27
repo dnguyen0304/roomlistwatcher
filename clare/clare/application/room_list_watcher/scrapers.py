@@ -107,9 +107,16 @@ class Repeating(interfaces.IScraper):
         self._with_initialization = True
 
     def run(self, url):
+        self._initialize(url=url)
+        data = self._extract()
+        return data
+
+    def _initialize(self, url):
         if self._with_initialization:
             self._scraper._initialize(url=url)
             self._with_initialization = False
+
+    def _extract(self):
         data = self._scraper._extract()
         return data
 
@@ -151,6 +158,10 @@ class Validating(interfaces.IScraper):
     def _initialize(self, url):
         self._scraper._initialize(url=url)
         self._validator.check_connection_exists()
+
+    def _extract(self):
+        data = self._scraper._extract()
+        return data
 
     def dispose(self):
         self._scraper.dispose()

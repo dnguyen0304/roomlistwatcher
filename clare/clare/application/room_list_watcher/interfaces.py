@@ -23,5 +23,31 @@ class IScraper(object):
         pass
 
     @abc.abstractmethod
+    def _initialize(self, url):
+
+        """
+        Parameters
+        ----------
+        url : str
+
+        Returns
+        -------
+        None
+        """
+
+        pass
+
+    @abc.abstractmethod
+    def _extract(self):
+
+        """
+        Returns
+        -------
+        collections.Sequence
+        """
+
+        pass
+
+    @abc.abstractmethod
     def dispose(self):
         pass
