@@ -176,48 +176,6 @@ class Validating(interfaces.IScraper):
                             self._validator)
 
 
-class RecordMarshallingDecorator(object):
-
-    def __init__(self, scraper, factory):
-
-        """
-        Parameters
-        ----------
-        scraper : clare.application.room_list_watcher.interfaces.IScraper
-        factory : clare.application.room_list_watcher.record_factories.RecordFactory
-        """
-
-        self._scraper = scraper
-        self._factory = factory
-
-    def run(self, url):
-
-        """
-        Returns
-        -------
-        collections.Sequence
-        """
-
-        records = list()
-        elements = self._scraper.run(url=url)
-        for element in elements:
-            html = element.get_attribute('outerHTML')
-            element = lxml.html.fragment_fromstring(html=html)
-            room_path = element.get(key='href')
-            record = self._factory.create(value=room_path)
-            records.append(record)
-        return records
-
-    def dispose(self):
-        self._scraper.dispose()
-
-    def __repr__(self):
-        repr_ = '{}(scraper={}, factory={})'
-        return repr_.format(self.__class__.__name__,
-                            self._scraper,
-                            self._factory)
-
-
 class PollingDecorator(object):
 
     def __init__(self, scraper, wait_time):
@@ -326,3 +284,45 @@ class QueuingDecorator(object):
         return repr_.format(self.__class__.__name__,
                             self._scraper,
                             self._message_queue)
+
+
+class RecordMarshallingDecorator(object):
+
+    def __init__(self, scraper, factory):
+
+        """
+        Parameters
+        ----------
+        scraper : clare.application.room_list_watcher.interfaces.IScraper
+        factory : clare.application.room_list_watcher.record_factories.RecordFactory
+        """
+
+        self._scraper = scraper
+        self._factory = factory
+
+    def run(self, url):
+
+        """
+        Returns
+        -------
+        collections.Sequence
+        """
+
+        records = list()
+        elements = self._scraper.run(url=url)
+        for element in elements:
+            html = element.get_attribute('outerHTML')
+            element = lxml.html.fragment_fromstring(html=html)
+            room_path = element.get(key='href')
+            record = self._factory.create(value=room_path)
+            records.append(record)
+        return records
+
+    def dispose(self):
+        self._scraper.dispose()
+
+    def __repr__(self):
+        repr_ = '{}(scraper={}, factory={})'
+        return repr_.format(self.__class__.__name__,
+                            self._scraper,
+                            self._factory)
