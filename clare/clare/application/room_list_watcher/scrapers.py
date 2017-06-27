@@ -2,6 +2,7 @@
 
 from __future__ import print_function
 
+import functools
 import time
 
 import lxml.html
@@ -129,6 +130,42 @@ class Repeating(interfaces.IScraper):
     def __repr__(self):
         repr_ = '{}(scraper={})'
         return repr_.format(self.__class__.__name__, self._scraper)
+
+
+class Retrying(interfaces.IScraper):
+
+    def __init__(self, scraper, policy):
+
+        """
+        Parameters
+        ----------
+        scraper : clare.application.room_list_watcher.interfaces.IScraper
+        policy : clare.common.retry.policy.Policy
+        """
+
+        self._scraper = scraper
+        self._policy = policy
+
+    def run(self, url):
+        scrape = functools.partial(self._scraper.run, url=url)
+        elements = self._policy.execute(scrape)
+        return elements
+
+    def _initialize(self, url):
+        self._scraper._initialize(url=url)
+
+    def _extract(self):
+        elements = self._scraper._extract()
+        return elements
+
+    def dispose(self):
+        self._scraper.dispose()
+
+    def __repr__(self):
+        repr_ = '{}(scraper={}, policy={})'
+        return repr_.format(self.__class__.__name__,
+                            self._scraper,
+                            self._policy)
 
 
 class Validating(interfaces.IScraper):
