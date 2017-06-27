@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import logging
 import sys
 
 if sys.version_info[:2] == (2, 7):
@@ -8,6 +9,7 @@ if sys.version_info[:2] == (2, 7):
 import selenium.webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 
+from . import exceptions
 from . import record_factories
 from . import scrapers
 from clare import common
@@ -46,6 +48,26 @@ class Factory(object):
         validator = common.automation.validators.PokemonShowdown(
             wait_context=wait_context)
         scraper = scrapers.Validating(scraper=scraper, validator=validator)
+
+        # Include retrying.
+        stop_strategy = common.retry.stop_strategies.AfterAttempt(
+            maximum_attempt=self._properties['scraper']['policy']['stop_strategy']['maximum_attempt'])
+        wait_strategy = common.retry.wait_strategies.Fixed(
+            wait_time=self._properties['scraper']['policy']['wait_strategy']['wait_time'])
+        logger = logging.getLogger(name=self._properties['scraper']['policy']['messaging_broker']['logger']['name'])
+        messaging_broker_factory = common.retry.messaging.broker_factories.Logging(
+            logger=logger)
+        messaging_broker = messaging_broker_factory.create(
+            event_name='RoomListScrape')
+        policy = common.retry.PolicyBuilder() \
+            .with_stop_strategy(stop_strategy) \
+            .with_wait_strategy(wait_strategy) \
+            .continue_on_exception(common.automation.exceptions.ConnectionLost) \
+            .continue_on_exception(exceptions.InitializationFailed) \
+            .continue_on_exception(exceptions.ExtractFailed) \
+            .with_messaging_broker(messaging_broker) \
+            .build()
+        scraper = scrapers.Retrying(scraper=scraper, policy=policy)
 
         # Include record marshalling.
         # This should be composed before queuing so that records are
