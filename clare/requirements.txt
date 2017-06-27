@@ -1,4 +1,5 @@
 enum34==1.1.6
+lxml==3.7.3
 numpy==1.13.0rc1
 pandas==0.19.2
 python-dateutil==2.6.0
