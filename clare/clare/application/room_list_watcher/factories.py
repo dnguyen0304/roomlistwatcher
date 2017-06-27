@@ -8,6 +8,7 @@ if sys.version_info[:2] == (2, 7):
 import selenium.webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 
+from . import record_factories
 from . import scrapers
 from clare import common
 
@@ -35,7 +36,7 @@ class Factory(object):
 
         # Include repeating.
         # This should be composed before validation so that validation
-        # occurs each time.
+        # occurs each time instead of only once.
         scraper = scrapers.Repeating(scraper=scraper)
 
         # Include validation.
@@ -45,6 +46,17 @@ class Factory(object):
         validator = common.automation.validators.PokemonShowdown(
             wait_context=wait_context)
         scraper = scrapers.Validating(scraper=scraper, validator=validator)
+
+        # Include record marshalling.
+        # This should be composed before queuing so that records are
+        # enqueued instead of elements.
+        time_zone = common.utilities.TimeZone.from_name(
+            name=self._properties['time_zone']['name'])
+        record_factory = record_factories.RecordFactory(
+            queue_name=self._properties['queue']['name'],
+            time_zone=time_zone)
+        scraper = scrapers.RecordMarshallingDecorator(scraper=scraper,
+                                                      factory=record_factory)
 
         # Include queuing.
         message_queue = queue.Queue()
