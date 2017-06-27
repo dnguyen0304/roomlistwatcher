@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import print_function
+
 import time
 
 import selenium.common
@@ -205,6 +207,43 @@ class PollingDecorator(object):
         return repr_.format(self.__class__.__name__,
                             self._scraper,
                             self.wait_time)
+
+
+class ProfilingDecorator(object):
+
+    def __init__(self, scraper):
+
+        """
+        Parameters
+        ----------
+        scraper : clare.application.room_list_watcher.interfaces.IScraper
+        """
+
+        self._scraper = scraper
+
+    def run(self, url):
+
+        """
+        Parameters
+        ----------
+        url : str
+
+        Returns
+        -------
+        None
+        """
+
+        started_at = time.time()
+        self._scraper.run(url=url)
+        elapsed_time = time.time() - started_at
+        print('Elapsed Time (in seconds):', elapsed_time)
+
+    def dispose(self):
+        self._scraper.dispose()
+
+    def __repr__(self):
+        repr_ = '{}(scraper={})'
+        return repr_.format(self.__class__.__name__, self._scraper)
 
 
 class QueuingDecorator(object):
