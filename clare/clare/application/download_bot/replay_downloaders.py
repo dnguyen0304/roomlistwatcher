@@ -109,7 +109,7 @@ class Validating(interfaces.IReplayDownloader):
         """
         Raises
         ------
-        clare.application.download_bot.exceptions.ConnectionLost
+        clare.common.automation.exceptions.ConnectionLost
             If the connection with the target server was lost.
         clare.application.download_bot.exceptions.RoomExpired
             If the room has expired.
