@@ -247,47 +247,6 @@ class Validating(interfaces.IScraper):
                             self._validator)
 
 
-class PollingDecorator(object):
-
-    def __init__(self, scraper, wait_time):
-
-        """
-        Parameters
-        ----------
-        scraper : clare.application.room_list_watcher.interfaces.IScraper
-        wait_time : float
-            Wait time in seconds.
-        """
-
-        self._scraper = scraper
-        self.wait_time = wait_time
-
-    def run(self, url):
-
-        """
-        Returns
-        -------
-        None
-        """
-
-        while True:
-            self._run_once(url=url)
-            time.sleep(self.wait_time)
-
-    def _run_once(self, url):
-        data = self._scraper.run(url=url)
-        return data
-
-    def dispose(self):
-        self._scraper.dispose()
-
-    def __repr__(self):
-        repr_ = '{}(scraper={}, wait_time={})'
-        return repr_.format(self.__class__.__name__,
-                            self._scraper,
-                            self.wait_time)
-
-
 class ProfilingDecorator(object):
 
     def __init__(self, scraper):
