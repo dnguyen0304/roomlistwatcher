@@ -8,9 +8,10 @@ from . import exceptions
 from .topic import Topic
 from clare import common
 from clare.common import messaging
+from clare.common import retry
 
 
-class Download(common.messaging.consumer.interfaces.IHandler):
+class Download(messaging.consumer.interfaces.IHandler):
 
     def __init__(self, download_bot):
 
@@ -49,7 +50,7 @@ class Nop(messaging.consumer.interfaces.IHandler):
         return repr_.format(self.__class__.__name__)
 
 
-class Orchestrating(common.messaging.consumer.interfaces.IHandler):
+class Orchestrating(messaging.consumer.interfaces.IHandler):
 
     def __init__(self, handler, logger):
 
@@ -66,7 +67,7 @@ class Orchestrating(common.messaging.consumer.interfaces.IHandler):
     def handle(self, record):
         try:
             file_path = self._handler.handle(record=record)
-        except (exceptions.RoomExpired, common.retry.exceptions.MaximumRetry) as e:
+        except (exceptions.RoomExpired, retry.exceptions.MaximumRetry) as e:
             message = common.logging.utilities.format_exception(e=e)
             self._logger.debug(msg=message)
         else:
@@ -83,7 +84,7 @@ class Orchestrating(common.messaging.consumer.interfaces.IHandler):
                             self._logger)
 
 
-class Printing(common.messaging.consumer.interfaces.IHandler):
+class Printing(messaging.consumer.interfaces.IHandler):
 
     def __init__(self, handler):
 
