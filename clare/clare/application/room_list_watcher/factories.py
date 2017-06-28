@@ -30,7 +30,7 @@ class Factory(object):
         self._properties = properties
 
     def create(self):
-        # Construct the scraper.
+        # Construct the room list scraper.
         web_driver = selenium.webdriver.Chrome()
         wait_context = WebDriverWait(
             driver=web_driver,
