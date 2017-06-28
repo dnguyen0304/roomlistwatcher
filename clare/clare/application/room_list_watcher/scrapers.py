@@ -119,6 +119,13 @@ class Orchestrating(interfaces.IScraper):
             self._logger.debug(msg=message)
         return elements
 
+    def _initialize(self, url):
+        self._scraper._initialize(url=url)
+
+    def _extract(self):
+        elements = self._scraper._extract()
+        return elements
+
     def dispose(self):
         self._scraper.dispose()
 
