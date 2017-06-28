@@ -23,14 +23,13 @@ class Producer(object):
             self._produce_once()
 
     def _produce_once(self):
-        records = self._source.emit()
-        for record in records:
-            for filter_ in self._filters:
-                record = filter_.filter(record=record)
-                if record is None:
-                    break
-            else:
-                self._sender.push(record=record, timeout=None)
+        record = self._source.emit()
+        for filter_ in self._filters:
+            record = filter_.filter(record=record)
+            if record is None:
+                break
+        else:
+            self._sender.push(record=record, timeout=None)
 
     def __repr__(self):
         repr_ = '{}(source={}, sender={}, filters={})'

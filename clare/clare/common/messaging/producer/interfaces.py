@@ -13,7 +13,7 @@ class ISource(object):
         """
         Returns
         -------
-        collections.Iterable
+        clare.common.messaging.record.Record
         """
 
         pass
