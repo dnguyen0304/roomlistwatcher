@@ -111,13 +111,13 @@ class Orchestrating(interfaces.IScraper):
         self._logger = logger
 
     def run(self, url):
-        data = list()
+        elements = list()
         try:
-            data = self._scraper.run(url=url)
+            elements = self._scraper.run(url=url)
         except common.retry.exceptions.MaximumRetry as e:
             message = common.logging.utilities.format_exception(e=e)
             self._logger.debug(msg=message)
-        return data
+        return elements
 
     def dispose(self):
         self._scraper.dispose()
@@ -146,8 +146,8 @@ class Repeating(interfaces.IScraper):
 
     def run(self, url):
         self._initialize(url=url)
-        data = self._extract()
-        return data
+        elements = self._extract()
+        return elements
 
     def _initialize(self, url):
         if self._with_initialization:
@@ -155,8 +155,8 @@ class Repeating(interfaces.IScraper):
             self._with_initialization = False
 
     def _extract(self):
-        data = self._scraper._extract()
-        return data
+        elements = self._scraper._extract()
+        return elements
 
     def dispose(self):
         self._scraper.dispose()
@@ -234,8 +234,8 @@ class Validating(interfaces.IScraper):
         self._validator.check_connection_exists()
 
     def _extract(self):
-        data = self._scraper._extract()
-        return data
+        elements = self._scraper._extract()
+        return elements
 
     def dispose(self):
         self._scraper.dispose()
