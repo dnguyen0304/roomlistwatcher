@@ -56,7 +56,8 @@ class Factory(object):
             maximum_attempt=self._properties['scraper']['policy']['stop_strategy']['maximum_attempt'])
         wait_strategy = retry.wait_strategies.Fixed(
             wait_time=self._properties['scraper']['policy']['wait_strategy']['wait_time'])
-        logger = logging.getLogger(name=self._properties['scraper']['policy']['messaging_broker']['logger']['name'])
+        logger = logging.getLogger(
+            name=self._properties['scraper']['policy']['messaging_broker']['logger']['name'])
         messaging_broker_factory = retry.messaging.broker_factories.Logging(
             logger=logger)
         messaging_broker = messaging_broker_factory.create(
@@ -72,8 +73,6 @@ class Factory(object):
         scraper = scrapers.Retrying(scraper=scraper, policy=policy)
 
         # Include record marshalling.
-        # This should be composed before queuing so that records are
-        # enqueued instead of elements.
         time_zone = common.utilities.TimeZone.from_name(
             name=self._properties['time_zone']['name'])
         record_factory = record_factories.RecordFactory(
@@ -83,7 +82,8 @@ class Factory(object):
                                                       factory=record_factory)
 
         # Include orchestration.
-        logger = logging.getLogger(name=self._properties['scraper']['logger']['name'])
+        logger = logging.getLogger(
+            name=self._properties['scraper']['logger']['name'])
         scraper = scrapers.Orchestrating(scraper=scraper, logger=logger)
 
         return scraper
@@ -111,13 +111,14 @@ class Producer(object):
     def create(self):
         # Construct the source.
         scraper = self._factory.create()
-        source = scrapers.SourceAdapter(scraper=scraper, url=self._properties['scraper']['url'])
+        source = scrapers.SourceAdapter(scraper=scraper,
+                                        url=self._properties['scraper']['url'])
 
         # Construct the sender.
-        sender = self._sender
         # Include logging.
-        logger = logging.getLogger(name=self._properties['sender']['logger']['name'])
-        sender = senders.Logging(sender=sender, logger=logger)
+        logger = logging.getLogger(
+            name=self._properties['sender']['logger']['name'])
+        sender = senders.Logging(sender=self._sender, logger=logger)
 
         # Construct the no duplicate filter.
         after_duration = flush_strategies.AfterDuration(
