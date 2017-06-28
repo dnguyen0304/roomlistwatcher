@@ -7,6 +7,7 @@ import collections
 from . import exceptions
 from .topic import Topic
 from clare import common
+from clare.common import messaging
 
 
 class Download(common.messaging.consumer.interfaces.IHandler):
@@ -29,6 +30,23 @@ class Download(common.messaging.consumer.interfaces.IHandler):
     def __repr__(self):
         repr_ = '{}(download_bot={})'
         return repr_.format(self.__class__.__name__, self._download_bot)
+
+
+class Nop(messaging.consumer.interfaces.IHandler):
+
+    def handle(self, record):
+
+        """
+        Returns
+        -------
+        None
+        """
+
+        pass
+
+    def __repr__(self):
+        repr_ = '{}()'
+        return repr_.format(self.__class__.__name__)
 
 
 class Orchestrating(common.messaging.consumer.interfaces.IHandler):
