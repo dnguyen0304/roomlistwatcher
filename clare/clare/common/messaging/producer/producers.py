@@ -20,9 +20,9 @@ class Producer(object):
 
     def produce(self):
         while True:
-            self.produce_once()
+            self._produce_once()
 
-    def produce_once(self):
+    def _produce_once(self):
         records = self._source.emit()
         for record in records:
             for filter_ in self._filters:
