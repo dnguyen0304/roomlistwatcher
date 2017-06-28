@@ -140,6 +140,31 @@ class Consumer(object):
         self._fetcher = fetcher
 
     def create(self):
+        # Construct the consumer.
+        dependencies = self.create_dependencies()
+
+        builder = messaging.consumer.builders.Builder() \
+            .with_fetcher(dependencies['fetcher']) \
+            .with_handler(dependencies['handler'])
+        for filter in dependencies['filters']:
+            builder = builder.with_filter(filter)
+        consumer = builder.build()
+
+        return consumer
+
+    def create_dependencies(self):
+
+        """
+        Returns
+        -------
+        dict
+        """
+
+        dependencies = dict()
+
+        # Construct the fetcher.
+        dependencies['fetcher'] = self._fetcher
+
         # Construct the download handler.
         download_bot = self._factory.create()
         handler = handlers.Download(download_bot=download_bot)
@@ -148,25 +173,35 @@ class Consumer(object):
         logger = logging.getLogger(
             name=self._properties['handler']['logger']['name'])
         handler = handlers.Orchestrating(handler=handler, logger=logger)
+        dependencies['handler'] = handler
+
+        # Construct the filters.
+        dependencies['filters'] = list()
 
         # Construct the except generation seven metagame filter.
         except_generation_seven_metagame = filters.ExceptGenerationSevenMetagame()
+        dependencies['filters'].append(except_generation_seven_metagame)
 
         # Construct the except overused metagame filter.
         except_overused_metagame = filters.ExceptOverusedMetagame()
+        dependencies['filters'].append(except_overused_metagame)
 
-        # Construct the consumer.
-        consumer_ = messaging.consumer.builders.Builder() \
-            .with_fetcher(self._fetcher) \
-            .with_handler(handler) \
-            .with_filter(except_generation_seven_metagame) \
-            .with_filter(except_overused_metagame) \
-            .build()
-
-        return consumer_
+        return dependencies
 
     def __repr__(self):
         repr_ = '{}(properties={}, fetcher={})'
         return repr_.format(self.__class__.__name__,
                             self._properties,
                             self._fetcher)
+
+
+class Nop(Consumer):
+
+    def create_dependencies(self):
+        dependencies = super(Nop, self).create_dependencies()
+
+        # Construct the nop handler.
+        handler = handlers.Nop()
+        dependencies['handler'] = handler
+
+        return dependencies
