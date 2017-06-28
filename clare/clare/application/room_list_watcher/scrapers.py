@@ -280,42 +280,6 @@ class ProfilingDecorator(object):
         return repr_.format(self.__class__.__name__, self._scraper)
 
 
-class QueuingDecorator(object):
-
-    def __init__(self, scraper, message_queue):
-
-        """
-        Parameters
-        ----------
-        scraper : clare.application.room_list_watcher.interfaces.IScraper
-        message_queue : Queue.Queue
-        """
-
-        self._scraper = scraper
-        self._message_queue = message_queue
-
-    def run(self, url):
-
-        """
-        Returns
-        -------
-        None
-        """
-
-        data = self._scraper.run(url=url)
-        for item in data:
-            self._message_queue.put(item=item)
-
-    def dispose(self):
-        self._scraper.dispose()
-
-    def __repr__(self):
-        repr_ = '{}(scraper={}, message_queue={})'
-        return repr_.format(self.__class__.__name__,
-                            self._scraper,
-                            self._message_queue)
-
-
 class RecordMarshallingDecorator(object):
 
     def __init__(self, scraper, factory):
