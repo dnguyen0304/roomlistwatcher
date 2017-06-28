@@ -29,7 +29,7 @@ class IScraper(object):
     __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod
-    def run(self, url):
+    def scrape(self, url):
 
         """
         Parameters

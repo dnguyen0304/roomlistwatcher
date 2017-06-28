@@ -30,7 +30,7 @@ class RoomList(interfaces.IScraper):
         self._web_driver = web_driver
         self._wait_context = wait_context
 
-    def run(self, url):
+    def scrape(self, url):
 
         """
         Raises
@@ -110,10 +110,10 @@ class Orchestrating(interfaces.IScraper):
         self._scraper = scraper
         self._logger = logger
 
-    def run(self, url):
+    def scrape(self, url):
         elements = list()
         try:
-            elements = self._scraper.run(url=url)
+            elements = self._scraper.scrape(url=url)
         except common.retry.exceptions.MaximumRetry as e:
             message = common.logging.utilities.format_exception(e=e)
             self._logger.debug(msg=message)
@@ -144,7 +144,7 @@ class Repeating(interfaces.IScraper):
         self._scraper = scraper
         self._with_initialization = True
 
-    def run(self, url):
+    def scrape(self, url):
         self._initialize(url=url)
         elements = self._extract()
         return elements
@@ -180,8 +180,8 @@ class Retrying(interfaces.IScraper):
         self._scraper = scraper
         self._policy = policy
 
-    def run(self, url):
-        scrape = functools.partial(self._scraper.run, url=url)
+    def scrape(self, url):
+        scrape = functools.partial(self._scraper.scrape, url=url)
         elements = self._policy.execute(scrape)
         return elements
 
@@ -216,7 +216,7 @@ class Validating(interfaces.IScraper):
         self._scraper = scraper
         self._validator = validator
 
-    def run(self, url):
+    def scrape(self, url):
 
         """
         Raises
@@ -259,7 +259,7 @@ class ProfilingDecorator(object):
 
         self._scraper = scraper
 
-    def run(self, url):
+    def scrape(self, url):
 
         """
         Returns
@@ -268,7 +268,7 @@ class ProfilingDecorator(object):
         """
 
         started_at = time.time()
-        self._scraper.run(url=url)
+        self._scraper.scrape(url=url)
         elapsed_time = time.time() - started_at
         print('Elapsed Time (in seconds):', elapsed_time)
 
@@ -294,7 +294,7 @@ class RecordMarshallingDecorator(object):
         self._scraper = scraper
         self._factory = factory
 
-    def run(self, url):
+    def scrape(self, url):
 
         """
         Returns
@@ -303,7 +303,7 @@ class RecordMarshallingDecorator(object):
         """
 
         records = list()
-        elements = self._scraper.run(url=url)
+        elements = self._scraper.scrape(url=url)
         for element in elements:
             html = element.get_attribute('outerHTML')
             element = lxml.html.fragment_fromstring(html=html)
@@ -337,7 +337,7 @@ class SourceAdapter(messaging.producer.interfaces.ISource):
         self._url = url
 
     def emit(self):
-        records = self._scraper.run(url=self._url)
+        records = self._scraper.scrape(url=self._url)
         return records
 
     def __repr__(self):
