@@ -13,6 +13,8 @@ from selenium.webdriver.support import expected_conditions
 from . import exceptions
 from . import interfaces
 from clare import common
+from clare.common import automation
+from clare.common import retry
 from clare.common import messaging
 
 
@@ -45,7 +47,7 @@ class RoomList(interfaces.IScraper):
 
     def _initialize(self, url):
         self._web_driver.get(url=url)
-        room_list_button = common.automation.utilities.find_button(
+        room_list_button = automation.utilities.find_button(
             locator=(By.CSS_SELECTOR, 'button[name="roomlist"]'),
             wait_context=self._wait_context)
         try:
@@ -56,7 +58,7 @@ class RoomList(interfaces.IScraper):
 
     def _extract(self):
         # Refresh the room list.
-        refresh_button = common.automation.utilities.find_button(
+        refresh_button = automation.utilities.find_button(
             locator=(By.CSS_SELECTOR, 'button[name="refresh"]'),
             wait_context=self._wait_context)
         try:
@@ -114,7 +116,7 @@ class Orchestrating(interfaces.IScraper):
         elements = list()
         try:
             elements = self._scraper.scrape(url=url)
-        except common.retry.exceptions.MaximumRetry as e:
+        except retry.exceptions.MaximumRetry as e:
             message = common.logging.utilities.format_exception(e=e)
             self._logger.debug(msg=message)
         return elements
