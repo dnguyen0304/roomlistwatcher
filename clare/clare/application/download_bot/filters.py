@@ -43,7 +43,7 @@ class Base(messaging.interfaces.IFilter):
         return record
 
 
-class OnlyGenerationSevenMetagame(Base):
+class ExceptGenerationSevenMetagame(Base):
 
     def _should_filter(self, record):
         _, metagame_name, _ = record.value.split('-')
@@ -57,7 +57,7 @@ class OnlyGenerationSevenMetagame(Base):
         return repr_.format(self.__class__.__name__)
 
 
-class OnlyOverusedMetagame(Base):
+class ExceptOverusedMetagame(Base):
 
     def _should_filter(self, record):
         _, metagame_name, _ = record.value.split('-')

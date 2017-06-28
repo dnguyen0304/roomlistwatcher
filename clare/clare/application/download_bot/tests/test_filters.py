@@ -6,13 +6,13 @@ from .. import filters
 from clare.common import messaging
 
 
-class TestOnlyGenerationSevenMetagame(object):
+class TestExceptGenerationSevenMetagame(object):
 
     def __init__(self):
         self.filter = None
 
     def setup(self):
-        self.filter = filters.OnlyGenerationSevenMetagame()
+        self.filter = filters.ExceptGenerationSevenMetagame()
 
     def test_does_not_filter_generation_seven_metagame_battle(self):
         value = '/battle-gen7foo-0'
@@ -31,13 +31,13 @@ class TestOnlyGenerationSevenMetagame(object):
         assert_is_none(record)
 
 
-class TestOnlyOverusedMetagame(object):
+class TestExceptOverusedMetagame(object):
 
     def __init__(self):
         self.filter = None
 
     def setup(self):
-        self.filter = filters.OnlyOverusedMetagame()
+        self.filter = filters.ExceptOverusedMetagame()
 
     def test_does_not_filter_overused_metagame_battle(self):
         value = '/battle-fooou-0'

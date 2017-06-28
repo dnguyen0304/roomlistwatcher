@@ -149,18 +149,18 @@ class Consumer(object):
             name=self._properties['handler']['logger']['name'])
         handler = handlers.Orchestrating(handler=handler, logger=logger)
 
-        # Construct the only generation seven metagame filter.
-        only_generation_seven_metagame = filters.OnlyGenerationSevenMetagame()
+        # Construct the except generation seven metagame filter.
+        except_generation_seven_metagame = filters.ExceptGenerationSevenMetagame()
 
-        # Construct the only overused metagame filter.
-        only_overused_metagame = filters.OnlyOverusedMetagame()
+        # Construct the except overused metagame filter.
+        except_overused_metagame = filters.ExceptOverusedMetagame()
 
         # Construct the consumer.
         consumer_ = messaging.consumer.builders.Builder() \
             .with_fetcher(self._fetcher) \
             .with_handler(handler) \
-            .with_filter(only_generation_seven_metagame) \
-            .with_filter(only_overused_metagame) \
+            .with_filter(except_generation_seven_metagame) \
+            .with_filter(except_overused_metagame) \
             .build()
 
         return consumer_
