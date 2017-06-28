@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
+from . import interfaces
 
-class Fetcher(object):
+
+class Fetcher(interfaces.IFetcher):
 
     def __init__(self, message_queue):
 
@@ -14,17 +16,6 @@ class Fetcher(object):
         self._message_queue = message_queue
 
     def pop(self, timeout):
-
-        """
-        Parameters
-        ----------
-        timeout : float
-
-        Returns
-        -------
-        clare.common.messaging.records.Record
-        """
-
         record = self._message_queue.get(timeout=timeout)
         return record
 
