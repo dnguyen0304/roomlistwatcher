@@ -2,12 +2,12 @@
 
 import datetime
 
-from clare.common.messaging.client import records
+from clare.common import messaging
 
 
 class RecordFactory(object):
 
-    _record_class = records.Record
+    _record_class = messaging.records.Record
 
     def __init__(self, queue_name, time_zone):
 
@@ -23,9 +23,9 @@ class RecordFactory(object):
 
     def create(self, value=None):
         timestamp = datetime.datetime.utcnow().replace(tzinfo=self._time_zone)
-        record = records.Record(queue_name=self._queue_name,
-                                timestamp=timestamp,
-                                value=value)
+        record = messaging.records.Record(queue_name=self._queue_name,
+                                          timestamp=timestamp,
+                                          value=value)
         return record
 
     def __repr__(self):
