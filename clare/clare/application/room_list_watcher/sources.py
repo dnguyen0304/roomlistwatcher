@@ -1,15 +1,14 @@
 # -*- coding: utf-8 -*-
 
 import sys
-import threading
 
 if sys.version_info[:2] == (2, 7):
     import Queue as queue
 
-from .messaging.client import producer
+from clare.common.messaging import producer
 
 
-class Batched(producer.internals.interfaces.ISource):
+class Batching(producer.interfaces.ISource):
 
     def __init__(self, worker_thread, message_queue):
 
@@ -24,13 +23,6 @@ class Batched(producer.internals.interfaces.ISource):
         self._message_queue = message_queue
 
     def emit(self):
-
-        """
-        Returns
-        -------
-        collections.Iterable
-        """
-
         if not self._worker_thread.is_alive():
             self._worker_thread.daemon = True
             self._worker_thread.start()
