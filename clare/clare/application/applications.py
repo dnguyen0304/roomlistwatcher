@@ -3,20 +3,17 @@
 import time
 
 
-class Default(object):
+class Application(object):
 
-    def __init__(self, producer, consumer):
-        self._producer = producer
-        self._consumer = consumer
+    def __init__(self, room_list_watcher, download_bot):
+        self._room_list_watcher = room_list_watcher
+        self._download_bot = download_bot
 
     def start(self):
         ONE_DAY_IN_SECONDS = 60 * 60 * 24
 
-        # Start the room list watcher.
-        self._producer.start()
-
-        # Start the consumer.
-        self._consumer.start()
+        self._room_list_watcher.start()
+        self._download_bot.start()
 
         # Block the main thread indefinitely.
         try:
@@ -26,7 +23,7 @@ class Default(object):
             pass
 
     def __repr__(self):
-        repr_ = '{}(producer={}, consumer={})'
+        repr_ = '{}(room_list_watcher={}, download_bot={})'
         return repr_.format(self.__class__.__name__,
-                            self._producer,
-                            self._consumer)
+                            self._room_list_watcher,
+                            self._download_bot)
