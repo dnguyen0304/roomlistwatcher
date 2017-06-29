@@ -70,7 +70,7 @@ class EveryFirstNFilter(Base):
         return repr_.format(self.__class__.__name__, self._n)
 
 
-class ExceptGenerationSevenMetagame(Base):
+class ExceptGenerationSevenMetagameFilter(Base):
 
     def _should_filter(self, record):
         _, metagame_name, _ = record.value.split('-')

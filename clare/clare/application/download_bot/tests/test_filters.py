@@ -38,13 +38,13 @@ class TestEveryFirstNFilter(object):
         assert_is(output, self.record)
 
 
-class TestExceptGenerationSevenMetagame(object):
+class TestExceptGenerationSevenMetagameFilter(object):
 
     def __init__(self):
         self.filter = None
 
     def setup(self):
-        self.filter = filters.ExceptGenerationSevenMetagame()
+        self.filter = filters.ExceptGenerationSevenMetagameFilter()
 
     def test_does_not_filter_generation_seven_metagame_battle(self):
         value = '/battle-gen7foo-0'

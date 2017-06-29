@@ -186,7 +186,7 @@ class Consumer(object):
         dependencies['filters'] = list()
 
         # Construct the except generation seven metagame filter.
-        except_generation_seven_metagame = filters.ExceptGenerationSevenMetagame()
+        except_generation_seven_metagame = filters.ExceptGenerationSevenMetagameFilter()
         dependencies['filters'].append(except_generation_seven_metagame)
 
         # Construct the except overused metagame filter.
