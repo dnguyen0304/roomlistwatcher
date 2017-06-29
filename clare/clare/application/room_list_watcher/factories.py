@@ -111,8 +111,9 @@ class Producer(object):
     def create(self):
         # Construct the source.
         scraper = self._factory.create()
-        source = scrapers.SourceAdapter(scraper=scraper,
-                                        url=self._properties['scraper']['url'])
+        source = scrapers.BufferingSourceAdapter(
+            scraper=scraper,
+            url=self._properties['scraper']['url'])
 
         # Construct the sender.
         # Include logging.
