@@ -21,7 +21,7 @@ class Deque(messaging.producer.interfaces.ISource):
         try:
             value = self._deque.popleft()
         except IndexError:
-            raise messaging.producer.exceptions.Timeout
+            raise messaging.exceptions.Timeout
         else:
             record = self._record_factory.create(value=value)
             return record
