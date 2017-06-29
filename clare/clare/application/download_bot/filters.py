@@ -5,7 +5,7 @@ import abc
 from clare.common import messaging
 
 
-class Base(messaging.interfaces.IFilter):
+class BaseFilter(messaging.interfaces.IFilter):
 
     def filter(self, record):
         if not self._should_filter(record=record):
@@ -43,7 +43,7 @@ class Base(messaging.interfaces.IFilter):
         return record
 
 
-class EveryFirstNFilter(Base):
+class EveryFirstNFilter(BaseFilter):
 
     def __init__(self, n):
 
@@ -70,7 +70,7 @@ class EveryFirstNFilter(Base):
         return repr_.format(self.__class__.__name__, self._n)
 
 
-class ExceptGenerationSevenMetagameFilter(Base):
+class ExceptGenerationSevenMetagameFilter(BaseFilter):
 
     def _should_filter(self, record):
         _, metagame_name, _ = record.value.split('-')
@@ -84,7 +84,7 @@ class ExceptGenerationSevenMetagameFilter(Base):
         return repr_.format(self.__class__.__name__)
 
 
-class ExceptOverusedMetagameFilter(Base):
+class ExceptOverusedMetagameFilter(BaseFilter):
 
     def _should_filter(self, record):
         _, metagame_name, _ = record.value.split('-')
