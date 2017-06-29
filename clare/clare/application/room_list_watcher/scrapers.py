@@ -2,6 +2,7 @@
 
 from __future__ import print_function
 
+import collections
 import functools
 import time
 
@@ -16,6 +17,25 @@ from clare import common
 from clare.common import automation
 from clare.common import retry
 from clare.common import messaging
+
+
+class Nop(interfaces.IScraper):
+
+    def scrape(self, url):
+        return list()
+
+    def _initialize(self, url):
+        pass
+
+    def _extract(self):
+        return list()
+
+    def dispose(self):
+        pass
+
+    def __repr__(self):
+        repr_ = '{}()'
+        return repr_.format(self.__class__.__name__)
 
 
 class RoomList(interfaces.IScraper):
@@ -331,7 +351,7 @@ class RecordMarshallingDecorator(object):
                             self._factory)
 
 
-class SourceAdapter(messaging.producer.interfaces.ISource):
+class BufferingSourceAdapter(messaging.producer.interfaces.ISource):
 
     def __init__(self, scraper, url):
 
@@ -344,10 +364,21 @@ class SourceAdapter(messaging.producer.interfaces.ISource):
 
         self._scraper = scraper
         self._url = url
+        self._buffer = collections.deque()
 
     def emit(self):
         records = self._scraper.scrape(url=self._url)
-        return records
+        # Use extend() followed by popleft() to have FIFO behavior as
+        # with a queue. Using extendleft() followed by pop() expectedly
+        # also accomplishes this goal.
+        #
+        # Iterating through the records in reverse is done because the
+        # room list is scraped "backwards". In other words, the newest
+        # rooms are at the head of the array and the oldest ones are at
+        # its tail.
+        self._buffer.extend(reversed(records))
+        record = self._buffer.popleft()
+        return record
 
     def __repr__(self):
         repr_ = '{}(scraper={}, url="{}")'
