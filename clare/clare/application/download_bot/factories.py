@@ -190,7 +190,7 @@ class Consumer(object):
         dependencies['filters'].append(except_generation_seven_metagame)
 
         # Construct the except overused metagame filter.
-        except_overused_metagame = filters.ExceptOverusedMetagame()
+        except_overused_metagame = filters.ExceptOverusedMetagameFilter()
         dependencies['filters'].append(except_overused_metagame)
 
         return dependencies

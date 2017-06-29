@@ -84,7 +84,7 @@ class ExceptGenerationSevenMetagame(Base):
         return repr_.format(self.__class__.__name__)
 
 
-class ExceptOverusedMetagame(Base):
+class ExceptOverusedMetagameFilter(Base):
 
     def _should_filter(self, record):
         _, metagame_name, _ = record.value.split('-')

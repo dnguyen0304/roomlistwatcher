@@ -63,13 +63,13 @@ class TestExceptGenerationSevenMetagame(object):
         assert_is_none(record)
 
 
-class TestExceptOverusedMetagame(object):
+class TestExceptOverusedMetagameFilter(object):
 
     def __init__(self):
         self.filter = None
 
     def setup(self):
-        self.filter = filters.ExceptOverusedMetagame()
+        self.filter = filters.ExceptOverusedMetagameFilter()
 
     def test_does_not_filter_overused_metagame_battle(self):
         value = '/battle-fooou-0'
