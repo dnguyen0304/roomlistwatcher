@@ -20,6 +20,31 @@ class IDownloadValidator(object):
         pass
 
 
+class IFetcher(object):
+
+    __metaclass__ = abc.ABCMeta
+
+    @abc.abstractmethod
+    def pop(self, block, timeout):
+
+        """
+        Parameters
+        ----------
+        block : bool
+        timeout : float
+
+        Returns
+        -------
+        clare.common.messaging.records.Record
+
+        Raises
+        ------
+        clare.common.messaging.consumer.exceptions.FetchTimeout
+        """
+
+        pass
+
+
 class IReplayDownloader(object):
 
     __metaclass__ = abc.ABCMeta

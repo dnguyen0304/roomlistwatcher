@@ -6,7 +6,11 @@ if sys.version_info[:2] == (2, 7):
     import Queue as queue
 
 import mock
-from nose.tools import assert_equal, raises
+from nose.tools import (assert_equal,
+                        assert_false,
+                        assert_in,
+                        assert_raises,
+                        raises)
 
 from .. import fetchers
 from clare.common import messaging
@@ -15,62 +19,105 @@ from clare.common import messaging
 class TestFetcher(object):
 
     def __init__(self):
-        self.message_queue = None
-        self.composed_fetcher = None
+        self.queue = None
         self.fetcher = None
 
     def setup(self):
-        self.message_queue = queue.Queue()
-        self.composed_fetcher = messaging.consumer.fetchers.Fetcher(
-            message_queue=self.message_queue)
-        self.fetcher = fetchers.Fetcher(fetcher=self.composed_fetcher)
+        self.queue = queue.Queue()
+        self.fetcher = fetchers.Fetcher(queue=self.queue)
 
-    def test_calculate_message_count(self):
-        expected = len('foo')
-        for i in xrange(expected):
-            self.message_queue.put(i)
-        assert_equal(self.fetcher.calculate_message_count(), expected)
+    def test_raises_exception_if_not_blocking(self):
+        block = False
+        timeout = None
+
+        with assert_raises(messaging.consumer.exceptions.FetchTimeout) as context:
+            self.fetcher.pop(block=block, timeout=timeout)
+        assert_in('immediate', context.exception.message)
+
+    def test_raises_exception_on_timeout(self):
+        block = True
+        timeout = 0.001
+
+        with assert_raises(messaging.consumer.exceptions.FetchTimeout) as context:
+            self.fetcher.pop(block=block, timeout=timeout)
+        assert_in(str(timeout), context.exception.message)
+
+    def test_raises_exception_on_immediate_timeout(self):
+        block = True
+        timeout = 0.0
+
+        with assert_raises(messaging.consumer.exceptions.FetchTimeout) as context:
+            self.fetcher.pop(block=block, timeout=timeout)
+        assert_in('immediate', context.exception.message)
 
 
-class TestBuffering(object):
+class TestBufferingFetcher(object):
 
     def __init__(self):
+        self.queue = None
         self.composed_fetcher = None
         self.size = None
         self.fetcher = None
 
     def setup(self):
-        self.composed_fetcher = messaging.consumer.fetchers.Fetcher(
-            message_queue=None)
+        self.queue = queue.Queue()
+        self.composed_fetcher = fetchers.Fetcher(queue=self.queue)
         self.size = 2
-        self.fetcher = fetchers.Buffering(fetcher=self.composed_fetcher,
-                                          size=self.size)
+        _should_stop = mock.Mock(return_value=False)
+        self.fetcher = fetchers.BufferingFetcher(fetcher=self.composed_fetcher,
+                                                 size=self.size,
+                                                 _should_stop=_should_stop)
 
     def test_does_fetch_when_buffer_is_empty(self):
-        message_queue_size = self.size * 2
-        side_effect = xrange(message_queue_size)
+        side_effect = xrange(self.size)
         self.composed_fetcher.pop = mock.Mock(side_effect=side_effect)
-        for i in xrange(self.size + 1):
-            self.fetcher.pop(timeout=None)
-        assert_equal(self.composed_fetcher.pop.call_count, self.size * 2)
+        self.fetcher.pop(block=True, timeout=None)
 
-    def test_does_not_fetch_while_buffer_has_elements(self):
-        message_queue_size = self.size * 2
-        side_effect = xrange(message_queue_size)
-        self.composed_fetcher.pop = mock.Mock(side_effect=side_effect)
-        for i in xrange(self.size):
-            self.fetcher.pop(timeout=None)
         assert_equal(self.composed_fetcher.pop.call_count, self.size)
 
+    def test_does_not_fetch_while_buffer_has_records(self):
+        for i in xrange(self.size):
+            self.queue.put(i)
+
+        # The composed fetcher should not be called on the second
+        # round.
+        self.fetcher.pop(block=True, timeout=None)
+        self.composed_fetcher.pop = mock.Mock()
+        self.fetcher.pop(block=True, timeout=None)
+
+        assert_false(self.composed_fetcher.pop.called)
+
     def test_is_ordered(self):
-        message_queue_size = self.size * 2
-        side_effect = expected = list(xrange(message_queue_size))
-        self.composed_fetcher.pop = mock.Mock(side_effect=side_effect)
-        records = [self.fetcher.pop(timeout=None) for i in expected]
+        expected = list()
+        records = list()
+
+        # These loops cannot be merged because there are not enough
+        # messages enqueued for the buffer.
+        for i in xrange(self.size):
+            expected.append(i)
+            self.queue.put(i)
+        for i in xrange(self.size):
+            records.append(self.fetcher.pop(block=False, timeout=None))
+
         assert_equal(records, expected)
 
     @raises(messaging.consumer.exceptions.FetchTimeout)
     def test_raises_exception_on_timeout(self):
-        side_effect = messaging.consumer.exceptions.FetchTimeout
-        self.composed_fetcher.pop = mock.Mock(side_effect=side_effect)
-        self.fetcher.pop(timeout=None)
+        fetcher = fetchers.BufferingFetcher(fetcher=self.composed_fetcher,
+                                            size=self.size)
+        fetcher.pop(block=False, timeout=None)
+
+    def test_raises_exception_on_buffering_timeout(self):
+        _should_stop = mock.Mock(return_value=True)
+        fetcher = fetchers.BufferingFetcher(fetcher=self.composed_fetcher,
+                                            size=self.size,
+                                            _should_stop=_should_stop)
+        for i in xrange(self.size):
+            self.queue.put(i)
+
+        timeout = 0.001
+
+        with assert_raises(messaging.consumer.exceptions.FetchTimeout) as context:
+            fetcher.pop(block=True, timeout=timeout)
+        assert_in('at least', context.exception.message)
+        assert_in(str(timeout), context.exception.message)
