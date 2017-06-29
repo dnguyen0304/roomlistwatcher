@@ -1,154 +1,82 @@
 # -*- coding: utf-8 -*-
 
-import datetime
-import logging
 import sys
 import threading
 
 if sys.version_info[:2] == (2, 7):
     import Queue as queue
 
-import lxml.html
-import selenium.webdriver
-from selenium.webdriver.support.ui import WebDriverWait
-
-from clare import common
-from .messaging.client import consumer
-from .messaging.client import producer
-from .messaging.client import records
-from . import scraping
 from . import applications
-from . import filters
-from . import flush_strategies
-from . import handlers
-from . import scrapers
-from . import senders
-from . import sources
+from . import download_bot
+from . import room_list_watcher
+from clare.common import messaging
 
 
-class Record(object):
+class Factory(object):
 
-    _record_class = records.Record
-
-    def __init__(self, queue_name, time_zone):
-        self._queue_name = queue_name
-        self._time_zone = time_zone
-
-    def create(self, value=None):
-        timestamp = datetime.datetime.utcnow().replace(tzinfo=self._time_zone)
-        record = records.Record(queue_name=self._queue_name,
-                                timestamp=timestamp,
-                                value=value)
-        return record
-
-    def create_from_html(self, html):
-        element = lxml.html.fragment_fromstring(html=html)
-        room_path = element.get(key='href')
-        record = self.create(value=room_path)
-        return record
-
-    def __repr__(self):
-        repr_ = '{}(queue_name="{}", time_zone={})'
-        return repr_.format(self.__class__.__name__,
-                            self._queue_name,
-                            self._time_zone)
-
-
-class Application(object):
-
-    def __init__(self, configuration):
-        self._configuration = configuration
-
-    @classmethod
-    def from_configuration(cls, configuration):
+    def __init__(self, properties):
 
         """
         Parameters
         ----------
-        configuration : collections.Mapping
+        properties : collections.Mapping
         """
 
-        application_factory = cls(configuration=configuration)
-        return application_factory
+        self._properties = properties
 
     def create(self):
-        # Construct the message queue.
+
+        """
+        Returns
+        -------
+        clare.application.applications.Application
+        """
+
         message_queue = queue.Queue()
 
-        # Construct the room list scraper.
-        source_message_queue = queue.Queue()
+        # Construct the room_list_watcher.
+        sender = messaging.producer.senders.Sender(
+            message_queue=message_queue)
+        room_list_watcher_factory = room_list_watcher.factories.Producer(
+            properties=self._properties['room_list_watcher'],
+            sender=sender)
+        room_list_watcher_ = room_list_watcher_factory.create()
 
-        web_driver = selenium.webdriver.Chrome()
-        wait_context = WebDriverWait(
-            driver=web_driver,
-            timeout=self._configuration['room_list_watcher']['scraper']['wait_context']['timeout'])
-        scraper = scraping.scrapers.RoomList(web_driver=web_driver,
-                                             wait_context=wait_context)
+        # Include threading.
+        kwargs = {
+            'interval': self._properties['room_list_watcher']['interval'],
+            'timeout': self._properties['room_list_watcher']['timeout']
+        }
+        room_list_watcher_ = threading.Thread(name='room_list_watcher',
+                                              target=room_list_watcher_.produce,
+                                              kwargs=kwargs)
+        room_list_watcher_.daemon = True
 
-        # Include marshalling.
-        queue_name = self._configuration['room_list_watcher']['queue']['name']
-        name = self._configuration['common']['time_zone']['name']
-        time_zone = common.utilities.TimeZone.from_name(name)
-        record_factory = Record(queue_name=queue_name, time_zone=time_zone)
-        scraper = scrapers.Marshalling(scraper=scraper,
-                                       record_factory=record_factory)
+        # Construct the download_bot.
+        fetcher = messaging.consumer.fetchers.Fetcher(
+            message_queue=message_queue)
+        download_bot_factory = download_bot.factories.Consumer(
+            properties=self._properties['download_bot'],
+            fetcher=fetcher)
+        download_bot_ = download_bot_factory.create()
 
-        # Include polling.
-        scraper = scraping.scrapers.Polling(
-            scraper=scraper,
-            wait_time=self._configuration['room_list_watcher']['scraper']['wait_time'],
-            message_queue=source_message_queue)
-
-        # Include orchestration.
-        logger = logging.getLogger(
-            name=self._configuration['room_list_watcher']['scraper']['logger']['name'])
-        scraper = scrapers.Orchestration(scraper=scraper, logger=logger)
-        worker_thread = threading.Thread(
-            name='room_list_watcher.scraper',
-            target=scraper.scrape,
-            kwargs={'url': self._configuration['room_list_watcher']['scraper']['url']})
-        source = sources.Batched(worker_thread=worker_thread,
-                                 message_queue=source_message_queue)
-
-        # Construct the default sender.
-        sender = producer.internals.senders.Sender(message_queue=message_queue)
-
-        # Include logging.
-        name = self._configuration['room_list_watcher']['scraper']['logger']['name']
-        logger = logging.getLogger(name=name)
-        sender = senders.Logged(sender=sender, logger=logger)
-
-        # Construct the no duplicate filter.
-        maximum_duration = self._configuration['room_list_watcher']['filter']['maximum_duration']
-        after_duration = flush_strategies.AfterDuration(
-            maximum_duration=maximum_duration)
-        no_duplicate = filters.NoDuplicate(flush_strategy=after_duration)
-
-        # Construct the room list watcher.
-        room_list_watcher = producer.builders.Builder().with_source(source) \
-                                                       .with_sender(sender) \
-                                                       .with_filter(no_duplicate) \
-                                                       .build()
-        room_list_watcher = threading.Thread(name='room_list_watcher',
-                                             target=room_list_watcher.produce)
-        room_list_watcher.daemon = True
-
-        # Construct the default fetcher.
-        fetcher = consumer.internals.fetchers.Fetcher(message_queue=message_queue)
-
-        # Construct the print handler.
-        handler = handlers.Print()
-
-        # Construct the debugger.
-        debugger = consumer.builders.Builder().with_fetcher(fetcher) \
-                                              .with_handler(handler) \
-                                              .build()
-        debugger = threading.Thread(target=debugger.consume,
-                                    kwargs={'interval': 0.1, 'timeout': None})
-        debugger.daemon = True
+        # Include threading.
+        kwargs = {
+            'interval': self._properties['download_bot']['interval'],
+            'timeout': self._properties['download_bot']['timeout']
+        }
+        download_bot_ = threading.Thread(name='download_bot',
+                                         target=download_bot_.consume,
+                                         kwargs=kwargs)
+        download_bot_.daemon = True
 
         # Construct the application.
-        application = applications.Default(producer=room_list_watcher,
-                                           consumer=debugger)
+        application = applications.Application(
+            room_list_watcher=room_list_watcher_,
+            download_bot=download_bot_)
 
         return application
+
+    def __repr__(self):
+        repr_ = '{}(properties={})'
+        return repr_.format(self.__class__.__name__, self._properties)
