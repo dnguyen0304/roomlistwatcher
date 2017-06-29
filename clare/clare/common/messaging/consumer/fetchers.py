@@ -25,7 +25,7 @@ class Fetcher(interfaces.IFetcher):
         try:
             record = self._message_queue.get(timeout=timeout)
         except queue.Empty:
-            message = 'Fetch timed out after {timeout} seconds.'
+            message = 'The fetcher timed out after {timeout} seconds.'
             raise exceptions.FetchTimeout(message.format(timeout=timeout))
         return record
 
