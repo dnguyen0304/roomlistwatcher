@@ -1,10 +1,35 @@
 # -*- coding: utf-8 -*-
 
+import sys
+
+if sys.version_info[:2] == (2, 7):
+    import Queue as queue
+
 import mock
 from nose.tools import assert_equal, raises
 
 from .. import fetchers
 from clare.common import messaging
+
+
+class TestFetcher(object):
+
+    def __init__(self):
+        self.message_queue = None
+        self.composed_fetcher = None
+        self.fetcher = None
+
+    def setup(self):
+        self.message_queue = queue.Queue()
+        self.composed_fetcher = messaging.consumer.fetchers.Fetcher(
+            message_queue=self.message_queue)
+        self.fetcher = fetchers.Fetcher(fetcher=self.composed_fetcher)
+
+    def test_calculate_message_count(self):
+        expected = len('foo')
+        for i in xrange(expected):
+            self.message_queue.put(i)
+        assert_equal(self.fetcher.calculate_message_count(), expected)
 
 
 class TestBuffering(object):
