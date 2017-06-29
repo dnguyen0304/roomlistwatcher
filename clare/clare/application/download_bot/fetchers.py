@@ -43,6 +43,35 @@ class Fetcher(interfaces.IFetcher):
         return repr_.format(self.__class__.__name__, self._queue)
 
 
+class MeasuringFetcher(interfaces.IFetcher):
+
+    def __init__(self, fetcher, queue_client):
+
+        """
+        Parameters
+        ----------
+        fetcher : clare.application.download_bot.interfaces.IFetcher
+        queue_client : clare.application.download_bot.queue_clients.QueueClient
+        """
+
+        self._fetcher = fetcher
+        self._queue_client = queue_client
+
+    def pop(self, block, timeout):
+        record = self._fetcher.pop(block=block, timeout=timeout)
+        return record
+
+    def calculate_message_count(self):
+        message_count = self._queue_client.calculate_message_count()
+        return message_count
+
+    def __repr__(self):
+        repr_ = '{}(fetcher={}, queue_client={})'
+        return repr_.format(self.__class__.__name__,
+                            self._fetcher,
+                            self._queue_client)
+
+
 class BufferingFetcher(interfaces.IFetcher):
 
     def __init__(self,
