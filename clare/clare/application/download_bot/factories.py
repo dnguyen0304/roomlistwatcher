@@ -11,6 +11,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from . import download_bots
 from . import download_validators
 from . import exceptions
+from . import fetchers
 from . import filters
 from . import handlers
 from . import replay_downloaders
@@ -126,18 +127,18 @@ class Factory(object):
 
 class Consumer(object):
 
-    def __init__(self, properties, fetcher):
+    def __init__(self, message_queue, properties):
 
         """
         Parameters
         ----------
+        message_queue : Queue.Queue
         properties : collections.Mapping
-        fetcher : clare.common.messaging.consumer.fetchers.Fetcher
         """
 
         self._factory = Factory(properties=properties)
+        self._message_queue = message_queue
         self._properties = properties
-        self._fetcher = fetcher
 
     def create(self):
         # Construct the consumer.
@@ -163,7 +164,13 @@ class Consumer(object):
         dependencies = dict()
 
         # Construct the fetcher.
-        dependencies['fetcher'] = self._fetcher
+        fetcher = messaging.consumer.fetchers.Fetcher(
+            message_queue=self._message_queue)
+
+        # Include buffering.
+        fetcher = fetchers.Buffering(fetcher=fetcher,
+                                     size=self._properties['fetcher']['size'])
+        dependencies['fetcher'] = fetcher
 
         # Construct the download handler.
         download_bot = self._factory.create()
@@ -189,10 +196,10 @@ class Consumer(object):
         return dependencies
 
     def __repr__(self):
-        repr_ = '{}(properties={}, fetcher={})'
+        repr_ = '{}(message_queue={}, properties={})'
         return repr_.format(self.__class__.__name__,
-                            self._properties,
-                            self._fetcher)
+                            self._message_queue,
+                            self._properties)
 
 
 class Nop(Consumer):
