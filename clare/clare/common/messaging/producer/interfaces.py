@@ -14,6 +14,10 @@ class ISource(object):
         Returns
         -------
         clare.common.messaging.record.Record
+
+        Raises
+        ------
+        clare.common.messaging.producer.exceptions.EmitTimeout
         """
 
         pass
