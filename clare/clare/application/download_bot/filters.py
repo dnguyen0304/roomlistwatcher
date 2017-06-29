@@ -43,6 +43,33 @@ class Base(messaging.interfaces.IFilter):
         return record
 
 
+class EveryFirstNFilter(Base):
+
+    def __init__(self, n):
+
+        """
+        Parameters
+        ----------
+        n : int
+            Number of records to reject before accepting one.
+        """
+
+        self._n = n
+        self._record_count = 0
+
+    def _should_filter(self, record):
+        self._record_count += 1
+        if self._record_count <= self._n:
+            return True
+        else:
+            self._record_count = 0
+            return False
+
+    def __repr__(self):
+        repr_ = '{}(n={})'
+        return repr_.format(self.__class__.__name__, self._n)
+
+
 class ExceptGenerationSevenMetagame(Base):
 
     def _should_filter(self, record):
