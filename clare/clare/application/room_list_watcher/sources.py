@@ -21,7 +21,8 @@ class Deque(messaging.producer.interfaces.ISource):
         try:
             value = self._deque.popleft()
         except IndexError:
-            raise messaging.exceptions.Timeout
+            message = 'The source timed out.'
+            raise messaging.producer.exceptions.EmitTimeout(message)
         else:
             record = self._record_factory.create(value=value)
             return record
