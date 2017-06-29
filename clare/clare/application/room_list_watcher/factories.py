@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
+import collections
 import logging
+import sys
 
 import selenium.webdriver
 from selenium.webdriver.support.ui import WebDriverWait
@@ -11,6 +13,7 @@ from . import flush_strategies
 from . import record_factories
 from . import scrapers
 from . import senders
+from . import sources
 from clare import common
 from clare.common import automation
 from clare.common import messaging
@@ -109,34 +112,73 @@ class Producer(object):
         self._sender = sender
 
     def create(self):
+        # Construct the producer.
+        dependencies = self.create_dependencies()
+
+        builder = messaging.producer.builders.Builder() \
+            .with_source(dependencies['source']) \
+            .with_sender(dependencies['sender'])
+        for filter in dependencies['filters']:
+            builder = builder.with_filter(filter)
+        producer = builder.build()
+
+        return producer
+
+    def create_dependencies(self):
+
+        """
+        Returns
+        -------
+        dict
+        """
+
+        dependencies = dict()
+
         # Construct the source.
         scraper = self._factory.create()
         source = scrapers.BufferingSourceAdapter(
             scraper=scraper,
             url=self._properties['scraper']['url'])
+        dependencies['source'] = source
 
         # Construct the sender.
         # Include logging.
         logger = logging.getLogger(
             name=self._properties['sender']['logger']['name'])
         sender = senders.Logging(sender=self._sender, logger=logger)
+        dependencies['sender'] = sender
+
+        # Construct the filters.
+        dependencies['filters'] = list()
 
         # Construct the no duplicate filter.
         after_duration = flush_strategies.AfterDuration(
             maximum_duration=self._properties['filter']['flush_strategy']['maximum_duration'])
         no_duplicate = filters.NoDuplicate(flush_strategy=after_duration)
+        dependencies['filters'].append(no_duplicate)
 
-        # Construct the producer.
-        producer_ = messaging.producer.builders.Builder() \
-            .with_source(source) \
-            .with_sender(sender) \
-            .with_filter(no_duplicate) \
-            .build()
-
-        return producer_
+        return dependencies
 
     def __repr__(self):
         repr_ = '{}(properties={}, sender={})'
         return repr_.format(self.__class__.__name__,
                             self._properties,
                             self._sender)
+
+
+class CommandLineArguments(Producer):
+
+    def create_dependencies(self):
+        dependencies = super(CommandLineArguments, self).create_dependencies()
+
+        # Construct the deque source.
+        deque = collections.deque(sys.argv[1:])
+        time_zone = common.utilities.TimeZone.from_name(
+            name=self._properties['time_zone']['name'])
+        record_factory = record_factories.RecordFactory(
+            queue_name=self._properties['queue']['name'],
+            time_zone=time_zone)
+        source = sources.Deque(deque=deque, record_factory=record_factory)
+        dependencies['source'] = source
+
+        return dependencies
