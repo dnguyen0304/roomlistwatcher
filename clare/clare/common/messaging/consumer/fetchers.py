@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
 
+import sys
+
+if sys.version_info[:2] == (2, 7):
+    import Queue as queue
+
+from . import exceptions
 from . import interfaces
 
 
@@ -16,7 +22,11 @@ class Fetcher(interfaces.IFetcher):
         self._message_queue = message_queue
 
     def pop(self, timeout):
-        record = self._message_queue.get(timeout=timeout)
+        try:
+            record = self._message_queue.get(timeout=timeout)
+        except queue.Empty:
+            message = 'Fetch timed out after {timeout} seconds.'
+            raise exceptions.FetchTimeout(message.format(timeout=timeout))
         return record
 
     def __repr__(self):

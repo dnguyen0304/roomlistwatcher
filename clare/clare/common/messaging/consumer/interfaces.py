@@ -18,6 +18,10 @@ class IFetcher(object):
         Returns
         -------
         clare.common.messaging.records.Record
+
+        Raises
+        ------
+        clare.common.messaging.consumer.exceptions.FetchTimeout
         """
 
         pass
