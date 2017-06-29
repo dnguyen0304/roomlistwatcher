@@ -3,6 +3,7 @@
 import time
 
 from . import interfaces
+from clare import common
 
 
 class AfterDuration(interfaces.IFlushStrategy):
@@ -39,12 +40,10 @@ class AfterDuration(interfaces.IFlushStrategy):
             self._start_time = self._get_now_in_seconds()
             should_flush = False
         else:
-            now = self._get_now_in_seconds()
-            current_duration = now - self._start_time
-            if current_duration >= self._maximum_duration:
-                should_flush = True
-            else:
-                should_flush = False
+            should_flush = common.utilities.should_stop(
+                maximum_duration=self._maximum_duration,
+                start_time=self._start_time,
+                _get_now_in_seconds=self._get_now_in_seconds)
         return should_flush
 
     def __repr__(self):
