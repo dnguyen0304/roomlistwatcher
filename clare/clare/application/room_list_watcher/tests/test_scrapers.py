@@ -22,10 +22,15 @@ class TestBufferingSourceAdapter(object):
                                                       url=None)
         self.n = len(self.elements)
 
-    def test_scrape_is_called_on_each_emit(self):
+    def test_scrape_is_not_called_while_buffer_has_elements(self):
         for i in xrange(self.n):
             self.source.emit()
-        assert_equal(self.scraper.scrape.call_count, self.n)
+        assert_equal(self.scraper.scrape.call_count, 1)
+
+    def test_scrape_is_called_when_buffer_is_empty(self):
+        for i in xrange(self.n + 1):
+            self.source.emit()
+        assert_equal(self.scraper.scrape.call_count, 2)
 
     def test_records_are_ordered_and_reversed(self):
         records = [self.source.emit() for i in xrange(self.n)]

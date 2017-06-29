@@ -367,16 +367,17 @@ class BufferingSourceAdapter(messaging.producer.interfaces.ISource):
         self._buffer = collections.deque()
 
     def emit(self):
-        records = self._scraper.scrape(url=self._url)
-        # Use extend() followed by popleft() to have FIFO behavior as
-        # with a queue. Using extendleft() followed by pop() expectedly
-        # also accomplishes this goal.
+        # Use extend() followed by popleft() to have FIFO behavior
+        # as with a queue. Using extendleft() followed by pop()
+        # expectedly also accomplishes this goal.
         #
-        # Iterating through the records in reverse is done because the
-        # room list is scraped "backwards". In other words, the newest
-        # rooms are at the head of the array and the oldest ones are at
-        # its tail.
-        self._buffer.extend(reversed(records))
+        # Iterating through the records in reverse is done because
+        # the room list is scraped "backwards". In other words, the
+        # newest rooms are at the head of the array and the oldest
+        # ones are at its tail.
+        if not self._buffer:
+            records = self._scraper.scrape(url=self._url)
+            self._buffer.extend(reversed(records))
         record = self._buffer.popleft()
         return record
 
