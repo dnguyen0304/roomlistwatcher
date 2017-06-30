@@ -1,27 +1,24 @@
 # -*- coding: utf-8 -*-
 
-import time
-
 from . import interfaces
-from clare import common
 
 
 class AfterDuration(interfaces.IFlushStrategy):
 
-    def __init__(self, maximum_duration, _get_now_in_seconds=None):
+    def __init__(self, maximum_duration, timer_factory):
 
         """
         Parameters
         ----------
         maximum_duration : float
-            Maximum duration in seconds.
-        _get_now_in_seconds : collections.Callable
-            Used internally. Defaults to time.time.
+            Maximum duration in seconds since the epoch.
+        timer_factory : clare.common.utilities.timer_factories.CountdownTimerFactory
         """
 
         self._maximum_duration = maximum_duration
-        self._get_now_in_seconds = _get_now_in_seconds or time.time
-        self._start_time = 0.0
+        self._timer_factory = timer_factory
+
+        self._timer = None
 
     def should_flush(self, collection):
 
@@ -36,19 +33,28 @@ class AfterDuration(interfaces.IFlushStrategy):
             True if the collection should be flushed.
         """
 
-        if not self._start_time:
-            self._start_time = self._get_now_in_seconds()
+        if not self._timer:
+            timer = self._timer_factory.create(duration=self._maximum_duration)
+            self._timer = timer
+
+        # Do not use the not operator in the following line. Tests
+        # often set dummy start time values of 0.0 seconds.
+        if self._timer.start_time is None:
+            self._timer.start()
             should_flush = False
         else:
-            should_flush = common.utilities.should_stop(
-                maximum_duration=self._maximum_duration,
-                start_time=self._start_time,
-                _get_now_in_seconds=self._get_now_in_seconds)
+            should_flush = self._timer.should_stop()
+
+        if should_flush:
+            self._timer = None
+
         return should_flush
 
     def __repr__(self):
-        repr_ = '{}(maximum_duration={})'
-        return repr_.format(self.__class__.__name__, self._maximum_duration)
+        repr_ = '{}(maximum_duration={}, timer_factory={})'
+        return repr_.format(self.__class__.__name__,
+                            self._maximum_duration,
+                            self._timer_factory)
 
 
 class AfterSize(interfaces.IFlushStrategy):
