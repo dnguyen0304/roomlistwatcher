@@ -10,32 +10,30 @@ from clare.common import utilities
 class TestAfterDuration(object):
 
     def __init__(self):
-        self.maximum_duration = None
+        self.duration = None
         self.start_time = None
         self.collection = None
 
     def setup(self):
-        self.maximum_duration = 1.0
+        self.duration = 1.0
         self.start_time = 0.0
 
     def test_first_call_does_not_flush(self):
         countdown_timer = utilities.timers.CountdownTimer(
-            duration=self.maximum_duration)
+            duration=self.duration)
         flush_strategy = flush_strategies.AfterDuration(
-            maximum_duration=self.maximum_duration,
             countdown_timer=countdown_timer)
         should_flush = flush_strategy.should_flush(collection=self.collection)
         assert_false(should_flush)
 
     def test_timer_is_reset_after_flushing(self):
         side_effect = (self.start_time,
-                       self.start_time + self.maximum_duration)
+                       self.start_time + self.duration)
         get_now_in_seconds = mock.Mock(side_effect=side_effect)
         countdown_timer = utilities.timers.CountdownTimer(
-            duration=self.maximum_duration,
+            duration=self.duration,
             get_now_in_seconds=get_now_in_seconds)
         flush_strategy = flush_strategies.AfterDuration(
-            maximum_duration=self.maximum_duration,
             countdown_timer=countdown_timer)
         flush_strategy.should_flush(collection=self.collection)
         flush_strategy.should_flush(collection=self.collection)

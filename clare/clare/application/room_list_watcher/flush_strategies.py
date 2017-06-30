@@ -5,17 +5,14 @@ from . import interfaces
 
 class AfterDuration(interfaces.IFlushStrategy):
 
-    def __init__(self, maximum_duration, countdown_timer):
+    def __init__(self, countdown_timer):
 
         """
         Parameters
         ----------
-        maximum_duration : float
-            Maximum duration in seconds since the epoch.
         countdown_timer : clare.common.utilities.timers.CountdownTimer
         """
 
-        self._maximum_duration = maximum_duration
         self._countdown_timer = countdown_timer
 
     def should_flush(self, collection):
@@ -43,10 +40,8 @@ class AfterDuration(interfaces.IFlushStrategy):
         return should_flush
 
     def __repr__(self):
-        repr_ = '{}(maximum_duration={}, countdown_timer={})'
-        return repr_.format(self.__class__.__name__,
-                            self._maximum_duration,
-                            self._countdown_timer)
+        repr_ = '{}(countdown_timer={})'
+        return repr_.format(self.__class__.__name__, self._countdown_timer)
 
 
 class AfterSize(interfaces.IFlushStrategy):
