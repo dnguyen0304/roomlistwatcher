@@ -4,7 +4,6 @@ import abc
 import time
 
 from . import exceptions
-from clare.common import utilities
 
 
 class IStopStrategy(object):
@@ -76,14 +75,13 @@ class AfterDuration(After):
         self._get_now_in_seconds = _get_now_in_seconds
 
     def should_stop(self, attempt):
+
         # Stopping the execution of callable where a single attempt
         # takes longer than the maximum duration is not supported.
-        result = utilities.should_stop(
-            maximum_duration=self._maximum_duration,
-            start_time=attempt.first_attempt_start_time,
-            _get_now_in_seconds=self._get_now_in_seconds)
+        now = self._get_now_in_seconds()
+        current_duration = now - attempt.first_attempt_start_time
 
-        if result:
+        if current_duration >= self._maximum_duration:
             message = 'The duration of attempts exceeded the maximum threshold.'
             raise exceptions.MaximumRetry(message)
         else:
