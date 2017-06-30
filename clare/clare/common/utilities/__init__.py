@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from . import timers
 from .time_zone import TimeZone
-from . import timer_factories
 
 __all__ = ['TimeZone',
-           'timer_factories']
+           'timers']
