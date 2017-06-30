@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import mock
-from nose.tools import assert_false, assert_is_none, assert_true
+from nose.tools import assert_false, assert_true
 
 from .. import flush_strategies
 from clare.common import utilities
@@ -19,25 +19,27 @@ class TestAfterDuration(object):
         self.start_time = 0.0
 
     def test_first_call_does_not_flush(self):
-        timer_factory = utilities.timer_factories.CountdownTimerFactory()
+        countdown_timer = utilities.timers.CountdownTimer(
+            duration=self.maximum_duration)
         flush_strategy = flush_strategies.AfterDuration(
             maximum_duration=self.maximum_duration,
-            timer_factory=timer_factory)
+            countdown_timer=countdown_timer)
         should_flush = flush_strategy.should_flush(collection=self.collection)
         assert_false(should_flush)
 
-    def test_timer_is_disposed_after_flushing(self):
+    def test_timer_is_reset_after_flushing(self):
         side_effect = (self.start_time,
                        self.start_time + self.maximum_duration)
-        _get_now_in_seconds = mock.Mock(side_effect=side_effect)
-        timer_factory = utilities.timer_factories.CountdownTimerFactory(
-            _get_now_in_seconds=_get_now_in_seconds)
+        get_now_in_seconds = mock.Mock(side_effect=side_effect)
+        countdown_timer = utilities.timers.CountdownTimer(
+            duration=self.maximum_duration,
+            get_now_in_seconds=get_now_in_seconds)
         flush_strategy = flush_strategies.AfterDuration(
             maximum_duration=self.maximum_duration,
-            timer_factory=timer_factory)
+            countdown_timer=countdown_timer)
         flush_strategy.should_flush(collection=self.collection)
         flush_strategy.should_flush(collection=self.collection)
-        assert_is_none(flush_strategy._timer)
+        assert_false(flush_strategy._countdown_timer.is_running)
 
 
 def test_after_size_should_flush_greater_than_maximum_size_should_flush():

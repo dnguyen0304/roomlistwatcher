@@ -5,20 +5,18 @@ from . import interfaces
 
 class AfterDuration(interfaces.IFlushStrategy):
 
-    def __init__(self, maximum_duration, timer_factory):
+    def __init__(self, maximum_duration, countdown_timer):
 
         """
         Parameters
         ----------
         maximum_duration : float
             Maximum duration in seconds since the epoch.
-        timer_factory : clare.common.utilities.timer_factories.CountdownTimerFactory
+        countdown_timer : clare.common.utilities.timers.CountdownTimer
         """
 
         self._maximum_duration = maximum_duration
-        self._timer_factory = timer_factory
-
-        self._timer = None
+        self._countdown_timer = countdown_timer
 
     def should_flush(self, collection):
 
@@ -33,28 +31,22 @@ class AfterDuration(interfaces.IFlushStrategy):
             True if the collection should be flushed.
         """
 
-        if not self._timer:
-            timer = self._timer_factory.create(duration=self._maximum_duration)
-            self._timer = timer
-
-        # Do not use the not operator in the following line. Tests
-        # often set dummy start time values of 0.0 seconds.
-        if self._timer.start_time is None:
-            self._timer.start()
+        if not self._countdown_timer.is_running:
+            self._countdown_timer.start()
             should_flush = False
         else:
-            should_flush = self._timer.should_stop()
+            should_flush = not self._countdown_timer.has_time_remaining
 
         if should_flush:
-            self._timer = None
+            self._countdown_timer.reset()
 
         return should_flush
 
     def __repr__(self):
-        repr_ = '{}(maximum_duration={}, timer_factory={})'
+        repr_ = '{}(maximum_duration={}, countdown_timer={})'
         return repr_.format(self.__class__.__name__,
                             self._maximum_duration,
-                            self._timer_factory)
+                            self._countdown_timer)
 
 
 class AfterSize(interfaces.IFlushStrategy):
