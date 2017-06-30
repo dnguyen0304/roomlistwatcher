@@ -4,4 +4,4 @@ from clare.common import enumerations
 
 
 class Topic(enumerations.Automated):
-    ROOM_CREATED = ()
+    ROOM_FOUND = ()

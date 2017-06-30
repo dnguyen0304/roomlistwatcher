@@ -33,7 +33,7 @@ class Logging(object):
 
         arguments = collections.OrderedDict()
         arguments['path'] = record.value
-        event = common.logging.Event(topic=topics.Topic.ROOM_CREATED,
+        event = common.logging.Event(topic=topics.Topic.ROOM_FOUND,
                                      arguments=arguments)
         message = event.to_json()
         self._logger.info(msg=message)
