@@ -18,6 +18,7 @@ from clare import common
 from clare.common import automation
 from clare.common import messaging
 from clare.common import retry
+from clare.common import utilities
 
 
 class Factory(object):
@@ -152,8 +153,10 @@ class Producer(object):
         dependencies['filters'] = list()
 
         # Construct the no duplicate filter.
+        countdown_timer = utilities.timers.CountdownTimer(
+            duration=self._properties['filter']['flush_strategy']['duration'])
         after_duration = flush_strategies.AfterDuration(
-            maximum_duration=self._properties['filter']['flush_strategy']['maximum_duration'])
+            countdown_timer=countdown_timer)
         no_duplicate = filters.NoDuplicate(flush_strategy=after_duration)
         dependencies['filters'].append(no_duplicate)
 
