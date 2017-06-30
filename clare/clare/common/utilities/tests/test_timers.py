@@ -59,44 +59,42 @@ class TestCountdownTimer(object):
     def __init__(self):
         self.duration = None
         self.start_time = None
-        self.timer_factory = None
 
     def setup(self):
         self.duration = 1.0
         self.start_time = 0.0
-        self.timer_factory = timer_factories.CountdownTimerFactory()
 
     def test_greater_than_duration_should_stop(self):
-        _get_not_in_seconds = MockGetNowInSeconds.greater_than(
+        _get_now_in_seconds = MockGetNowInSeconds.greater_than(
             duration=self.duration,
             start_time=self.start_time)
-        timer = self.timer_factory.create(
-            duration=self.duration,
-            _get_not_in_seconds=_get_not_in_seconds)
+        timer_factory = timer_factories.CountdownTimerFactory(
+            _get_now_in_seconds=_get_now_in_seconds)
+        timer = timer_factory.create(duration=self.duration)
 
         timer.start()
         should_stop = timer.should_stop()
         assert_true(should_stop)
 
     def test_equal_to_duration_should_stop(self):
-        _get_not_in_seconds = MockGetNowInSeconds.equal_to(
+        _get_now_in_seconds = MockGetNowInSeconds.equal_to(
             duration=self.duration,
             start_time=self.start_time)
-        timer = self.timer_factory.create(
-            duration=self.duration,
-            _get_not_in_seconds=_get_not_in_seconds)
+        timer_factory = timer_factories.CountdownTimerFactory(
+            _get_now_in_seconds=_get_now_in_seconds)
+        timer = timer_factory.create(duration=self.duration)
 
         timer.start()
         should_stop = timer.should_stop()
         assert_true(should_stop)
 
     def test_less_than_duration_should_not_stop(self):
-        _get_not_in_seconds = MockGetNowInSeconds.less_than(
+        _get_now_in_seconds = MockGetNowInSeconds.less_than(
             duration=self.duration,
             start_time=self.start_time)
-        timer = self.timer_factory.create(
-            duration=self.duration,
-            _get_not_in_seconds=_get_not_in_seconds)
+        timer_factory = timer_factories.CountdownTimerFactory(
+            _get_now_in_seconds=_get_now_in_seconds)
+        timer = timer_factory.create(duration=self.duration)
 
         timer.start()
         should_stop = timer.should_stop()
