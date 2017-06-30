@@ -2,7 +2,7 @@
 
 from nose.tools import assert_false, assert_true
 
-from .. import timer_factories
+from .. import timers
 
 
 class MockGetNowInSeconds(object):
@@ -24,20 +24,20 @@ class MockGetNowInSeconds(object):
     @classmethod
     def greater_than(cls, duration, start_time):
         next_time = (duration * 2) + start_time
-        mock = cls(start_time=start_time, next_time=next_time)
-        return mock
+        get_now_in_seconds = cls(start_time=start_time, next_time=next_time)
+        return get_now_in_seconds
 
     @classmethod
     def equal_to(cls, duration, start_time):
         next_time = (duration * 1) + start_time
-        mock = cls(start_time=start_time, next_time=next_time)
-        return mock
+        get_now_in_seconds = cls(start_time=start_time, next_time=next_time)
+        return get_now_in_seconds
 
     @classmethod
     def less_than(cls, duration, start_time):
         next_time = (duration * 0) + start_time
-        mock = cls(start_time=start_time, next_time=next_time)
-        return mock
+        get_now_in_seconds = cls(start_time=start_time, next_time=next_time)
+        return get_now_in_seconds
 
     def __call__(self):
         if self._call_count == 0:
@@ -64,38 +64,47 @@ class TestCountdownTimer(object):
         self.duration = 1.0
         self.start_time = 0.0
 
-    def test_greater_than_duration_should_stop(self):
-        _get_now_in_seconds = MockGetNowInSeconds.greater_than(
+    def test_state_before_starting(self):
+        timer = timers.CountdownTimer(duration=self.duration)
+        assert_false(timer.is_running)
+
+    def test_state_after_starting_and_before_resetting(self):
+        timer = timers.CountdownTimer(duration=self.duration)
+        timer.start()
+        assert_true(timer.is_running)
+
+    def test_state_after_resetting(self):
+        timer = timers.CountdownTimer(duration=self.duration)
+        timer.start()
+        timer.reset()
+        assert_false(timer.is_running)
+
+    def test_has_positive_time_remaining(self):
+        get_now_in_seconds = MockGetNowInSeconds.less_than(
             duration=self.duration,
             start_time=self.start_time)
-        timer_factory = timer_factories.CountdownTimerFactory(
-            _get_now_in_seconds=_get_now_in_seconds)
-        timer = timer_factory.create(duration=self.duration)
-
+        timer = timers.CountdownTimer(duration=self.duration,
+                                      get_now_in_seconds=get_now_in_seconds)
         timer.start()
-        should_stop = timer.should_stop()
-        assert_true(should_stop)
+        has_time_remaining = timer.has_time_remaining
+        assert_true(has_time_remaining)
 
-    def test_equal_to_duration_should_stop(self):
-        _get_now_in_seconds = MockGetNowInSeconds.equal_to(
+    def test_has_no_time_remaining(self):
+        get_now_in_seconds = MockGetNowInSeconds.equal_to(
             duration=self.duration,
             start_time=self.start_time)
-        timer_factory = timer_factories.CountdownTimerFactory(
-            _get_now_in_seconds=_get_now_in_seconds)
-        timer = timer_factory.create(duration=self.duration)
-
+        timer = timers.CountdownTimer(duration=self.duration,
+                                      get_now_in_seconds=get_now_in_seconds)
         timer.start()
-        should_stop = timer.should_stop()
-        assert_true(should_stop)
+        has_time_remaining = timer.has_time_remaining
+        assert_false(has_time_remaining)
 
-    def test_less_than_duration_should_not_stop(self):
-        _get_now_in_seconds = MockGetNowInSeconds.less_than(
+    def test_has_negative_time_remaining(self):
+        get_now_in_seconds = MockGetNowInSeconds.greater_than(
             duration=self.duration,
             start_time=self.start_time)
-        timer_factory = timer_factories.CountdownTimerFactory(
-            _get_now_in_seconds=_get_now_in_seconds)
-        timer = timer_factory.create(duration=self.duration)
-
+        timer = timers.CountdownTimer(duration=self.duration,
+                                      get_now_in_seconds=get_now_in_seconds)
         timer.start()
-        should_stop = timer.should_stop()
-        assert_false(should_stop)
+        has_time_remaining = timer.has_time_remaining
+        assert_false(has_time_remaining)

@@ -5,43 +5,49 @@ import time
 
 class CountdownTimer(object):
 
-    def __init__(self, duration, _get_now_in_seconds=None):
+    def __init__(self, duration, get_now_in_seconds=None):
 
         """
         Parameters
         ----------
         duration : float
             The units are in seconds since the epoch.
-        _get_now_in_seconds : collections.Callable
-            Used internally. Defaults to time.time.
+        get_now_in_seconds : collections.Callable
+            Accepts no arguments and returns a float. Defaults to
+            time.time.
         """
 
         self._duration = duration
-        self._get_now_in_seconds = _get_now_in_seconds or time.time
+        self._get_now_in_seconds = get_now_in_seconds or time.time
 
-        self.start_time = None
+        self._start_time = None
+        self.is_running = False
 
     def start(self):
-        self.start_time = self._get_now_in_seconds()
+        self._start_time = self._get_now_in_seconds()
+        self.is_running = True
 
-    def should_stop(self):
+    @property
+    def has_time_remaining(self):
 
         """
         Returns
         -------
         bool
-            True if the process should stop.
+            True if there is time remaining.
         """
 
         now = self._get_now_in_seconds()
-        current_duration = now - self.start_time
-        if current_duration >= self._duration:
-            result = True
-        else:
-            result = False
+        current_duration = now - self._start_time
+        has_remaining_time = (self._duration - current_duration) > 0.0
+        return has_remaining_time
 
-        return result
+    def reset(self):
+        self._start_time = None
+        self.is_running = False
 
     def __repr__(self):
-        repr_ = '{}(duration={})'
-        return repr_.format(self.__class__.__name__, self._duration)
+        repr_ = '{}(duration={}, get_now_in_seconds={})'
+        return repr_.format(self.__class__.__name__,
+                            self._duration,
+                            self._get_now_in_seconds)
