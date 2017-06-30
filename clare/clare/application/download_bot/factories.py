@@ -16,8 +16,9 @@ from . import filters
 from . import handlers
 from . import replay_downloaders
 from clare.common import automation
-from clare.common import retry
 from clare.common import messaging
+from clare.common import retry
+from clare.common import utilities
 
 
 class Factory(object):
@@ -163,13 +164,13 @@ class Consumer(object):
 
         dependencies = dict()
 
-        # Construct the fetcher.
-        fetcher = messaging.consumer.fetchers.Fetcher(
-            message_queue=self._message_queue)
-
-        # Include buffering.
-        fetcher = fetchers.Buffering(fetcher=fetcher,
-                                     size=self._properties['fetcher']['size'])
+        # Construct the buffering fetcher.
+        countdown_timer = utilities.timers.CountdownTimer(
+            duration=self._properties['fetcher']['wait_time']['maximum'])
+        fetcher = fetchers.BufferingFetcher(
+            queue=self._message_queue,
+            countdown_timer=countdown_timer,
+            maximum_message_count=self._properties['fetcher']['message_count']['maximum'])
         dependencies['fetcher'] = fetcher
 
         # Construct the download handler.
