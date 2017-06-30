@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import datetime
-import time
 
 
 # This implementation closely mirrors the UTC class in pytz and
@@ -42,33 +41,3 @@ class TimeZone(object):
         """
 
         return UTC()
-
-
-def should_stop(maximum_duration, start_time, _get_now_in_seconds=None):
-
-    """
-    Parameters
-    ----------
-    maximum_duration : float
-        Maximum duration in seconds since the epoch.
-    start_time : float
-        Start time in seconds since the epoch.
-    _get_now_in_seconds : collections.Callable
-        Used internally. Defaults to time.time.
-
-    Returns
-    -------
-    bool
-        True if the process should stop.
-    """
-
-    get_now_in_seconds = _get_now_in_seconds or time.time
-
-    now = get_now_in_seconds()
-    current_duration = now - start_time
-    if current_duration >= maximum_duration:
-        result = True
-    else:
-        result = False
-
-    return result
