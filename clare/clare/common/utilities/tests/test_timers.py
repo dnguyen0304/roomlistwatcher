@@ -74,6 +74,7 @@ class TestCountdownTimer(object):
             duration=self.duration,
             _get_not_in_seconds=_get_not_in_seconds)
 
+        timer.start()
         should_stop = timer.should_stop()
         assert_true(should_stop)
 
@@ -85,6 +86,7 @@ class TestCountdownTimer(object):
             duration=self.duration,
             _get_not_in_seconds=_get_not_in_seconds)
 
+        timer.start()
         should_stop = timer.should_stop()
         assert_true(should_stop)
 
@@ -96,5 +98,6 @@ class TestCountdownTimer(object):
             duration=self.duration,
             _get_not_in_seconds=_get_not_in_seconds)
 
+        timer.start()
         should_stop = timer.should_stop()
         assert_false(should_stop)
