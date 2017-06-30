@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import sys
-import time
 
 if sys.version_info[:2] == (2, 7):
     import Queue as queue
@@ -10,7 +9,6 @@ import collections
 
 from . import interfaces
 from clare.common import messaging
-from clare.common import utilities
 
 
 class Fetcher(interfaces.IFetcher):
@@ -45,27 +43,19 @@ class Fetcher(interfaces.IFetcher):
 
 class BufferingFetcher(interfaces.IFetcher):
 
-    def __init__(self,
-                 fetcher,
-                 size,
-                 _get_now_in_seconds=None,
-                 _should_stop=None):
+    def __init__(self, fetcher, size, countdown_timer):
 
         """
         Parameters
         ----------
         fetcher : clare.application.download_bot.interfaces.IFetcher
         size : int
-        _get_now_in_seconds : collections.Callable
-            Used internally. Defaults to time.time.
-        _should_stop : collections.Callable
-            Used internally. Defaults to clare.common.utilities.should_stop.
+        countdown_timer : clare.common.utilities.timers.CountdownTimer
         """
 
         self._fetcher = fetcher
         self._size = size
-        self._get_now_in_seconds = _get_now_in_seconds or time.time
-        self._should_stop = _should_stop or utilities.should_stop
+        self._countdown_timer = countdown_timer
 
         self._buffer = collections.deque()
 
@@ -77,31 +67,28 @@ class BufferingFetcher(interfaces.IFetcher):
         scenarios block and wait as specified.
         """
 
-        start_time = self._get_now_in_seconds()
+        self._countdown_timer.start()
 
         if not self._buffer:
             for i in xrange(self._size):
                 record = self._fetcher.pop(block=block, timeout=timeout)
                 self._buffer.append(record)
 
-                should_stop = self._should_stop(
-                    maximum_duration=timeout,
-                    start_time=start_time,
-                    _get_now_in_seconds=self._get_now_in_seconds)
-
-                if should_stop:
+                if not self._countdown_timer.has_time_remaining:
                     message = 'The fetcher timed out after at least {timeout} seconds.'
                     raise messaging.consumer.exceptions.FetchTimeout(
                         message.format(timeout=timeout))
 
+        self._countdown_timer.reset()
         record = self._buffer.popleft()
         return record
 
     def __repr__(self):
-        repr_ = '{}(fetcher={}, size={})'
+        repr_ = '{}(fetcher={}, size={}, countdown_timer={})'
         return repr_.format(self.__class__.__name__,
                             self._fetcher,
-                            self._size)
+                            self._size,
+                            self._countdown_timer)
 
 
 class MeasuringFetcher(interfaces.IFetcher):

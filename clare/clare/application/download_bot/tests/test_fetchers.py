@@ -63,10 +63,12 @@ class TestBufferingFetcher(object):
         self.queue = queue.Queue()
         self.composed_fetcher = fetchers.Fetcher(queue=self.queue)
         self.size = 2
-        _should_stop = mock.Mock(return_value=False)
-        self.fetcher = fetchers.BufferingFetcher(fetcher=self.composed_fetcher,
-                                                 size=self.size,
-                                                 _should_stop=_should_stop)
+        countdown_timer = self.create_mock_countdown_timer(
+            has_time_remaining=True)
+        self.fetcher = fetchers.BufferingFetcher(
+            fetcher=self.composed_fetcher,
+            size=self.size,
+            countdown_timer=countdown_timer)
 
     def test_does_fetch_when_buffer_is_empty(self):
         side_effect = xrange(self.size)
@@ -103,15 +105,14 @@ class TestBufferingFetcher(object):
 
     @raises(messaging.consumer.exceptions.FetchTimeout)
     def test_raises_exception_on_timeout(self):
-        fetcher = fetchers.BufferingFetcher(fetcher=self.composed_fetcher,
-                                            size=self.size)
-        fetcher.pop(block=False, timeout=None)
+        self.fetcher.pop(block=False, timeout=None)
 
     def test_raises_exception_on_buffering_timeout(self):
-        _should_stop = mock.Mock(return_value=True)
+        countdown_timer = self.create_mock_countdown_timer(
+            has_time_remaining=False)
         fetcher = fetchers.BufferingFetcher(fetcher=self.composed_fetcher,
                                             size=self.size,
-                                            _should_stop=_should_stop)
+                                            countdown_timer=countdown_timer)
         for i in xrange(self.size):
             self.queue.put(i)
 
@@ -121,3 +122,17 @@ class TestBufferingFetcher(object):
             fetcher.pop(block=True, timeout=timeout)
         assert_in('at least', context.exception.message)
         assert_in(str(timeout), context.exception.message)
+
+    @staticmethod
+    def create_mock_countdown_timer(has_time_remaining):
+
+        """
+        Parameters
+        ----------
+        has_time_remaining : bool
+        """
+
+        countdown_timer = mock.Mock()
+        has_time_remaining = mock.PropertyMock(return_value=has_time_remaining)
+        type(countdown_timer).has_time_remaining = has_time_remaining
+        return countdown_timer
