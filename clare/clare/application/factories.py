@@ -53,11 +53,9 @@ class Factory(object):
         room_list_watcher_.daemon = True
 
         # Construct the download_bot.
-        fetcher = messaging.consumer.fetchers.Fetcher(
-            message_queue=message_queue)
         download_bot_factory = download_bot.factories.Consumer(
-            properties=self._properties['download_bot'],
-            fetcher=fetcher)
+            message_queue=message_queue,
+            properties=self._properties['download_bot'])
         download_bot_ = download_bot_factory.create()
 
         # Include threading.
