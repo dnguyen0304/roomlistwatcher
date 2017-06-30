@@ -10,6 +10,7 @@ from nose.tools import (assert_equal,
                         assert_false,
                         assert_in,
                         assert_raises,
+                        assert_true,
                         raises)
 
 from .. import fetchers
@@ -55,73 +56,63 @@ class TestBufferingFetcher(object):
 
     def __init__(self):
         self.queue = None
-        self.composed_fetcher = None
-        self.size = None
+        self.countdown_timer = None
+        self.maximum_message_count = None
         self.fetcher = None
 
     def setup(self):
         self.queue = queue.Queue()
-        self.composed_fetcher = fetchers.Fetcher(queue=self.queue)
-        self.size = 2
-        countdown_timer = self.create_mock_countdown_timer(
+        self.countdown_timer = self.create_mock_countdown_timer(
             has_time_remaining=True)
+        self.maximum_message_count = 2
         self.fetcher = fetchers.BufferingFetcher(
-            fetcher=self.composed_fetcher,
-            size=self.size,
-            countdown_timer=countdown_timer)
+            queue=self.queue,
+            countdown_timer=self.countdown_timer,
+            maximum_message_count=self.maximum_message_count)
 
-    def test_does_fetch_when_buffer_is_empty(self):
-        side_effect = xrange(self.size)
-        self.composed_fetcher.pop = mock.Mock(side_effect=side_effect)
-        self.fetcher.pop(block=True, timeout=None)
+    def test_pop_does_fetch_when_buffer_is_empty(self):
+        side_effect = xrange(self.maximum_message_count)
+        self.queue.get = mock.Mock(side_effect=side_effect)
+        self.fetcher.pop(block=None, timeout=None)
+        assert_true(self.queue.get.called)
 
-        assert_equal(self.composed_fetcher.pop.call_count, self.size)
+    def test_pop_does_not_fetch_while_buffer_has_records(self):
+        self.test_pop_does_fetch_when_buffer_is_empty()
+        self.queue.get.reset_mock()
+        self.fetcher.pop(block=None, timeout=None)
+        assert_false(self.queue.get.called)
 
-    def test_does_not_fetch_while_buffer_has_records(self):
-        for i in xrange(self.size):
+    def test_pop_minimum_message_count(self):
+        for i in xrange(self.maximum_message_count - 1):
             self.queue.put(i)
+        countdown_timer = self.create_mock_countdown_timer(
+            has_time_remaining=False)
+        fetcher = fetchers.BufferingFetcher(
+            queue=self.queue,
+            countdown_timer=countdown_timer,
+            maximum_message_count=self.maximum_message_count)
+        fetcher.pop(block=False, timeout=None)
 
-        # The composed fetcher should not be called on the second
-        # round.
-        self.fetcher.pop(block=True, timeout=None)
-        self.composed_fetcher.pop = mock.Mock()
-        self.fetcher.pop(block=True, timeout=None)
-
-        assert_false(self.composed_fetcher.pop.called)
-
-    def test_is_ordered(self):
+    def test_pop_is_ordered(self):
         expected = list()
         records = list()
-
         # These loops cannot be merged because there are not enough
         # messages enqueued for the buffer.
-        for i in xrange(self.size):
+        for i in xrange(self.maximum_message_count):
             expected.append(i)
             self.queue.put(i)
-        for i in xrange(self.size):
-            records.append(self.fetcher.pop(block=False, timeout=None))
-
+        for i in xrange(self.maximum_message_count):
+            record = self.fetcher.pop(block=False, timeout=None)
+            records.append(record)
         assert_equal(records, expected)
 
     @raises(messaging.consumer.exceptions.FetchTimeout)
-    def test_raises_exception_on_timeout(self):
+    def test_timeout_raises_exception(self):
         self.fetcher.pop(block=False, timeout=None)
 
-    def test_raises_exception_on_buffering_timeout(self):
-        countdown_timer = self.create_mock_countdown_timer(
-            has_time_remaining=False)
-        fetcher = fetchers.BufferingFetcher(fetcher=self.composed_fetcher,
-                                            size=self.size,
-                                            countdown_timer=countdown_timer)
-        for i in xrange(self.size):
-            self.queue.put(i)
-
-        timeout = 0.001
-
-        with assert_raises(messaging.consumer.exceptions.FetchTimeout) as context:
-            fetcher.pop(block=True, timeout=timeout)
-        assert_in('at least', context.exception.message)
-        assert_in(str(timeout), context.exception.message)
+    def test_timeout_resets_countdown_timer(self):
+        self.test_timeout_raises_exception()
+        assert_true(self.countdown_timer.reset.called)
 
     @staticmethod
     def create_mock_countdown_timer(has_time_remaining):
@@ -130,9 +121,13 @@ class TestBufferingFetcher(object):
         Parameters
         ----------
         has_time_remaining : bool
+
+        Returns
+        -------
+        mock.Mock
         """
 
-        countdown_timer = mock.Mock()
+        mock_countdown_timer = mock.Mock()
         has_time_remaining = mock.PropertyMock(return_value=has_time_remaining)
-        type(countdown_timer).has_time_remaining = has_time_remaining
-        return countdown_timer
+        type(mock_countdown_timer).has_time_remaining = has_time_remaining
+        return mock_countdown_timer

@@ -43,52 +43,70 @@ class Fetcher(interfaces.IFetcher):
 
 class BufferingFetcher(interfaces.IFetcher):
 
-    def __init__(self, fetcher, size, countdown_timer):
+    def __init__(self, queue, countdown_timer, maximum_message_count):
 
         """
         Parameters
         ----------
-        fetcher : clare.application.download_bot.interfaces.IFetcher
-        size : int
+        queue : Queue.Queue
         countdown_timer : clare.common.utilities.timers.CountdownTimer
+        maximum_message_count : int
         """
 
-        self._fetcher = fetcher
-        self._size = size
+        self._queue = queue
         self._countdown_timer = countdown_timer
+        self._maximum_message_count = maximum_message_count
 
         self._buffer = collections.deque()
 
     def pop(self, block, timeout):
 
         """
-        If the buffer has records, then fetch from the buffer. If the
-        buffer is empty, then fill from the queue before fetching. Both
-        scenarios block and wait as specified.
+        If the buffer has records, then fetch from it. If the buffer is
+        empty, then fill from the queue before fetching. Both scenarios
+        block and wait as specified.
         """
 
         self._countdown_timer.start()
 
         if not self._buffer:
-            for i in xrange(self._size):
-                record = self._fetcher.pop(block=block, timeout=timeout)
-                self._buffer.append(record)
+            try:
+                self.__fill(block=block, timeout=timeout)
+            except messaging.consumer.exceptions.FetchTimeout:
+                raise
+            finally:
+                self._countdown_timer.reset()
 
-                if not self._countdown_timer.has_time_remaining:
-                    message = 'The fetcher timed out after at least {timeout} seconds.'
-                    raise messaging.consumer.exceptions.FetchTimeout(
-                        message.format(timeout=timeout))
-
-        self._countdown_timer.reset()
         record = self._buffer.popleft()
         return record
 
+    def __fill(self, block, timeout):
+        records = list()
+
+        for i in xrange(self._maximum_message_count):
+            try:
+                record = self._queue.get(block=block, timeout=timeout)
+            except queue.Empty:
+                if not block or not timeout:
+                    message = 'The fetcher timed out immediately.'
+                else:
+                    message = 'The fetcher timed out after {timeout} seconds.'.format(
+                        timeout=timeout)
+                raise messaging.consumer.exceptions.FetchTimeout(message)
+            else:
+                records.append(record)
+
+            if not self._countdown_timer.has_time_remaining:
+                break
+
+        self._buffer.extend(records)
+
     def __repr__(self):
-        repr_ = '{}(fetcher={}, size={}, countdown_timer={})'
+        repr_ = '{}(queue={}, countdown_timer={}, maximum_message_count={})'
         return repr_.format(self.__class__.__name__,
-                            self._fetcher,
-                            self._size,
-                            self._countdown_timer)
+                            self._queue,
+                            self._countdown_timer,
+                            self._maximum_message_count)
 
 
 class MeasuringFetcher(interfaces.IFetcher):
