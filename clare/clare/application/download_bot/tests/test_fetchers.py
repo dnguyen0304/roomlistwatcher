@@ -73,13 +73,13 @@ class TestBufferingFetcher(object):
     def test_pop_does_fetch_when_buffer_is_empty(self):
         side_effect = xrange(self.maximum_message_count)
         self.queue.get = mock.Mock(side_effect=side_effect)
-        self.fetcher.pop(block=None, timeout=None)
+        self.fetcher.pop(timeout=0.0)
         assert_true(self.queue.get.called)
 
     def test_pop_does_not_fetch_while_buffer_has_records(self):
         self.test_pop_does_fetch_when_buffer_is_empty()
         self.queue.get.reset_mock()
-        self.fetcher.pop(block=None, timeout=None)
+        self.fetcher.pop(timeout=0.0)
         assert_false(self.queue.get.called)
 
     def test_pop_minimum_message_count(self):
@@ -91,7 +91,7 @@ class TestBufferingFetcher(object):
             queue=self.queue,
             countdown_timer=countdown_timer,
             maximum_message_count=self.maximum_message_count)
-        fetcher.pop(block=False, timeout=None)
+        fetcher.pop(timeout=0.0)
 
     def test_pop_is_ordered(self):
         expected = list()
@@ -102,13 +102,13 @@ class TestBufferingFetcher(object):
             expected.append(i)
             self.queue.put(i)
         for i in xrange(self.maximum_message_count):
-            record = self.fetcher.pop(block=False, timeout=None)
+            record = self.fetcher.pop(timeout=0.0)
             records.append(record)
         assert_equal(records, expected)
 
     @raises(messaging.consumer.exceptions.FetchTimeout)
     def test_timeout_raises_exception(self):
-        self.fetcher.pop(block=False, timeout=None)
+        self.fetcher.pop(timeout=0.0)
 
     def test_timeout_resets_countdown_timer(self):
         self.test_timeout_raises_exception()

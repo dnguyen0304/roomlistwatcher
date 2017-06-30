@@ -41,7 +41,7 @@ class Fetcher(interfaces.IFetcher):
         return repr_.format(self.__class__.__name__, self._queue)
 
 
-class BufferingFetcher(interfaces.IFetcher):
+class BufferingFetcher(messaging.consumer.interfaces.IFetcher):
 
     def __init__(self, queue, countdown_timer, maximum_message_count):
 
@@ -59,19 +59,19 @@ class BufferingFetcher(interfaces.IFetcher):
 
         self._buffer = collections.deque()
 
-    def pop(self, block, timeout):
+    def pop(self, timeout):
 
         """
         If the buffer has records, then fetch from it. If the buffer is
         empty, then fill from the queue before fetching. Both scenarios
-        block and wait as specified.
+        wait as specified.
         """
 
         self._countdown_timer.start()
 
         if not self._buffer:
             try:
-                self.__fill(block=block, timeout=timeout)
+                self.__fill(timeout=timeout)
             except messaging.consumer.exceptions.FetchTimeout:
                 raise
             finally:
@@ -80,18 +80,15 @@ class BufferingFetcher(interfaces.IFetcher):
         record = self._buffer.popleft()
         return record
 
-    def __fill(self, block, timeout):
+    def __fill(self, timeout):
         records = list()
 
         for i in xrange(self._maximum_message_count):
             try:
-                record = self._queue.get(block=block, timeout=timeout)
+                record = self._queue.get(timeout=timeout)
             except queue.Empty:
-                if not block or not timeout:
-                    message = 'The fetcher timed out immediately.'
-                else:
-                    message = 'The fetcher timed out after {timeout} seconds.'.format(
-                        timeout=timeout)
+                message = 'The fetcher timed out after {timeout} seconds.'.format(
+                    timeout=timeout)
                 raise messaging.consumer.exceptions.FetchTimeout(message)
             else:
                 records.append(record)
