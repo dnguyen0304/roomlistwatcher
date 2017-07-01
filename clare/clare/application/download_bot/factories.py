@@ -194,6 +194,11 @@ class Consumer(object):
         except_overused_metagame = filters.ExceptOverusedMetagameFilter()
         dependencies['filters'].append(except_overused_metagame)
 
+        # Construct the every first n filter.
+        every_first_n = filters.EveryFirstNFilter(
+            n=self._properties['filters'][0]['n'])
+        dependencies['filters'].append(every_first_n)
+
         return dependencies
 
     def __repr__(self):
