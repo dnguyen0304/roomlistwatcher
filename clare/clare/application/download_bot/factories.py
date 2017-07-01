@@ -63,11 +63,11 @@ class Factory(object):
 
         # Include retrying.
         stop_strategy = retry.stop_strategies.AfterDuration(
-            maximum_duration=self._properties['replay_downloader']['policy']['stop_strategy']['maximum_duration'])
+            maximum_duration=self._properties['replay_downloader']['retry_policy']['stop_strategy']['maximum_duration'])
         wait_strategy = retry.wait_strategies.Fixed(
-            wait_time=self._properties['replay_downloader']['policy']['wait_strategy']['wait_time'])
+            wait_time=self._properties['replay_downloader']['retry_policy']['wait_strategy']['wait_time'])
         logger = logging.getLogger(
-            name=self._properties['replay_downloader']['policy']['messaging_broker']['logger']['name'])
+            name=self._properties['replay_downloader']['retry_policy']['messaging_broker']['logger']['name'])
         messaging_broker_factory = retry.messaging.broker_factories.Logging(
             logger=logger)
         messaging_broker = messaging_broker_factory.create(
@@ -89,11 +89,11 @@ class Factory(object):
 
         # Include retrying.
         stop_strategy = retry.stop_strategies.AfterDuration(
-            maximum_duration=self._properties['download_validator']['policy']['stop_strategy']['maximum_duration'])
+            maximum_duration=self._properties['download_validator']['retry_policy']['stop_strategy']['maximum_duration'])
         wait_strategy = retry.wait_strategies.Fixed(
-            wait_time=self._properties['download_validator']['policy']['wait_strategy']['wait_time'])
+            wait_time=self._properties['download_validator']['retry_policy']['wait_strategy']['wait_time'])
         logger = logging.getLogger(
-            name=self._properties['download_validator']['policy']['messaging_broker']['logger']['name'])
+            name=self._properties['download_validator']['retry_policy']['messaging_broker']['logger']['name'])
         messaging_broker_factory = retry.messaging.broker_factories.Logging(
             logger=logger)
         messaging_broker = messaging_broker_factory.create(
