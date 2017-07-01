@@ -8,6 +8,7 @@ import uuid
 import selenium.webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 
+from . import adapters
 from . import download_bots
 from . import download_validators
 from . import exceptions
@@ -180,7 +181,8 @@ class Consumer(object):
 
         # Construct the download handler.
         download_bot = self._factory.create()
-        handler = handlers.Download(download_bot=download_bot)
+        handler = adapters.DownloadBotToHandlerAdapter(
+            download_bot=download_bot)
 
         # Include orchestration.
         logger = logging.getLogger(
