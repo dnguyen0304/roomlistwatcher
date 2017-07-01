@@ -14,13 +14,6 @@ from clare.common import retry
 class Nop(messaging.consumer.interfaces.IHandler):
 
     def handle(self, record):
-
-        """
-        Returns
-        -------
-        None
-        """
-
         pass
 
     def __repr__(self):
