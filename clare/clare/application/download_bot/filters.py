@@ -43,6 +43,20 @@ class BaseFilter(messaging.interfaces.IFilter):
         return record
 
 
+class DoublesBattleFilter(BaseFilter):
+
+    def _should_filter(self, record):
+        _, metagame_name, _ = record.value.split('-')
+        if 'doubles' in metagame_name:
+            return True
+        else:
+            return False
+
+    def __repr__(self):
+        repr_ = '{}()'
+        return repr_.format(self.__class__.__name__)
+
+
 class EveryFirstNFilter(BaseFilter):
 
     def __init__(self, n):

@@ -6,6 +6,31 @@ from .. import filters
 from clare.common import messaging
 
 
+class TestDoublesBattleFilter(object):
+
+    def __init__(self):
+        self.filter = None
+
+    def setup(self):
+        self.filter = filters.DoublesBattleFilter()
+
+    def test_doubles_battles_are_filtered(self):
+        value = '/battle-foodoubles-0'
+        record = messaging.records.Record(queue_name=None,
+                                          timestamp=None,
+                                          value=value)
+        output = self.filter.filter(record=record)
+        assert_is_none(output)
+
+    def test_non_double_battles_are_not_filtered(self):
+        value = '/battle-foo-0'
+        input = messaging.records.Record(queue_name=None,
+                                         timestamp=None,
+                                         value=value)
+        output = self.filter.filter(record=input)
+        assert_is(output, input)
+
+
 class TestEveryFirstNFilter(object):
 
     def __init__(self):
