@@ -2,6 +2,7 @@
 
 import time
 
+from . import exceptions
 from . import interfaces
 
 
@@ -28,13 +29,17 @@ class Consumer(interfaces.IConsumer):
             time.sleep(interval)
 
     def _consume_once(self, timeout):
-        record = self._fetcher.pop(timeout=timeout)
-        for filter_ in self._filters:
-            record = filter_.filter(record=record)
-            if record is None:
-                break
+        try:
+            record = self._fetcher.pop(timeout=timeout)
+        except exceptions.FetchTimeout:
+            pass
         else:
-            self._handler.handle(record=record)
+            for filter_ in self._filters:
+                record = filter_.filter(record=record)
+                if record is None:
+                    break
+            else:
+                self._handler.handle(record=record)
 
     def __repr__(self):
         repr_ = '{}(fetcher={}, handler={}, filters={})'
