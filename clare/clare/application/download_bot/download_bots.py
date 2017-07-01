@@ -68,6 +68,9 @@ class UrlPathDownloadBot(object):
         url = os.path.join(root_url, path.lstrip('/'))
         return url
 
+    def dispose(self):
+        self._download_bot.dispose()
+
     def __repr__(self):
         repr_ = '{}(download_bot={}, root_url={})'
         return repr_.format(self.__class__.__name__,
