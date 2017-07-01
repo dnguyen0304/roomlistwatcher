@@ -2,8 +2,10 @@
 
 import time
 
+from . import interfaces
 
-class Consumer(object):
+
+class Consumer(interfaces.IConsumer):
 
     def __init__(self, fetcher, handler, filters=None):
 
@@ -21,14 +23,6 @@ class Consumer(object):
         self._filters = filters or list()
 
     def consume(self, interval, timeout):
-
-        """
-        Parameters
-        ----------
-        interval : float
-        timeout : float
-        """
-
         while True:
             self._consume_once(timeout=timeout)
             time.sleep(interval)
