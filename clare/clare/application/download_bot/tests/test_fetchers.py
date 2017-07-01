@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import itertools
 import sys
 
 if sys.version_info[:2] == (2, 7):
@@ -63,7 +64,7 @@ class TestBufferingFetcher(object):
     def setup(self):
         self.queue = queue.Queue()
         self.countdown_timer = self.create_mock_countdown_timer(
-            has_time_remaining=True)
+            has_time_remaining=itertools.repeat(True))
         self.maximum_message_count = 2
         self.fetcher = fetchers.BufferingFetcher(
             queue=self.queue,
@@ -82,15 +83,14 @@ class TestBufferingFetcher(object):
         self.fetcher.pop(timeout=0.0)
         assert_false(self.queue.get.called)
 
-    def test_pop_minimum_message_count(self):
-        for i in xrange(self.maximum_message_count - 1):
-            self.queue.put(i)
-        countdown_timer = self.create_mock_countdown_timer(
-            has_time_remaining=False)
-        fetcher = fetchers.BufferingFetcher(
-            queue=self.queue,
-            countdown_timer=countdown_timer,
-            maximum_message_count=self.maximum_message_count)
+    def test_pop_minimum_message_count_with_time_remaining(self):
+        fetcher = self.create_fetcher_for_minimum_message_count(
+            has_time_remaining=(True, False))
+        fetcher.pop(timeout=0.0)
+
+    def test_pop_minimum_message_count_with_no_time_remaining(self):
+        fetcher = self.create_fetcher_for_minimum_message_count(
+            has_time_remaining=(False,))
         fetcher.pop(timeout=0.0)
 
     def test_pop_is_ordered(self):
@@ -107,11 +107,17 @@ class TestBufferingFetcher(object):
         assert_equal(records, expected)
 
     @raises(messaging.consumer.exceptions.FetchTimeout)
-    def test_timeout_raises_exception(self):
-        self.fetcher.pop(timeout=0.0)
+    def test_pop_timeout_raises_exception(self):
+        self.countdown_timer = self.create_mock_countdown_timer(
+            has_time_remaining=(False,))
+        fetcher = fetchers.BufferingFetcher(
+            queue=self.queue,
+            countdown_timer=self.countdown_timer,
+            maximum_message_count=self.maximum_message_count)
+        fetcher.pop(timeout=0.0)
 
-    def test_timeout_resets_countdown_timer(self):
-        self.test_timeout_raises_exception()
+    def test_pop_timeout_resets_countdown_timer(self):
+        self.test_pop_timeout_raises_exception()
         assert_true(self.countdown_timer.reset.called)
 
     @staticmethod
@@ -120,7 +126,7 @@ class TestBufferingFetcher(object):
         """
         Parameters
         ----------
-        has_time_remaining : bool
+        has_time_remaining : collections.Iterable
 
         Returns
         -------
@@ -128,6 +134,28 @@ class TestBufferingFetcher(object):
         """
 
         mock_countdown_timer = mock.Mock()
-        has_time_remaining = mock.PropertyMock(return_value=has_time_remaining)
+        has_time_remaining = mock.PropertyMock(side_effect=has_time_remaining)
         type(mock_countdown_timer).has_time_remaining = has_time_remaining
         return mock_countdown_timer
+
+    def create_fetcher_for_minimum_message_count(self, has_time_remaining):
+
+        """
+        Parameters
+        ----------
+        has_time_remaining : collections.Iterable
+
+        Returns
+        -------
+        clare.application.download_bot_fetcher.BufferingFetcher
+        """
+
+        for i in xrange(self.maximum_message_count - 1):
+            self.queue.put(i)
+        countdown_timer = self.create_mock_countdown_timer(
+            has_time_remaining=has_time_remaining)
+        fetcher = fetchers.BufferingFetcher(
+            queue=self.queue,
+            countdown_timer=countdown_timer,
+            maximum_message_count=self.maximum_message_count)
+        return fetcher

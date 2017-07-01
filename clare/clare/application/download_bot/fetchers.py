@@ -56,6 +56,7 @@ class BufferingFetcher(messaging.consumer.interfaces.IFetcher):
         self._queue = queue
         self._countdown_timer = countdown_timer
         self._maximum_message_count = maximum_message_count
+        self._minimum_message_count = 1
 
         self._buffer = collections.deque()
 
@@ -83,18 +84,25 @@ class BufferingFetcher(messaging.consumer.interfaces.IFetcher):
     def __fill(self, timeout):
         records = list()
 
-        for i in xrange(self._maximum_message_count):
+        while True:
+            # The following code must run at least once (i.e. do-while
+            # semantics).
             try:
                 record = self._queue.get(timeout=timeout)
             except queue.Empty:
-                message = 'The fetcher timed out after {timeout} seconds.'.format(
-                    timeout=timeout)
-                raise messaging.consumer.exceptions.FetchTimeout(message)
+                pass
             else:
                 records.append(record)
 
+            if len(records) == self._maximum_message_count:
+                break
             if not self._countdown_timer.has_time_remaining:
                 break
+
+        if len(records) < self._minimum_message_count:
+            template = 'The fetcher timed out after {timeout} seconds.'
+            message = template.format(timeout=timeout)
+            raise messaging.consumer.exceptions.FetchTimeout(message)
 
         self._buffer.extend(records)
 
