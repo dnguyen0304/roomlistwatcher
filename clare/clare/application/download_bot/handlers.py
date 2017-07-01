@@ -11,28 +11,6 @@ from clare.common import messaging
 from clare.common import retry
 
 
-class Download(messaging.consumer.interfaces.IHandler):
-
-    def __init__(self, download_bot):
-
-        """
-        Parameters
-        ----------
-        download_bot : clare.application.download_bot.download_bots.DownloadBot
-        """
-
-        self._download_bot = download_bot
-
-    def handle(self, record):
-        url = record.value
-        file_path = self._download_bot.run(url=url)
-        return file_path
-
-    def __repr__(self):
-        repr_ = '{}(download_bot={})'
-        return repr_.format(self.__class__.__name__, self._download_bot)
-
-
 class Nop(messaging.consumer.interfaces.IHandler):
 
     def handle(self, record):
