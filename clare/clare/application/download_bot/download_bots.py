@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import print_function
+
 import os
 
 
@@ -42,6 +44,31 @@ class DownloadBot(object):
         return repr_.format(self.__class__.__name__,
                             self._replay_downloader,
                             self._download_validator)
+
+
+class PrintingDownloadBot(object):
+
+    def __init__(self, download_bot):
+
+        """
+        Parameters
+        ----------
+        download_bot : clare.application.download_bot.download_bots.DownloadBot
+        """
+
+        self._download_bot = download_bot
+
+    def run(self, url):
+        file_path = self._download_bot.run(url=url)
+        print(file_path)
+        return file_path
+
+    def dispose(self):
+        self._download_bot.dispose()
+
+    def __repr__(self):
+        repr_ = '{}(download_bot={})'
+        return repr_.format(self.__class__.__name__, self._download_bot)
 
 
 class UrlPathDownloadBot(object):

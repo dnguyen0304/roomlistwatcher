@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import print_function
-
 import collections
 
 from . import exceptions
@@ -53,24 +51,3 @@ class Orchestrating(messaging.consumer.interfaces.IHandler):
         return repr_.format(self.__class__.__name__,
                             self._handler,
                             self._logger)
-
-
-class Printing(messaging.consumer.interfaces.IHandler):
-
-    def __init__(self, handler):
-
-        """
-        Parameters
-        ----------
-        handler : clare.application.download_bot.handlers.Download
-        """
-
-        self._handler = handler
-
-    def handle(self, record):
-        file_path = self._handler.handle(record=record)
-        print(file_path)
-
-    def __repr__(self):
-        repr_ = '{}(handler={})'
-        return repr_.format(self.__class__.__name__, self._handler)
