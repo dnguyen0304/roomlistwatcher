@@ -60,7 +60,8 @@ class UrlPathDownloadBot(object):
 
     def run(self, url):
         url = self._url_join(root_url=self._root_url, path=url)
-        self._download_bot.run(url=url)
+        file_path = self._download_bot.run(url=url)
+        return file_path
 
     @staticmethod
     def _url_join(root_url, path):
