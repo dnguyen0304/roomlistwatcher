@@ -17,8 +17,8 @@ class RunPathAdapter(object):
         self._download_bot = download_bot
         self._root_url = root_url
 
-    def run(self, path):
-        url = self._url_join(root_url=self._root_url, path=path)
+    def run(self, url):
+        url = self._url_join(root_url=self._root_url, path=url)
         self._download_bot.run(url=url)
 
     @staticmethod
