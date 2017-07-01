@@ -193,7 +193,7 @@ class Consumer(object):
         # Include orchestration.
         logger = logging.getLogger(
             name=self._properties['handler']['logger']['name'])
-        handler = handlers.Orchestrating(handler=handler, logger=logger)
+        handler = handlers.OrchestratingHandler(handler=handler, logger=logger)
         dependencies['handler'] = handler
 
         # Construct the filters.
@@ -231,7 +231,7 @@ class Nop(Consumer):
         dependencies = super(Nop, self).create_dependencies()
 
         # Construct the nop handler.
-        handler = handlers.Nop()
+        handler = handlers.NopHandler()
         dependencies['handler'] = handler
 
         return dependencies

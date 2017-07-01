@@ -6,7 +6,7 @@ from clare.common import messaging
 from clare.common import retry
 
 
-class Nop(messaging.consumer.interfaces.IHandler):
+class NopHandler(messaging.consumer.interfaces.IHandler):
 
     def handle(self, record):
         pass
@@ -16,7 +16,7 @@ class Nop(messaging.consumer.interfaces.IHandler):
         return repr_.format(self.__class__.__name__)
 
 
-class Orchestrating(messaging.consumer.interfaces.IHandler):
+class OrchestratingHandler(messaging.consumer.interfaces.IHandler):
 
     def __init__(self, handler, logger):
 
