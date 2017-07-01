@@ -125,6 +125,12 @@ class Factory(object):
             download_bot=download_bot,
             root_url=self._properties['root_url'])
 
+        # Include logging.
+        logger = logging.getLogger(name=self._properties['logger']['name'])
+        download_bot = download_bots.LoggingDownloadBot(
+            download_bot=download_bot,
+            logger=logger)
+
         return download_bot
 
     def __repr__(self):
