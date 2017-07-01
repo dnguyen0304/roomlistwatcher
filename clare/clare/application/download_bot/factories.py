@@ -186,6 +186,10 @@ class Consumer(object):
         # Construct the filters.
         dependencies['filters'] = list()
 
+        # Construct the doubles battle filter.
+        doubles_battle = filters.DoublesBattleFilter()
+        dependencies['filters'].append(doubles_battle)
+
         # Construct the except generation seven metagame filter.
         except_generation_seven_metagame = filters.ExceptGenerationSevenMetagameFilter()
         dependencies['filters'].append(except_generation_seven_metagame)
