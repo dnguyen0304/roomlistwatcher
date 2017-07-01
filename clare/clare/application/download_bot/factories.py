@@ -119,6 +119,11 @@ class Factory(object):
             replay_downloader=replay_downloader,
             download_validator=download_validator)
 
+        # Include the URL path decorator.
+        download_bot = download_bots.UrlPathDownloadBot(
+            download_bot=download_bot,
+            root_url=self._properties['root_url'])
+
         return download_bot
 
     def __repr__(self):
