@@ -69,7 +69,7 @@ class UrlPathDownloadBot(object):
         return url
 
     def __repr__(self):
-        repr_ = '{}(download_bog={}, root_url={})'
+        repr_ = '{}(download_bot={}, root_url={})'
         return repr_.format(self.__class__.__name__,
                             self._download_bot,
                             self._root_url)
