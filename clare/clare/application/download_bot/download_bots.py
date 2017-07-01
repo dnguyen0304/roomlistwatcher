@@ -2,7 +2,11 @@
 
 from __future__ import print_function
 
+import collections
 import os
+
+from . import topic
+from clare import common
 
 
 class DownloadBot(object):
@@ -44,6 +48,38 @@ class DownloadBot(object):
         return repr_.format(self.__class__.__name__,
                             self._replay_downloader,
                             self._download_validator)
+
+
+class LoggingDownloadBot(object):
+
+    def __init__(self, download_bot, logger):
+
+        """
+        Parameters
+        ----------
+        download_bot : clare.application.download_bot.download_bots.DownloadBot
+        logger : logging.Logger
+        """
+
+        self._download_bot = download_bot
+        self._logger = logger
+
+    def run(self, url):
+        file_path = self._download_bot.run(url=url)
+        arguments = collections.OrderedDict()
+        arguments['file_path'] = file_path
+        event = common.logging.Event(topic=topic.Topic.REPLAY_DOWNLOADED,
+                                     arguments=arguments)
+        self._logger.info(msg=event.to_json())
+
+    def dispose(self):
+        self._download_bot.dispose()
+
+    def __repr__(self):
+        repr_ = '{}(download_bot={}, logger={})'
+        return repr_.format(self.__class__.__name__,
+                            self._download_bot,
+                            self._logger)
 
 
 class PrintingDownloadBot(object):
