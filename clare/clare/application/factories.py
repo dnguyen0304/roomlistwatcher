@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import logging
 import sys
 import threading
 
@@ -72,6 +73,12 @@ class Factory(object):
         application = applications.Application(
             room_list_watcher=room_list_watcher_,
             download_bot=download_bot_)
+
+        # Include orchestration.
+        logger = logging.getLogger(name=self._properties['logger']['name'])
+        application = applications.OrchestratingApplication(
+            application=application,
+            logger=logger)
 
         return application
 
