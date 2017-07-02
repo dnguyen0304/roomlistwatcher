@@ -71,12 +71,6 @@ class Factory(object):
             room_list_watcher=room_list_watcher_,
             download_bot=download_bot_)
 
-        # Include orchestration.
-        logger = logging.getLogger(name=self._properties['logger']['name'])
-        application = applications.OrchestratingApplication(
-            application=application,
-            logger=logger)
-
         return application
 
     def __repr__(self):
