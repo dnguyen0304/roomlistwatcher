@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from clare import common
+from clare.common import enumerations
 
 
-class Topic(common.enumerations.Automated):
+class Topic(enumerations.Automated):
     REPLAY_DOWNLOADED = ()
