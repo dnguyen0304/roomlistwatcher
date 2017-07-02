@@ -10,16 +10,16 @@ class OrchestratingProducer(object):
         """
         Parameters
         ----------
-        producer : clare.application.room_list_watcher.producers.OrchestratingProducer
+        producer : clare.common.messaging.producer.producers.Producer
         logger : logging.Logger
         """
 
         self._producer = producer
         self._logger = logger
 
-    def start(self):
+    def produce(self, interval, timeout):
         try:
-            self._producer.start()
+            self._producer.produce(interval=interval, timeout=timeout)
         except Exception as e:
             message = common.logging.utilities.format_exception(e=e)
             self._logger.exception(msg=message)
