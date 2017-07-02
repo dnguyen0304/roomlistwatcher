@@ -2,8 +2,6 @@
 
 import time
 
-from clare import common
-
 
 class Application(object):
 
@@ -29,33 +27,3 @@ class Application(object):
         return repr_.format(self.__class__.__name__,
                             self._room_list_watcher,
                             self._download_bot)
-
-
-class OrchestratingApplication(object):
-
-    def __init__(self, application, logger):
-
-        """
-        Parameters
-        ----------
-        application : clare.application.applications.Application
-        logger : logging.Logger
-        """
-
-        self._application = application
-        self._logger = logger
-
-    def start(self):
-        try:
-            self._application.start()
-        except KeyboardInterrupt:
-            pass
-        except Exception as e:
-            message = common.logging.utilities.format_exception(e=e)
-            self._logger.exception(msg=message)
-
-    def __repr__(self):
-        repr_ = '{}(application={}, logger={})'
-        return repr_.format(self.__class__.__name__,
-                            self._application,
-                            self._logger)

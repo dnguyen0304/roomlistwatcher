@@ -10,6 +10,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from . import exceptions
 from . import filters
 from . import flush_strategies
+from . import producers
 from . import record_factories
 from . import scrapers
 from . import senders
@@ -122,6 +123,11 @@ class Producer(object):
         for filter in dependencies['filters']:
             builder = builder.with_filter(filter)
         producer = builder.build()
+
+        # Include orchestration.
+        logger = logging.getLogger(name=self._properties['logger']['name'])
+        producer = producers.OrchestratingProducer(producer=producer,
+                                                   logger=logger)
 
         return producer
 

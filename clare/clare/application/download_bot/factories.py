@@ -9,6 +9,7 @@ import selenium.webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 
 from . import adapters
+from . import consumers
 from . import deques
 from . import download_bots
 from . import download_validators
@@ -164,6 +165,11 @@ class Consumer(object):
         for filter in dependencies['filters']:
             builder = builder.with_filter(filter)
         consumer = builder.build()
+
+        # Include orchestration.
+        logger = logging.getLogger(name=self._properties['logger']['name'])
+        consumer = consumers.OrchestratingConsumer(consumer=consumer,
+                                                   logger=logger)
 
         return consumer
 
