@@ -1,11 +1,8 @@
 # -*- coding: utf-8 -*-
 
+import Queue
 import logging
-import sys
 import threading
-
-if sys.version_info[:2] == (2, 7):
-    import Queue as queue
 
 from . import applications
 from . import download_bot
@@ -33,11 +30,11 @@ class Factory(object):
         clare.application.applications.Application
         """
 
-        message_queue = queue.Queue()
+        queue = Queue.Queue()
 
         # Construct the room_list_watcher.
         sender = messaging.producer.senders.Sender(
-            message_queue=message_queue)
+            message_queue=queue)
         room_list_watcher_factory = room_list_watcher.factories.Producer(
             properties=self._properties['room_list_watcher'],
             sender=sender)
@@ -55,7 +52,7 @@ class Factory(object):
 
         # Construct the download_bot.
         download_bot_factory = download_bot.factories.Consumer(
-            message_queue=message_queue,
+            message_queue=queue,
             properties=self._properties['download_bot'])
         download_bot_ = download_bot_factory.create()
 
