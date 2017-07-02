@@ -10,16 +10,16 @@ class OrchestratingConsumer(object):
         """
         Parameters
         ----------
-        consumer : clare.application.download_bot.consumers.OrchestratingConsumer
+        consumer : clare.common.messaging.consumer.consumers.Consumer
         logger : logging.Logger
         """
 
         self._consumer = consumer
         self._logger = logger
 
-    def start(self):
+    def consume(self, interval, timeout):
         try:
-            self._consumer.start()
+            self._consumer.consume(interval=interval, timeout=timeout)
         except Exception as e:
             message = common.logging.utilities.format_exception(e=e)
             self._logger.exception(msg=message)
