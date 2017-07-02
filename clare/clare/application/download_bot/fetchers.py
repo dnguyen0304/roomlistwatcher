@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import Queue
 import collections
-import sys
-
-if sys.version_info[:2] == (2, 7):
-    import Queue as queue
 
 from . import interfaces
 from clare.common import messaging
@@ -25,7 +22,7 @@ class Fetcher(interfaces.IFetcher):
     def pop(self, block, timeout):
         try:
             record = self._queue.get(block=block, timeout=timeout)
-        except queue.Empty:
+        except Queue.Empty:
             if not block or not timeout:
                 message = 'The fetcher timed out immediately.'
             else:
@@ -93,7 +90,7 @@ class BufferingFetcher(messaging.consumer.interfaces.IFetcher):
             # semantics).
             try:
                 record = self._queue.get(timeout=timeout)
-            except queue.Empty:
+            except Queue.Empty:
                 pass
             else:
                 records.append(record)
