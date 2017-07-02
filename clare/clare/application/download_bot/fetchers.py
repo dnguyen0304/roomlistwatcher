@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 
+import collections
 import sys
 
 if sys.version_info[:2] == (2, 7):
     import Queue as queue
-
-import collections
 
 from . import interfaces
 from clare.common import messaging
@@ -43,7 +42,11 @@ class Fetcher(interfaces.IFetcher):
 
 class BufferingFetcher(messaging.consumer.interfaces.IFetcher):
 
-    def __init__(self, queue, countdown_timer, maximum_message_count):
+    def __init__(self,
+                 queue,
+                 countdown_timer,
+                 maximum_message_count,
+                 buffer=None):
 
         """
         Parameters
@@ -51,14 +54,15 @@ class BufferingFetcher(messaging.consumer.interfaces.IFetcher):
         queue : Queue.Queue
         countdown_timer : clare.common.utilities.timers.CountdownTimer
         maximum_message_count : int
+        buffer : collections.deque
+            Defaults to collections.deque.
         """
 
         self._queue = queue
+        self._buffer = buffer or collections.deque()
         self._countdown_timer = countdown_timer
         self._maximum_message_count = maximum_message_count
         self._minimum_message_count = 1
-
-        self._buffer = collections.deque()
 
     def pop(self, timeout):
 
@@ -107,9 +111,14 @@ class BufferingFetcher(messaging.consumer.interfaces.IFetcher):
         self._buffer.extend(records)
 
     def __repr__(self):
-        repr_ = '{}(queue={}, countdown_timer={}, maximum_message_count={})'
+        repr_ = ('{}('
+                 'queue={}, '
+                 'buffer={}, '
+                 'countdown_timer={}, '
+                 'maximum_message_count={})')
         return repr_.format(self.__class__.__name__,
                             self._queue,
+                            self._buffer,
                             self._countdown_timer,
                             self._maximum_message_count)
 
