@@ -9,6 +9,7 @@ import selenium.webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 
 from . import adapters
+from . import deques
 from . import download_bots
 from . import download_validators
 from . import exceptions
@@ -177,7 +178,9 @@ class Consumer(object):
         dependencies = dict()
 
         # Construct the buffering fetcher.
-        buffer = collections.deque()
+        logger = logging.getLogger(
+            name=self._properties['fetcher']['logger']['name'])
+        buffer = deques.LoggingDeque(logger=logger)
         countdown_timer = utilities.timers.CountdownTimer(
             duration=self._properties['fetcher']['wait_time']['maximum'])
         fetcher = fetchers.BufferingFetcher(
