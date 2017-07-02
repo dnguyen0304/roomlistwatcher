@@ -7,50 +7,10 @@ if sys.version_info[:2] == (2, 7):
     import Queue as queue
 
 import mock
-from nose.tools import (assert_equal,
-                        assert_false,
-                        assert_in,
-                        assert_raises,
-                        assert_true,
-                        raises)
+from nose.tools import assert_equal, assert_false, assert_true, raises
 
 from .. import fetchers
 from clare.common import messaging
-
-
-class TestFetcher(object):
-
-    def __init__(self):
-        self.queue = None
-        self.fetcher = None
-
-    def setup(self):
-        self.queue = queue.Queue()
-        self.fetcher = fetchers.Fetcher(queue=self.queue)
-
-    def test_raises_exception_if_not_blocking(self):
-        block = False
-        timeout = None
-
-        with assert_raises(messaging.consumer.exceptions.FetchTimeout) as context:
-            self.fetcher.pop(block=block, timeout=timeout)
-        assert_in('immediate', context.exception.message)
-
-    def test_raises_exception_on_timeout(self):
-        block = True
-        timeout = 0.001
-
-        with assert_raises(messaging.consumer.exceptions.FetchTimeout) as context:
-            self.fetcher.pop(block=block, timeout=timeout)
-        assert_in(str(timeout), context.exception.message)
-
-    def test_raises_exception_on_immediate_timeout(self):
-        block = True
-        timeout = 0.0
-
-        with assert_raises(messaging.consumer.exceptions.FetchTimeout) as context:
-            self.fetcher.pop(block=block, timeout=timeout)
-        assert_in('immediate', context.exception.message)
 
 
 class TestBufferingFetcher(object):

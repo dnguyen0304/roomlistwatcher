@@ -3,38 +3,7 @@
 import Queue
 import collections
 
-from . import interfaces
 from clare.common import messaging
-
-
-class Fetcher(interfaces.IFetcher):
-
-    def __init__(self, queue):
-
-        """
-        Parameters
-        ----------
-        queue : Queue.Queue
-        """
-
-        self._queue = queue
-
-    def pop(self, block, timeout):
-        try:
-            record = self._queue.get(block=block, timeout=timeout)
-        except Queue.Empty:
-            if not block or not timeout:
-                message = 'The fetcher timed out immediately.'
-            else:
-                message = 'The fetcher timed out after {timeout} seconds.'.format(
-                    timeout=timeout)
-            raise messaging.consumer.exceptions.FetchTimeout(message)
-        else:
-            return record
-
-    def __repr__(self):
-        repr_ = '{}(queue={})'
-        return repr_.format(self.__class__.__name__, self._queue)
 
 
 class BufferingFetcher(messaging.consumer.interfaces.IFetcher):
