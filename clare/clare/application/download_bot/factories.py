@@ -177,10 +177,12 @@ class Consumer(object):
         dependencies = dict()
 
         # Construct the buffering fetcher.
+        buffer = collections.deque()
         countdown_timer = utilities.timers.CountdownTimer(
             duration=self._properties['fetcher']['wait_time']['maximum'])
         fetcher = fetchers.BufferingFetcher(
             queue=self._message_queue,
+            buffer=buffer,
             countdown_timer=countdown_timer,
             maximum_message_count=self._properties['fetcher']['message_count']['maximum'])
         dependencies['fetcher'] = fetcher
