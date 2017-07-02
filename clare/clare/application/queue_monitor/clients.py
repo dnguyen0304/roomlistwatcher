@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
-class QueueClient(object):
+class Client(object):
 
     def __init__(self, queue):
 
