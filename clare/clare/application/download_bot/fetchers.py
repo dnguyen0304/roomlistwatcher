@@ -25,7 +25,7 @@ class BufferingFetcher(messaging.consumer.interfaces.IFetcher):
         """
 
         self._queue = queue
-        self._buffer = buffer or collections.deque()
+        self._buffer = buffer if buffer is not None else collections.deque()
         self._countdown_timer = countdown_timer
         self._maximum_message_count = maximum_message_count
         self._minimum_message_count = 1
