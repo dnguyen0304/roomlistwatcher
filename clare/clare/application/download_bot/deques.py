@@ -21,7 +21,7 @@ class LoggingDeque(collections.deque):
         self._logger = logger
 
     def popleft(self):
-        element = self.popleft()
+        element = super(LoggingDeque, self).popleft()
 
         arguments = collections.OrderedDict()
         arguments['size'] = len(self)
