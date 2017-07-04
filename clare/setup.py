@@ -16,7 +16,7 @@ if __name__ == '__main__':
                         'selenium==3.3.3']
 
     setuptools.setup(name=package_name,
-                     version='0.2.0',
+                     version='0.2.1',
                      description=description,
                      long_description=long_description,
                      url='https://github.com/dnguyen0304/clare.git',

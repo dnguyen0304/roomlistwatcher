@@ -1,5 +1,9 @@
 # Release Notes
 
+## v0.2.1 (Pending)
+##### Fixes
+-
+
 ## v0.2.0 (2017-05-15)
 ##### Changes
 - Changed morpha package name to "clare".
