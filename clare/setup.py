@@ -12,6 +12,7 @@ if __name__ == '__main__':
         long_description = file.read()
 
     install_requires = ['enum34==1.1.6',
+                        'lxml==3.7.3',
                         'pandas==0.19.2',
                         'selenium==3.3.3']
 
