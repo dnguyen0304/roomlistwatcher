@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import Queue
-import logging
 import threading
 
 from . import applications
