@@ -88,10 +88,8 @@ class AfterDuration(After):
             return False
 
     def __repr__(self):
-        repr_ = '{}(maximum_duration={}, _get_now_in_seconds={})'
-        return repr_.format(self.__class__.__name__,
-                            self._maximum_duration,
-                            self._get_now_in_seconds)
+        repr_ = '{}(maximum_duration={})'
+        return repr_.format(self.__class__.__name__, self._maximum_duration)
 
 
 class AfterNever(After):

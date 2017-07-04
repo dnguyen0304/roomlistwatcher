@@ -2,6 +2,8 @@
 
 from . import interfaces
 from .event import Event
+from . import utilities
 
 __all__ = ['Event',
-           'interfaces']
+           'interfaces',
+           'utilities']

@@ -12,11 +12,12 @@ if __name__ == '__main__':
         long_description = file.read()
 
     install_requires = ['enum34==1.1.6',
+                        'lxml==3.7.3',
                         'pandas==0.19.2',
                         'selenium==3.3.3']
 
     setuptools.setup(name=package_name,
-                     version='0.2.1',
+                     version='0.3.0',
                      description=description,
                      long_description=long_description,
                      url='https://github.com/dnguyen0304/clare.git',

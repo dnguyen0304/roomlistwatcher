@@ -1,8 +1,9 @@
 # Release Notes
 
-## v0.2.1 (Pending)
-##### Fixes
--
+## v0.3.0 (2017-07-04)
+##### Features
+- Added room list watcher component.
+- Added download bot component.
 
 ## v0.2.0 (2017-05-15)
 ##### Changes

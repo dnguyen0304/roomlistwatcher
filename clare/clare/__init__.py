@@ -6,6 +6,7 @@ import json
 import logging.config
 import os
 
+from . import common
 from . import models
 
 __all__ = ['configuration', 'models']

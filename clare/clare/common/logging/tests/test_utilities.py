@@ -4,7 +4,7 @@ import json
 
 from nose.tools import assert_equal
 
-from .. import scraper
+from .. import utilities
 
 
 class Mock(Exception):
@@ -18,8 +18,8 @@ def test_format_exception():
     except Mock as e:
         pass
 
-    message = scraper.format_exception(e=e)
+    message = utilities.format_exception(e=e)
     data = json.loads(message)
 
-    assert_equal(data['exception_type'], 'clare.scraping.tests.test_scraper.Mock')
+    assert_equal(data['exception_type'], __name__ + '.' + Mock.__name__)
     assert_equal(data['exception_message'], 'foo')

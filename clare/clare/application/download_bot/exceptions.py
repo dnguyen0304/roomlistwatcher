@@ -5,9 +5,5 @@ class BattleNotCompleted(Exception):
     pass
 
 
-class DownloadFailed(Exception):
-    pass
-
-
-class HttpError(Exception):
+class RoomExpired(Exception):
     pass
