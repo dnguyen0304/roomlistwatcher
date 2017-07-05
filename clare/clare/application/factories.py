@@ -52,7 +52,7 @@ class Factory(object):
         room_list_watcher_.daemon = True
 
         # Construct the download bot.
-        download_bot_factory = download_bot.factories.Consumer(
+        download_bot_factory = download_bot.factories.Factory(
             message_queue=queue,
             properties=self._properties['download_bot'])
         directory_path = os.path.join(

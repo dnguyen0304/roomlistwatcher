@@ -24,17 +24,71 @@ from clare.common import utilities
 
 class Factory(object):
 
-    def __init__(self, properties):
+    def __init__(self, message_queue, properties):
 
         """
         Parameters
         ----------
+        message_queue : Queue.Queue
         properties : collections.Mapping
         """
 
+        self._message_queue = message_queue
         self._properties = properties
 
     def create(self, download_directory_path):
+
+        """
+        Parameters
+        ----------
+        download_directory_path : str
+        """
+
+        # Construct the consumer.
+        dependencies = self._create_dependencies(
+            download_directory_path=download_directory_path)
+
+        builder = messaging.consumer.builders.Builder() \
+            .with_fetcher(dependencies['fetcher']) \
+            .with_handler(dependencies['handler'])
+        for filter in dependencies['filters']:
+            builder = builder.with_filter(filter)
+        consumer = builder.build()
+
+        # Include orchestration.
+        logger = logging.getLogger(name=self._properties['logger']['name'])
+        consumer = consumers.OrchestratingConsumer(consumer=consumer,
+                                                   logger=logger)
+
+        return consumer
+
+    def _create_dependencies(self, download_directory_path):
+
+        """
+        Parameters
+        ----------
+        download_directory_path : str
+
+        Returns
+        -------
+        collections.MutableMapping
+        """
+
+        dependencies = dict()
+
+        # Construct the buffering fetcher.
+        logger = logging.getLogger(
+            name=self._properties['fetcher']['logger']['name'])
+        buffer = deques.LoggingDeque(logger=logger)
+        countdown_timer = utilities.timers.CountdownTimer(
+            duration=self._properties['fetcher']['wait_time']['maximum'])
+        fetcher = fetchers.BufferingFetcher(
+            queue=self._message_queue,
+            buffer=buffer,
+            countdown_timer=countdown_timer,
+            maximum_message_count=self._properties['fetcher']['message_count']['maximum'])
+        dependencies['fetcher'] = fetcher
+
         # Construct the replay downloader.
         chrome_options = selenium.webdriver.ChromeOptions()
         chrome_options.add_experimental_option(
@@ -127,77 +181,7 @@ class Factory(object):
             download_bot=download_bot,
             logger=logger)
 
-        return download_bot
-
-    def __repr__(self):
-        repr_ = '{}(properties={})'
-        return repr_.format(self.__class__.__name__, self._properties)
-
-
-class Consumer(object):
-
-    def __init__(self, message_queue, properties):
-
-        """
-        Parameters
-        ----------
-        message_queue : Queue.Queue
-        properties : collections.Mapping
-        """
-
-        self._factory = Factory(properties=properties)
-        self._message_queue = message_queue
-        self._properties = properties
-
-    def create(self, download_directory_path):
-        # Construct the consumer.
-        dependencies = self.create_dependencies(
-            download_directory_path=download_directory_path)
-
-        builder = messaging.consumer.builders.Builder() \
-            .with_fetcher(dependencies['fetcher']) \
-            .with_handler(dependencies['handler'])
-        for filter in dependencies['filters']:
-            builder = builder.with_filter(filter)
-        consumer = builder.build()
-
-        # Include orchestration.
-        logger = logging.getLogger(name=self._properties['logger']['name'])
-        consumer = consumers.OrchestratingConsumer(consumer=consumer,
-                                                   logger=logger)
-
-        return consumer
-
-    def create_dependencies(self, download_directory_path):
-
-        """
-        Parameters
-        ----------
-        download_directory_path : str
-
-        Returns
-        -------
-        dict
-        """
-
-        dependencies = dict()
-
-        # Construct the buffering fetcher.
-        logger = logging.getLogger(
-            name=self._properties['fetcher']['logger']['name'])
-        buffer = deques.LoggingDeque(logger=logger)
-        countdown_timer = utilities.timers.CountdownTimer(
-            duration=self._properties['fetcher']['wait_time']['maximum'])
-        fetcher = fetchers.BufferingFetcher(
-            queue=self._message_queue,
-            buffer=buffer,
-            countdown_timer=countdown_timer,
-            maximum_message_count=self._properties['fetcher']['message_count']['maximum'])
-        dependencies['fetcher'] = fetcher
-
-        # Construct the download handler.
-        download_bot = self._factory.create(
-            download_directory_path=download_directory_path)
+        # Construct the handler.
         handler = adapters.DownloadBotToHandlerAdapter(
             download_bot=download_bot)
 
@@ -236,13 +220,13 @@ class Consumer(object):
                             self._properties)
 
 
-class Nop(Consumer):
+class NopFactory(Factory):
 
-    def create_dependencies(self, download_directory_path):
-        dependencies = super(Nop, self).create_dependencies(
+    def _create_dependencies(self, download_directory_path):
+        dependencies = super(NopFactory, self)._create_dependencies(
             download_directory_path=download_directory_path)
 
-        # Construct the nop handler.
+        # Construct the NOP handler.
         handler = handlers.NopHandler()
         dependencies['handler'] = handler
 
