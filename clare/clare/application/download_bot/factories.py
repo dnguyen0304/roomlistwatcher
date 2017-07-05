@@ -2,8 +2,6 @@
 
 import collections
 import logging
-import os
-import uuid
 
 import selenium.webdriver
 from selenium.webdriver.support.ui import WebDriverWait
@@ -36,16 +34,12 @@ class Factory(object):
 
         self._properties = properties
 
-    def create(self):
-        directory_path = os.path.join(
-            self._properties['factory']['root_directory_path'],
-            str(uuid.uuid4()))
-
+    def create(self, download_directory_path):
         # Construct the replay downloader.
         chrome_options = selenium.webdriver.ChromeOptions()
         chrome_options.add_experimental_option(
             name='prefs',
-            value={'download.default_directory': directory_path})
+            value={'download.default_directory': download_directory_path})
         web_driver = selenium.webdriver.Chrome(chrome_options=chrome_options)
         wait_context = WebDriverWait(
             web_driver,
@@ -88,7 +82,7 @@ class Factory(object):
 
         # Construct the download validator.
         download_validator = download_validators.DownloadValidator(
-            directory_path=directory_path)
+            directory_path=download_directory_path)
 
         # Include retrying.
         stop_strategy = retry.stop_strategies.AfterDuration(
@@ -155,9 +149,10 @@ class Consumer(object):
         self._message_queue = message_queue
         self._properties = properties
 
-    def create(self):
+    def create(self, download_directory_path):
         # Construct the consumer.
-        dependencies = self.create_dependencies()
+        dependencies = self.create_dependencies(
+            download_directory_path=download_directory_path)
 
         builder = messaging.consumer.builders.Builder() \
             .with_fetcher(dependencies['fetcher']) \
@@ -173,9 +168,13 @@ class Consumer(object):
 
         return consumer
 
-    def create_dependencies(self):
+    def create_dependencies(self, download_directory_path):
 
         """
+        Parameters
+        ----------
+        download_directory_path : str
+
         Returns
         -------
         dict
@@ -197,7 +196,8 @@ class Consumer(object):
         dependencies['fetcher'] = fetcher
 
         # Construct the download handler.
-        download_bot = self._factory.create()
+        download_bot = self._factory.create(
+            download_directory_path=download_directory_path)
         handler = adapters.DownloadBotToHandlerAdapter(
             download_bot=download_bot)
 
@@ -238,8 +238,9 @@ class Consumer(object):
 
 class Nop(Consumer):
 
-    def create_dependencies(self):
-        dependencies = super(Nop, self).create_dependencies()
+    def create_dependencies(self, download_directory_path):
+        dependencies = super(Nop, self).create_dependencies(
+            download_directory_path=download_directory_path)
 
         # Construct the nop handler.
         handler = handlers.NopHandler()

@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import Queue
+import os
 import threading
+import uuid
 
 from . import applications
 from . import download_bot
@@ -31,7 +33,7 @@ class Factory(object):
 
         queue = Queue.Queue()
 
-        # Construct the room_list_watcher.
+        # Construct the room list watcher.
         sender = messaging.producer.senders.Sender(
             message_queue=queue)
         room_list_watcher_factory = room_list_watcher.factories.Producer(
@@ -49,11 +51,15 @@ class Factory(object):
                                               kwargs=kwargs)
         room_list_watcher_.daemon = True
 
-        # Construct the download_bot.
+        # Construct the download bot.
         download_bot_factory = download_bot.factories.Consumer(
             message_queue=queue,
             properties=self._properties['download_bot'])
-        download_bot_ = download_bot_factory.create()
+        directory_path = os.path.join(
+            self._properties['download_bot']['factory']['root_directory_path'],
+            str(uuid.uuid4()))
+        download_bot_ = download_bot_factory.create(
+            download_directory_path=directory_path)
 
         # Include threading.
         kwargs = {
