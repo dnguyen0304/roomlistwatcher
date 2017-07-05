@@ -53,7 +53,7 @@ class Factory(object):
 
         # Construct the download bot.
         download_bot_factory = download_bot.factories.Factory(
-            message_queue=queue,
+            queue=queue,
             properties=self._properties['download_bot'])
         directory_path = os.path.join(
             self._properties['download_bot']['factory']['root_directory_path'],

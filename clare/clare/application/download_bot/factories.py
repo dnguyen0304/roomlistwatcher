@@ -24,16 +24,16 @@ from clare.common import utilities
 
 class Factory(object):
 
-    def __init__(self, message_queue, properties):
+    def __init__(self, queue, properties):
 
         """
         Parameters
         ----------
-        message_queue : Queue.Queue
+        queue : Queue.Queue
         properties : collections.Mapping
         """
 
-        self._message_queue = message_queue
+        self._queue = queue
         self._properties = properties
 
     def create(self, download_directory_path):
@@ -83,7 +83,7 @@ class Factory(object):
         countdown_timer = utilities.timers.CountdownTimer(
             duration=self._properties['fetcher']['wait_time']['maximum'])
         fetcher = fetchers.BufferingFetcher(
-            queue=self._message_queue,
+            queue=self._queue,
             buffer=buffer,
             countdown_timer=countdown_timer,
             maximum_message_count=self._properties['fetcher']['message_count']['maximum'])
@@ -214,9 +214,9 @@ class Factory(object):
         return dependencies
 
     def __repr__(self):
-        repr_ = '{}(message_queue={}, properties={})'
+        repr_ = '{}(queue={}, properties={})'
         return repr_.format(self.__class__.__name__,
-                            self._message_queue,
+                            self._queue,
                             self._properties)
 
 
