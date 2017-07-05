@@ -25,3 +25,13 @@ class FileSystemWatcher(object):
         return repr_.format(self.__class__.__name__,
                             self._stream,
                             self._handler)
+
+
+class NopFileSystemWatcher(object):
+
+    def start(self):
+        pass
+
+    def __repr__(self):
+        repr_ = '{}()'
+        return repr_.format(self.__class__.__name__)
