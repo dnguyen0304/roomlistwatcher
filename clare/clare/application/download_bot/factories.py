@@ -15,6 +15,7 @@ from . import exceptions
 from . import fetchers
 from . import filters
 from . import handlers
+from . import marshall_strategies
 from . import replay_downloaders
 from clare.common import automation
 from clare.common import messaging
@@ -184,6 +185,14 @@ class Factory(object):
         # Construct the handler.
         handler = adapters.DownloadBotToHandlerAdapter(
             download_bot=download_bot)
+
+        # Include marshalling.
+        time_zone = utilities.TimeZone.from_name(
+            name=self._properties['time_zone']['name'])
+        record_factory = messaging.factories.RecordFactory(time_zone=time_zone)
+        strategy = marshall_strategies.StringToRecordMarshallStrategy(
+            record_factory=record_factory)
+        handler = handlers.MarshallingHandler(handler=handler, strategy=strategy)
 
         # Include orchestration.
         logger = logging.getLogger(
