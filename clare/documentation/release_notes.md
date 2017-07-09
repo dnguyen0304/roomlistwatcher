@@ -1,5 +1,9 @@
 # Release Notes
 
+## v0.4.0 (Pending)
+## Changes
+- Removed Record.queue_name attribute (`N/A`).
+
 ## v0.3.0 (2017-07-04)
 ##### Features
 - Added room list watcher component.
