@@ -80,9 +80,7 @@ class Factory(object):
         # Include record marshalling.
         time_zone = common.utilities.TimeZone.from_name(
             name=self._properties['time_zone']['name'])
-        record_factory = record_factories.RecordFactory(
-            queue_name=self._properties['queue']['name'],
-            time_zone=time_zone)
+        record_factory = record_factories.RecordFactory(time_zone=time_zone)
         scraper = scrapers.RecordMarshallingDecorator(scraper=scraper,
                                                       factory=record_factory)
 
@@ -184,9 +182,7 @@ class CommandLineArguments(Producer):
         deque = collections.deque(sys.argv[1:])
         time_zone = common.utilities.TimeZone.from_name(
             name=self._properties['time_zone']['name'])
-        record_factory = record_factories.RecordFactory(
-            queue_name=self._properties['queue']['name'],
-            time_zone=time_zone)
+        record_factory = record_factories.RecordFactory(time_zone=time_zone)
         source = sources.Deque(deque=deque, record_factory=record_factory)
         dependencies['source'] = source
 

@@ -14,7 +14,6 @@ class TestNoDuplicate(object):
 
     def setup(self):
         self.first_record = self.duplicate_record = messaging.records.Record(
-            queue_name=None,
             timestamp=None,
             value='foo')
 
@@ -28,9 +27,7 @@ class TestNoDuplicate(object):
     def test_should_filter_unique_value_should_not_filter(self):
         filter_ = filters.NoDuplicate(flush_strategy=None)
         filter_._should_filter(record=self.first_record)
-        new_record = messaging.records.Record(queue_name=None,
-                                              timestamp=None,
-                                              value='bar')
+        new_record = messaging.records.Record(timestamp=None, value='bar')
         should_filter = filter_._should_filter(record=new_record)
         assert_false(should_filter)
 
