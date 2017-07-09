@@ -23,7 +23,7 @@ class OrchestratingHandler(messaging.consumer.interfaces.IHandler):
         """
         Parameters
         ----------
-        handler : clare.application.download_bot.handlers.Download
+        handler : clare.common.messaging.consumer.interfaces.IHandler
         logger : logging.Logger
         """
 
