@@ -7,9 +7,9 @@ from . import interfaces
 from . import producer
 from . import records
 
-__all__ = ['client',
-           'consumer',
+__all__ = ['consumer',
            'exceptions',
            'factories',
+           'interfaces',
            'producer',
            'records']
