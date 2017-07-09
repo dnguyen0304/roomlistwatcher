@@ -3,24 +3,21 @@
 
 class Record(object):
 
-    def __init__(self, queue_name, timestamp, value=None):
+    def __init__(self, timestamp, value=None):
 
         """
         Parameters
         ----------
-        queue_name : str
         timestamp : datetime.datetime
         value : typing.Any
             Defaults to None.
         """
 
-        self.queue_name = queue_name
         self.timestamp = timestamp
         self.value = value
 
     def __repr__(self):
-        repr_ = '{}(queue_name="{}", timestamp={}, value={})'
+        repr_ = '{}(timestamp={}, value={})'
         return repr_.format(self.__class__.__name__,
-                            self.queue_name,
                             repr(self.timestamp),
                             self.value)
