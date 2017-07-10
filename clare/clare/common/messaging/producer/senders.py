@@ -1,29 +1,30 @@
 # -*- coding: utf-8 -*-
 
+from . import interfaces
 
-class Sender(object):
 
-    def __init__(self, message_queue):
+class Sender(interfaces.ISender):
+
+    def __init__(self, queue):
 
         """
         Parameters
         ----------
-        message_queue : Queue.Queue
+        queue : Queue.Queue
         """
 
-        self._message_queue = message_queue
+        self._queue = queue
 
-    def push(self, record, timeout):
+    def send(self, record):
 
         """
         Parameters
         ----------
         record : clare.common.messaging.records.Record
-        timeout : float
         """
 
-        self._message_queue.put(item=record, timeout=timeout)
+        self._queue.put(item=record)
 
     def __repr__(self):
-        repr_ = '{}(message_queue={})'
-        return repr_.format(self.__class__.__name__, self._message_queue)
+        repr_ = '{}(queue={})'
+        return repr_.format(self.__class__.__name__, self._queue)

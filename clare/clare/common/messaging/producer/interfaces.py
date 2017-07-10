@@ -3,6 +3,22 @@
 import abc
 
 
+class ISender(object):
+
+    __metaclass__ = abc.ABCMeta
+
+    @abc.abstractmethod
+    def send(self, message):
+
+        """
+        Parameters
+        ----------
+        message : clare.common.messaging.models.Message
+        """
+
+        raise NotImplementedError
+
+
 class ISource(object):
 
     __metaclass__ = abc.ABCMeta
