@@ -16,13 +16,6 @@ class Sender(interfaces.ISender):
         self._queue = queue
 
     def send(self, record):
-
-        """
-        Parameters
-        ----------
-        record : clare.common.messaging.records.Record
-        """
-
         self._queue.put(item=record)
 
     def __repr__(self):
