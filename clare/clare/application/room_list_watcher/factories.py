@@ -104,7 +104,7 @@ class Producer(object):
         Parameters
         ----------
         properties : collections.Mapping
-        sender : clare.common.messaging.producer.senders.Sender
+        sender : clare.common.messaging.producer.interfaces.ISender
         """
 
         self._factory = Factory(properties=properties)

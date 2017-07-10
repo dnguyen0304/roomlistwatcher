@@ -34,8 +34,7 @@ class Factory(object):
         queue = Queue.Queue()
 
         # Construct the room list watcher.
-        sender = messaging.producer.senders.Sender(
-            message_queue=queue)
+        sender = messaging.producer.senders.Sender(queue=queue)
         room_list_watcher_factory = room_list_watcher.factories.Producer(
             properties=self._properties['room_list_watcher'],
             sender=sender)
@@ -43,8 +42,7 @@ class Factory(object):
 
         # Include threading.
         kwargs = {
-            'interval': self._properties['room_list_watcher']['interval'],
-            'timeout': self._properties['room_list_watcher']['timeout']
+            'interval': self._properties['room_list_watcher']['interval']
         }
         room_list_watcher_ = threading.Thread(name='room_list_watcher',
                                               target=room_list_watcher_.produce,

@@ -4,32 +4,32 @@ import collections
 
 from . import topics
 from clare import common
+from clare.common import messaging
 
 
-class Logging(object):
+class Logging(messaging.producer.interfaces.ISender):
 
     def __init__(self, sender, logger):
 
         """
         Parameters
         ----------
-        sender : clare.common.messaging.producer.senders.Sender
+        sender : clare.common.messaging.producer.interfaces.ISender
         logger : logging.Logger
         """
 
         self._sender = sender
         self._logger = logger
 
-    def push(self, record, timeout):
+    def send(self, record):
 
         """
         Parameters
         ----------
         record : clare.common.messaging.records.Record
-        timeout : float
         """
 
-        self._sender.push(record=record, timeout=timeout)
+        self._sender.send(record=record)
 
         arguments = collections.OrderedDict()
         arguments['path'] = record.value

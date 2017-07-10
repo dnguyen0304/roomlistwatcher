@@ -17,9 +17,9 @@ class OrchestratingProducer(object):
         self._producer = producer
         self._logger = logger
 
-    def produce(self, interval, timeout):
+    def produce(self, interval):
         try:
-            self._producer.produce(interval=interval, timeout=timeout)
+            self._producer.produce(interval=interval)
         except Exception as e:
             message = common.logging.utilities.format_exception(e=e)
             self._logger.exception(msg=message)
