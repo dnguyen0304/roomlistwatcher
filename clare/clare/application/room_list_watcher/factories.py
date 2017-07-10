@@ -115,12 +115,10 @@ class Producer(object):
         # Construct the producer.
         dependencies = self.create_dependencies()
 
-        builder = messaging.producer.builders.Builder() \
-            .with_source(dependencies['source']) \
-            .with_sender(dependencies['sender'])
-        for filter in dependencies['filters']:
-            builder = builder.with_filter(filter)
-        producer = builder.build()
+        producer = messaging.producer.producers.Producer(
+            source=dependencies['source'],
+            sender=dependencies['sender'],
+            filters=dependencies['filters'])
 
         # Include orchestration.
         logger = logging.getLogger(name=self._properties['logger']['name'])
