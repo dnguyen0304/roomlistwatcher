@@ -49,12 +49,10 @@ class Factory(object):
         dependencies = self._create_dependencies(
             download_directory_path=download_directory_path)
 
-        builder = messaging.consumer.builders.Builder() \
-            .with_fetcher(dependencies['fetcher']) \
-            .with_handler(dependencies['handler'])
-        for filter in dependencies['filters']:
-            builder = builder.with_filter(filter)
-        consumer = builder.build()
+        consumer = messaging.consumer.consumers.Consumer(
+            fetcher=dependencies['fetcher'],
+            handler=dependencies['handler'],
+            filters=dependencies['filters'])
 
         # Include orchestration.
         logger = logging.getLogger(name=self._properties['logger']['name'])

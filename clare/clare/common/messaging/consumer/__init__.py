@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from . import builders
+from . import consumers
 from . import exceptions
 from . import fetchers
 from . import interfaces
 
-__all__ = ['builders',
+__all__ = ['consumers',
            'exceptions',
            'fetchers',
            'interfaces']
