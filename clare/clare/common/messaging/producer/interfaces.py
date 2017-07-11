@@ -29,11 +29,11 @@ class ISource(object):
         """
         Returns
         -------
-        clare.common.messaging.record.Record
+        clare.common.messaging.models.Message
 
         Raises
         ------
         clare.common.messaging.producer.exceptions.EmitTimeout
         """
 
-        pass
+        raise NotImplementedError
