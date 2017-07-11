@@ -11,7 +11,7 @@ from . import room_list_watcher
 from clare.common import messaging
 
 
-class Factory(object):
+class ApplicationFactory(object):
 
     def __init__(self, properties):
 

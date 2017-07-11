@@ -20,7 +20,7 @@ def get_configuration():
 def main():
 
     configuration = get_configuration()
-    factory = factories.Factory(properties=configuration)
+    factory = factories.ApplicationFactory(properties=configuration)
     application = factory.create()
     application.start()
 
