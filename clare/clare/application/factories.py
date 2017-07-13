@@ -8,19 +8,20 @@ import uuid
 from . import applications
 from . import download_bot
 from . import room_list_watcher
-from clare.common import messaging
 
 
-class ApplicationFactory(object):
+class Application(object):
 
-    def __init__(self, properties):
+    def __init__(self, infrastructure, properties):
 
         """
         Parameters
         ----------
+        infrastructure : clare.infrastructure.infrastructures.ApplicationInfrastructure
         properties : collections.Mapping
         """
 
+        self._infrastructure = infrastructure
         self._properties = properties
 
     def create(self):
@@ -34,10 +35,9 @@ class ApplicationFactory(object):
         queue = Queue.Queue()
 
         # Construct the room list watcher.
-        sender = messaging.producer.senders.Sender(queue=queue)
         room_list_watcher_factory = room_list_watcher.factories.Producer(
-            properties=self._properties['room_list_watcher'],
-            sender=sender)
+            infrastructure=self._infrastructure.room_list_watcher,
+            properties=self._properties['room_list_watcher'])
         room_list_watcher_ = room_list_watcher_factory.create()
 
         # Include threading.
@@ -77,5 +77,7 @@ class ApplicationFactory(object):
         return application
 
     def __repr__(self):
-        repr_ = '{}(properties={})'
-        return repr_.format(self.__class__.__name__, self._properties)
+        repr_ = '{}(infrastructure={}, properties={})'
+        return repr_.format(self.__class__.__name__,
+                            self._infrastructure,
+                            self._properties)
