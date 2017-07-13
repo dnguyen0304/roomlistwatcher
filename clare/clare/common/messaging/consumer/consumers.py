@@ -13,9 +13,9 @@ class Consumer(interfaces.IConsumer):
         """
         Parameters
         ----------
-        fetcher : clare.common.messaging.consumer.fetchers.Fetcher
-        handler : clare.common.messaging.consumer.interfaces.IHandler
-        filters : collections.Iterable
+        fetcher : typing.Type[clare.common.messaging.consumer.interfaces.IFetcher]
+        handler : typing.Type[clare.common.messaging.consumer.interfaces.IHandler]
+        filters : typing.Iterable[clare.common.messaging.interfaces.IFilter]
             Defaults to list.
         """
 
@@ -23,14 +23,14 @@ class Consumer(interfaces.IConsumer):
         self._handler = handler
         self._filters = filters or list()
 
-    def consume(self, interval, timeout):
+    def consume(self, interval):
         while True:
-            self._consume_once(timeout=timeout)
+            self._consume_once()
             time.sleep(interval)
 
-    def _consume_once(self, timeout):
+    def _consume_once(self):
         try:
-            record = self._fetcher.pop(timeout=timeout)
+            record = self._fetcher.fetch()
         except exceptions.FetchTimeout:
             pass
         else:

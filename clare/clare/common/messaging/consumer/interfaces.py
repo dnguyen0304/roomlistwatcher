@@ -8,16 +8,13 @@ class IConsumer(object):
     __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod
-    def consume(self, interval, timeout):
+    def consume(self, interval):
 
         """
         Parameters
         ----------
         interval : float
             Rate of work. The units are in seconds.
-        timeout : float
-            Maximum duration to try fetching a new record. The units
-            are in seconds.
 
         Returns
         -------
@@ -27,15 +24,9 @@ class IConsumer(object):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def _consume_once(self, timeout):
+    def _consume_once(self):
 
         """
-        Parameters
-        ----------
-        timeout : float
-            Maximum duration to try fetching a new record. The units
-            are in seconds.
-
         Returns
         -------
         None
@@ -54,16 +45,12 @@ class IFetcher(object):
     __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod
-    def pop(self, timeout):
+    def fetch(self):
 
         """
-        Parameters
-        ----------
-        timeout : float
-
         Returns
         -------
-        clare.common.messaging.records.Record
+        clare.common.messaging.models.Message
 
         Raises
         ------
@@ -83,7 +70,7 @@ class IHandler(object):
         """
         Parameters
         ----------
-        record : clare.common.messaging.records.Record
+        message : clare.common.messaging.models.Message
         """
 
         raise NotImplementedError
