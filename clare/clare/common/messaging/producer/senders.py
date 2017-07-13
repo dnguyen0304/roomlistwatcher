@@ -15,8 +15,8 @@ class Sender(interfaces.ISender):
 
         self._queue = queue
 
-    def send(self, record):
-        self._queue.put(item=record)
+    def send(self, message):
+        self._queue.put(item=message)
 
     def __repr__(self):
         repr_ = '{}(queue={})'

@@ -33,13 +33,13 @@ class Producer(object):
             time.sleep(interval)
 
     def _produce_once(self):
-        record = self._source.emit()
+        message = self._source.emit()
         for filter_ in self._filters:
-            record = filter_.filter(record=record)
-            if record is None:
+            message = filter_.filter(message=message)
+            if message is None:
                 break
         else:
-            self._sender.send(record=record)
+            self._sender.send(message=message)
 
     def __repr__(self):
         repr_ = '{}(source={}, sender={}, filters={})'
