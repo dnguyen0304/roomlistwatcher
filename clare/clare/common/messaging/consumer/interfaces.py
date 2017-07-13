@@ -24,7 +24,7 @@ class IConsumer(object):
         None
         """
 
-        pass
+        raise NotImplementedError
 
     @abc.abstractmethod
     def _consume_once(self, timeout):
@@ -46,7 +46,7 @@ class IConsumer(object):
             If the fetcher times out before fetching the minimum fetch size.
         """
 
-        pass
+        raise NotImplementedError
 
 
 class IFetcher(object):
@@ -70,7 +70,7 @@ class IFetcher(object):
         clare.common.messaging.consumer.exceptions.FetchTimeout
         """
 
-        pass
+        raise NotImplementedError
 
 
 class IHandler(object):
@@ -86,4 +86,4 @@ class IHandler(object):
         record : clare.common.messaging.records.Record
         """
 
-        pass
+        raise NotImplementedError
