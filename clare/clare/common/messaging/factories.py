@@ -2,17 +2,19 @@
 
 import datetime
 
+from . import models
 from . import records
 
 
 class MessageFactory(object):
 
-    def __init__(self, message_type):
+    def __init__(self, message_type=models.Message):
 
         """
         Parameters
         ----------
         message_type : Type[clare.common.messaging.models.Message]
+            Defaults to Type[clare.common.messaging.models.Message].
         """
 
         self._message_type = message_type
