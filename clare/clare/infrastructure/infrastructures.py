@@ -3,19 +3,19 @@
 
 class RoomListWatcher(object):
 
-    def __init__(self, queue):
+    def __init__(self, produce_to_queue):
 
         """
         Parameters
         ----------
-        queue : typing.Type[clare.infrastructure.interfaces.IQueue]
+        produce_to_queue : typing.Type[clare.infrastructure.interfaces.IQueue]
         """
 
-        self.queue = queue
+        self.produce_to_queue = produce_to_queue
 
     def __repr__(self):
-        repr_ = '{}(queue={})'
-        return repr_.format(self.__class__.__name__, self.queue)
+        repr_ = '{}(produce_to_queue={})'
+        return repr_.format(self.__class__.__name__, self.produce_to_queue)
 
 
 class Application(object):

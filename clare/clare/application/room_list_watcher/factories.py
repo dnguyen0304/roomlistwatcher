@@ -142,7 +142,7 @@ class Producer(object):
         dependencies['source'] = source
 
         # Construct the sender.
-        sender = senders.Sender(queue=self._infrastructure.queue)
+        sender = senders.Sender(queue=self._infrastructure.produce_to_queue)
 
         # Include logging.
         logger = logging.getLogger(

@@ -129,9 +129,9 @@ class ApplicationInfrastructure(object):
         clare.infrastructure.infrastructures.ApplicationInfrastructure
         """
 
-        # Construct the room list watcher queue.
+        # Construct the queue from the room list watcher.
         queue_factory = SqsFifoQueue(
-            properties=self._properties['room_list_watcher']['queue'])
+            properties=self._properties['room_list_watcher']['queues']['produce_to'])
         queue_ = queue_factory.create()
 
         # Construct the room list watcher infrastructure.
