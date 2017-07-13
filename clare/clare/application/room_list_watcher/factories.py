@@ -7,22 +7,22 @@ import sys
 import selenium.webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 
+from . import adapters
 from . import exceptions
 from . import filters
 from . import flush_strategies
+from . import marshall_strategies
 from . import producers
-from . import record_factories
 from . import scrapers
 from . import senders
 from . import sources
-from clare import common
 from clare.common import automation
 from clare.common import messaging
 from clare.common import retry
 from clare.common import utilities
 
 
-class Factory(object):
+class _Scraper(object):
 
     def __init__(self, properties):
 
@@ -77,13 +77,6 @@ class Factory(object):
             .build()
         scraper = scrapers.Retrying(scraper=scraper, policy=policy)
 
-        # Include record marshalling.
-        time_zone = common.utilities.TimeZone.from_name(
-            name=self._properties['time_zone']['name'])
-        record_factory = record_factories.RecordFactory(time_zone=time_zone)
-        scraper = scrapers.RecordMarshallingDecorator(scraper=scraper,
-                                                      factory=record_factory)
-
         # Include orchestration.
         logger = logging.getLogger(
             name=self._properties['scraper']['logger']['name'])
@@ -98,18 +91,18 @@ class Factory(object):
 
 class Producer(object):
 
-    def __init__(self, properties, sender):
+    def __init__(self, infrastructure, properties):
 
         """
         Parameters
         ----------
+        infrastructure : clare.infrastructure.infrastructures.RoomListWatcherInfrastructure
         properties : collections.Mapping
-        sender : clare.common.messaging.producer.interfaces.ISender
         """
 
-        self._factory = Factory(properties=properties)
+        self._factory = _Scraper(properties=properties)
+        self._infrastructure = infrastructure
         self._properties = properties
-        self._sender = sender
 
     def create(self):
         # Construct the producer.
@@ -139,16 +132,22 @@ class Producer(object):
 
         # Construct the source.
         scraper = self._factory.create()
-        source = scrapers.BufferingSourceAdapter(
+        message_factory = messaging.factories.Message()
+        marshall_strategy = marshall_strategies.SeleniumWebElementToMessage(
+            message_factory=message_factory)
+        source = adapters.ScraperToBufferingSource(
             scraper=scraper,
-            url=self._properties['scraper']['url'])
+            url=self._properties['scraper']['url'],
+            marshall_strategy=marshall_strategy)
         dependencies['source'] = source
 
         # Construct the sender.
+        sender = senders.Sender(queue=self._infrastructure.queue)
+
         # Include logging.
         logger = logging.getLogger(
             name=self._properties['sender']['logger']['name'])
-        sender = senders.Logging(sender=self._sender, logger=logger)
+        sender = senders.Logging(sender=sender, logger=logger)
         dependencies['sender'] = sender
 
         # Construct the filters.
@@ -159,16 +158,16 @@ class Producer(object):
             duration=self._properties['filter']['flush_strategy']['duration'])
         after_duration = flush_strategies.AfterDuration(
             countdown_timer=countdown_timer)
-        no_duplicate = filters.NoDuplicate(flush_strategy=after_duration)
+        no_duplicate = filters.NoDuplicateBody(flush_strategy=after_duration)
         dependencies['filters'].append(no_duplicate)
 
         return dependencies
 
     def __repr__(self):
-        repr_ = '{}(properties={}, sender={})'
+        repr_ = '{}(infrastructure={}, properties={})'
         return repr_.format(self.__class__.__name__,
-                            self._properties,
-                            self._sender)
+                            self._infrastructure,
+                            self._properties)
 
 
 class CommandLineArguments(Producer):
@@ -178,10 +177,8 @@ class CommandLineArguments(Producer):
 
         # Construct the deque source.
         deque = collections.deque(sys.argv[1:])
-        time_zone = common.utilities.TimeZone.from_name(
-            name=self._properties['time_zone']['name'])
-        record_factory = record_factories.RecordFactory(time_zone=time_zone)
-        source = sources.Deque(deque=deque, record_factory=record_factory)
+        message_factory = messaging.factories.Message()
+        source = sources.Deque(deque=deque, message_factory=message_factory)
         dependencies['source'] = source
 
         return dependencies
