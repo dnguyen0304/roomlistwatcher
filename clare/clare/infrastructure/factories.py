@@ -129,18 +129,24 @@ class ApplicationInfrastructure(object):
         clare.infrastructure.infrastructures.ApplicationInfrastructure
         """
 
-        # Construct the queue from the room list watcher.
+        # Construct the queue from the room list watcher to the
+        # download bot.
         queue_factory = SqsFifoQueue(
             properties=self._properties['room_list_watcher']['queues']['produce_to'])
         queue_ = queue_factory.create()
 
         # Construct the room list watcher infrastructure.
         room_list_watcher_infrastructure = infrastructures.RoomListWatcher(
-            queue=queue_)
+            produce_to_queue=queue_)
+
+        # Construct the download bot infrastructure.
+        download_bot_infrastructure = infrastructures.DownloadBot(
+            consume_from_queue=queue_)
 
         # Construct the application infrastructure.
         application_infrastructure = infrastructures.Application(
-            room_list_watcher_infrastructure=room_list_watcher_infrastructure)
+            room_list_watcher_infrastructure=room_list_watcher_infrastructure,
+            download_bot_infrastructure=download_bot_infrastructure)
 
         return application_infrastructure
 
