@@ -4,7 +4,8 @@
 import json
 import os
 
-from clare.application import factories
+from clare.application import ApplicationFactory
+from clare.infrastructure import ApplicationInfrastructureFactory
 
 
 def get_configuration():
@@ -20,8 +21,12 @@ def get_configuration():
 def main():
 
     configuration = get_configuration()
-    factory = factories.ApplicationFactory(properties=configuration)
-    application = factory.create()
+    infrastructure_factory = ApplicationInfrastructureFactory(
+        properties=configuration)
+    infrastructure = infrastructure_factory.create()
+    application_factory = ApplicationFactory(infrastructure=infrastructure,
+                                             properties=configuration)
+    application = application_factory.create()
     application.start()
 
 
