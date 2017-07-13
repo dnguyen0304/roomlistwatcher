@@ -6,7 +6,7 @@ from . import models
 from . import records
 
 
-class MessageFactory(object):
+class Message(object):
 
     def __init__(self, message_type=models.Message):
 
