@@ -2,11 +2,9 @@
 
 from __future__ import print_function
 
-import collections
 import functools
 import time
 
-import lxml.html
 import selenium.common
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
@@ -16,7 +14,6 @@ from . import interfaces
 from clare import common
 from clare.common import automation
 from clare.common import retry
-from clare.common import messaging
 
 
 class Nop(interfaces.IScraper):
@@ -307,80 +304,3 @@ class ProfilingDecorator(object):
     def __repr__(self):
         repr_ = '{}(scraper={})'
         return repr_.format(self.__class__.__name__, self._scraper)
-
-
-class RecordMarshallingDecorator(object):
-
-    def __init__(self, scraper, factory):
-
-        """
-        Parameters
-        ----------
-        scraper : clare.application.room_list_watcher.interfaces.IScraper
-        factory : clare.application.room_list_watcher.record_factories.RecordFactory
-        """
-
-        self._scraper = scraper
-        self._factory = factory
-
-    def scrape(self, url):
-
-        """
-        Returns
-        -------
-        collections.Sequence
-        """
-
-        records = list()
-        elements = self._scraper.scrape(url=url)
-        for element in elements:
-            html = element.get_attribute('outerHTML')
-            element = lxml.html.fragment_fromstring(html=html)
-            room_path = element.get(key='href')
-            record = self._factory.create(value=room_path)
-            records.append(record)
-        return records
-
-    def dispose(self):
-        self._scraper.dispose()
-
-    def __repr__(self):
-        repr_ = '{}(scraper={}, factory={})'
-        return repr_.format(self.__class__.__name__,
-                            self._scraper,
-                            self._factory)
-
-
-class BufferingSourceAdapter(messaging.producer.interfaces.ISource):
-
-    def __init__(self, scraper, url):
-
-        """
-        Parameters
-        ----------
-        scraper : clare.application.room_list_watcher.scrapers.RecordMarshallingDecorator
-        url : str
-        """
-
-        self._scraper = scraper
-        self._url = url
-        self._buffer = collections.deque()
-
-    def emit(self):
-        # Use extend() followed by popleft() to have FIFO behavior
-        # as with a queue. Using extendleft() followed by pop()
-        # expectedly also accomplishes this goal.
-        #
-        # Iterating through the records in reverse is done because
-        # the room list is scraped "backwards". In other words, the
-        # newest rooms are at the head of the array and the oldest
-        # ones are at its tail.
-        if not self._buffer:
-            records = self._scraper.scrape(url=self._url)
-            self._buffer.extend(reversed(records))
-        record = self._buffer.popleft()
-        return record
-
-    def __repr__(self):
-        repr_ = '{}(scraper={}, url="{}")'
-        return repr_.format(self.__class__.__name__, self._scraper, self._url)

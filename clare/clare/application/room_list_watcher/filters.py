@@ -7,44 +7,44 @@ from clare.common import messaging
 
 class Base(messaging.interfaces.IFilter):
 
-    def filter(self, record):
-        if not self._should_filter(record=record):
-            self._process(record=record)
-            return record
+    def filter(self, message):
+        if not self._should_filter(message=message):
+            self._process(message=message)
+            return message
 
     @abc.abstractmethod
-    def _should_filter(self, record):
+    def _should_filter(self, message):
 
         """
         Parameters
         ----------
-        record : clare.common.messaging.records.Record
+        message : clare.common.messaging.models.Message
 
         Returns
         -------
         bool
-            True if the record should be filtered.
+            True if the message should be filtered.
         """
 
         pass
 
     @abc.abstractmethod
-    def _process(self, record):
+    def _process(self, message):
 
         """
         Parameters
         ----------
-        record : clare.common.messaging.records.Record
+        message : clare.common.messaging.models.Message
 
         Returns
         -------
-        clare.common.messaging.records.Record
+        clare.common.messaging.models.Message
         """
 
         pass
 
 
-class NoDuplicate(Base):
+class NoDuplicateBody(Base):
 
     def __init__(self, flush_strategy):
 
@@ -55,29 +55,29 @@ class NoDuplicate(Base):
         Parameters
         ----------
         flush_strategy : clare.application.room_list_watcher.interfaces.IFlushStrategy
-            Strategy for deciding if the collection of seen values
+            Strategy for deciding if the collection of seen messages
             should be flushed.
         """
 
         self._flush_strategy = flush_strategy
         self._seen = set()
 
-    def filter(self, record):
-        record = super(NoDuplicate, self).filter(record=record)
+    def filter(self, message):
+        message = super(NoDuplicateBody, self).filter(message=message)
         if self._flush_strategy.should_flush(collection=self._seen):
             self._seen = set()
-        return record
+        return message
 
-    def _should_filter(self, record):
-        if record.value in self._seen:
+    def _should_filter(self, message):
+        if message.body in self._seen:
             should_filter = True
         else:
-            self._seen.add(record.value)
+            self._seen.add(message.body)
             should_filter = False
         return should_filter
 
-    def _process(self, record):
-        return record
+    def _process(self, message):
+        return message
 
     def __repr__(self):
         repr_ = '{}(flush_strategy={})'

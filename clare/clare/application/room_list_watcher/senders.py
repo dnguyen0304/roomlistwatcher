@@ -21,18 +21,11 @@ class Logging(messaging.producer.interfaces.ISender):
         self._sender = sender
         self._logger = logger
 
-    def send(self, record):
-
-        """
-        Parameters
-        ----------
-        record : clare.common.messaging.records.Record
-        """
-
-        self._sender.send(record=record)
+    def send(self, message):
+        self._sender.send(message=message)
 
         arguments = collections.OrderedDict()
-        arguments['path'] = record.value
+        arguments['path'] = message.body
         event = common.logging.Event(topic=topics.Topic.ROOM_FOUND,
                                      arguments=arguments)
         message = event.to_json()

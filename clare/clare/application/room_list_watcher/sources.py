@@ -5,17 +5,17 @@ from clare.common import messaging
 
 class Deque(messaging.producer.interfaces.ISource):
 
-    def __init__(self, deque, record_factory):
+    def __init__(self, deque, message_factory):
 
         """
         Parameters
         ----------
         deque : collections.deque
-        record_factory : clare.application.room_list_watcher.record_factories.RecordFactory
+        message_factory : clare.common.messaging.factories.Message
         """
 
         self._deque = deque
-        self._record_factory = record_factory
+        self._message_factory = message_factory
 
     def emit(self):
         try:
@@ -24,11 +24,11 @@ class Deque(messaging.producer.interfaces.ISource):
             message = 'The source timed out.'
             raise messaging.producer.exceptions.EmitTimeout(message)
         else:
-            record = self._record_factory.create(value=value)
-            return record
+            message = self._message_factory.create(body=value)
+            return message
 
     def __repr__(self):
-        repr_ = '{}(deque={}, record_factory={})'
+        repr_ = '{}(deque={}, message_factory={})'
         return repr_.format(self.__class__.__name__,
                             self._deque,
-                            self._record_factory)
+                            self._message_factory)
