@@ -3,13 +3,12 @@
 
 class Message(object):
 
-    def __init__(self, body=''):
+    def __init__(self, body):
 
         """
         Parameters
         ----------
         body : str
-            Defaults to "".
         """
 
         self.body = body
