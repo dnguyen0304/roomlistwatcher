@@ -8,19 +8,19 @@ class IFilter(object):
     __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod
-    def filter(self, record):
+    def filter(self, message):
 
         """
         Parameters
         ----------
-        record : clare.common.messaging.records.Record
+        message : clare.common.messaging.models.Message
 
         Returns
         -------
-        clare.common.messaging.records.Record
-            If the record should not be filtered.
+        clare.common.messaging.models.Message
+            If the message should not be filtered.
         None
-            If the record should be filtered.
+            If the message should be filtered.
         """
 
         pass

@@ -65,7 +65,7 @@ class IHandler(object):
     __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod
-    def handle(self, record):
+    def handle(self, message):
 
         """
         Parameters

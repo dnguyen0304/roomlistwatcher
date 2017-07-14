@@ -30,16 +30,16 @@ class Consumer(interfaces.IConsumer):
 
     def _consume_once(self):
         try:
-            record = self._fetcher.fetch()
+            message = self._fetcher.fetch()
         except exceptions.FetchTimeout:
             pass
         else:
             for filter_ in self._filters:
-                record = filter_.filter(record=record)
-                if record is None:
+                message = filter_.filter(message=message)
+                if message is None:
                     break
             else:
-                self._handler.handle(record=record)
+                self._handler.handle(message=message)
 
     def __repr__(self):
         repr_ = '{}(fetcher={}, handler={}, filters={})'
