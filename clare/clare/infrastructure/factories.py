@@ -97,7 +97,7 @@ class SqsFifoQueue(object):
         Boto3 Session
         """
 
-        profile_name = SQS_SERVICE_NAME + '.' + role_name
+        profile_name = SqsFifoQueue._SERVICE_NAME + '.' + role_name
         session = boto3.session.Session(profile_name=profile_name)
         return session
 
