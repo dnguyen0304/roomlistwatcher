@@ -15,6 +15,16 @@ PRODUCER_ROLE_NAME = 'producer'
 
 class Queue(object):
 
+    def __init__(self, properties):
+
+        """
+        Parameters
+        ----------
+        properties : collections.Mapping
+        """
+
+        self._properties = properties
+
     def create(self):
 
         """
@@ -24,12 +34,13 @@ class Queue(object):
         """
 
         queue_ = queue.Queue()
-        queue_ = adapters.QueueToQueue(queue=queue_)
+        queue_ = adapters.QueueToQueue(queue=queue_,
+                                       properties=self._properties)
         return queue_
 
     def __repr__(self):
-        repr_ = '{}()'
-        return repr_.format(self.__class__.__name__)
+        repr_ = '{}(properties={})'
+        return repr_.format(self.__class__.__name__, self._properties)
 
 
 class SqsFifoQueue(object):
@@ -80,7 +91,8 @@ class SqsFifoQueue(object):
         sqs_resource = session.resource(service_name=SqsFifoQueue._SERVICE_NAME)
 
         sqs_queue = sqs_resource.Queue(url=queue_url)
-        queue_ = adapters.SqsFifoQueueToQueue(sqs_queue=sqs_queue)
+        queue_ = adapters.SqsFifoQueueToQueue(sqs_queue=sqs_queue,
+                                              properties=self._properties)
 
         return queue_
 
