@@ -29,6 +29,17 @@ class IFilter(object):
         pass
 
 
-class Queue(producer.interfaces.ISender, consumer.interfaces.IFetcher):
+class Queue(producer.interfaces.ISender):
 
     __metaclass__ = abc.ABCMeta
+
+    @abc.abstractmethod
+    def receive(self):
+
+        """
+        Returns
+        -------
+        clare.common.messaging.models.Message
+        """
+
+        raise NotImplementedError
