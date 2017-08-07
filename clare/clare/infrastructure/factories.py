@@ -8,6 +8,7 @@ import boto3
 from . import adapters
 from . import infrastructures
 
+# TODO (duyn): Change these into configuration values.
 ADMINISTRATOR_ROLE_NAME = 'administrator'
 PRODUCER_ROLE_NAME = 'producer'
 
