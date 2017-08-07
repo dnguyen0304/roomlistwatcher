@@ -68,7 +68,7 @@ class SqsFifoQueue(object):
         client = session.client(service_name=SqsFifoQueue._SERVICE_NAME)
 
         try:
-            queue_url = client.get_queue_url(QueueName=self._properties['name'])
+            response = client.get_queue_url(QueueName=self._properties['name'])
         except botocore.errorfactory.QueueDoesNotExist:
             response = client.create_queue(
                 QueueName=self._properties['name'],
@@ -82,10 +82,10 @@ class SqsFifoQueue(object):
                 }
             )
 
-            if response['ResponseMetadata']['HTTPStatusCode'] != httplib.OK:
-                raise Exception(str(response))
-            else:
-                queue_url = response['QueueUrl']
+        if response['ResponseMetadata']['HTTPStatusCode'] != httplib.OK:
+            raise Exception(str(response))
+        else:
+            queue_url = response['QueueUrl']
 
         # Create the queue.
         session = boto3.session.Session(
@@ -136,7 +136,7 @@ class ApplicationInfrastructure(object):
         # Create the queue from the room list watcher to the
         # download bot.
         queue_factory = SqsFifoQueue(
-            properties=self._properties['room_list_watcher']['queues']['consume_from'])
+            properties=self._properties['download_bot']['queues']['consume_from'])
         consume_from_queue = queue_factory.create()
 
         # Create the download bot infrastructure.
