@@ -8,8 +8,6 @@ import boto3
 from . import adapters
 from . import infrastructures
 
-SQS_SERVICE_NAME = 'sqs'
-
 ADMINISTRATOR_ROLE_NAME = 'administrator'
 PRODUCER_ROLE_NAME = 'producer'
 
@@ -37,7 +35,7 @@ class Queue(object):
 
 class SqsFifoQueue(object):
 
-    _adapter_type = adapters.SqsFifoQueueToQueue
+    _SERVICE_NAME = 'sqs'
 
     def __init__(self, properties):
 
@@ -59,7 +57,7 @@ class SqsFifoQueue(object):
 
         # Create the queue resource.
         session = self._create_session(role_name=ADMINISTRATOR_ROLE_NAME)
-        client = session.client(service_name=SQS_SERVICE_NAME)
+        client = session.client(service_name=SqsFifoQueue._SERVICE_NAME)
 
         response = client.create_queue(
             QueueName=self._properties['name'],
@@ -80,7 +78,7 @@ class SqsFifoQueue(object):
 
         # Create the queue.
         session = self._create_session(role_name=PRODUCER_ROLE_NAME)
-        sqs_resource = session.resource(service_name=SQS_SERVICE_NAME)
+        sqs_resource = session.resource(service_name=SqsFifoQueue._SERVICE_NAME)
 
         sqs_queue = sqs_resource.Queue(url=queue_url)
         queue_ = adapters.SqsFifoQueueToQueue(sqs_queue=sqs_queue)
@@ -129,21 +127,21 @@ class ApplicationInfrastructure(object):
         clare.infrastructure.infrastructures.ApplicationInfrastructure
         """
 
-        # Construct the queue from the room list watcher to the
+        # Create the queue from the room list watcher to the
         # download bot.
         queue_factory = SqsFifoQueue(
             properties=self._properties['room_list_watcher']['queues']['produce_to'])
         queue_ = queue_factory.create()
 
-        # Construct the room list watcher infrastructure.
+        # Create the room list watcher infrastructure.
         room_list_watcher_infrastructure = infrastructures.RoomListWatcher(
             produce_to_queue=queue_)
 
-        # Construct the download bot infrastructure.
+        # Create the download bot infrastructure.
         download_bot_infrastructure = infrastructures.DownloadBot(
             consume_from_queue=queue_)
 
-        # Construct the application infrastructure.
+        # Create the application infrastructure.
         application_infrastructure = infrastructures.Application(
             room_list_watcher_infrastructure=room_list_watcher_infrastructure,
             download_bot_infrastructure=download_bot_infrastructure)
