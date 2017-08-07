@@ -7,22 +7,29 @@ from clare.common import messaging
 
 class QueueToQueue(messaging.interfaces.Queue):
 
-    def __init__(self, queue):
+    def __init__(self, queue, properties):
 
         """
         Parameters
         ----------
         queue : Queue.Queue
+        properties : collections.Mapping
         """
 
         self._queue = queue
+        self._properties = properties
 
     def send(self, message):
         self._queue.put(item=message)
 
+    def receive(self):
+        self._queue.get(timeout=self._properties['message.receive.wait.seconds'])
+
     def __repr__(self):
-        repr_ = '{}(queue={})'
-        return repr_.format(self.__class__.__name__, self._queue)
+        repr_ = '{}(queue={}, properties={})'
+        return repr_.format(self.__class__.__name__,
+                            self._queue,
+                            self._properties)
 
 
 class SqsFifoQueueToQueue(messaging.interfaces.Queue):
