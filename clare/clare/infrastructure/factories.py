@@ -15,8 +15,6 @@ PRODUCER_ROLE_NAME = 'producer'
 
 class Queue(object):
 
-    _adapter_type = adapters.QueueToQueue
-
     def create(self):
 
         """
@@ -26,7 +24,7 @@ class Queue(object):
         """
 
         queue_ = queue.Queue()
-        queue_ = self._adapter_type(queue=queue_)
+        queue_ = adapters.QueueToQueue(queue=queue_)
         return queue_
 
     def __repr__(self):
