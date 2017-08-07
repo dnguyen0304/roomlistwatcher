@@ -4,13 +4,10 @@ import Queue as queue
 import httplib
 
 import boto3
+import botocore.errorfactory
 
 from . import adapters
 from . import infrastructures
-
-# TODO (duyn): Change these into configuration values.
-ADMINISTRATOR_ROLE_NAME = 'administrator'
-PRODUCER_ROLE_NAME = 'producer'
 
 
 class Queue(object):
@@ -65,29 +62,34 @@ class SqsFifoQueue(object):
         typing.Type[clare.application.infrastructure.interfaces.IQueue]
         """
 
-        # Create the queue resource.
-        session = self._create_session(role_name=ADMINISTRATOR_ROLE_NAME)
+        # Find the existing queue resource or create a new one.
+        session = boto3.session.Session(
+            profile_name=self._properties['administrator.profile.name'])
         client = session.client(service_name=SqsFifoQueue._SERVICE_NAME)
 
-        response = client.create_queue(
-            QueueName=self._properties['name'],
-            Attributes={
-                'FifoQueue': 'True',
-                'VisibilityTimeout': str(self._properties['message.visibility.timeout.seconds']),
-                'MessageRetentionPeriod': str(self._properties['message.retention.seconds']),
-                'MaximumMessageSize': str(self._properties['message.maximum.bytes']),
-                'DelaySeconds': str(self._properties['message.delay.seconds']),
-                'ContentBasedDeduplication': 'True'
-            }
-        )
+        try:
+            queue_url = client.get_queue_url(QueueName=self._properties['name'])
+        except botocore.errorfactory.QueueDoesNotExist:
+            response = client.create_queue(
+                QueueName=self._properties['name'],
+                Attributes={
+                    'FifoQueue': 'True',
+                    'VisibilityTimeout': str(self._properties['message.visibility.timeout.seconds']),
+                    'MessageRetentionPeriod': str(self._properties['message.retention.seconds']),
+                    'MaximumMessageSize': str(self._properties['message.maximum.bytes']),
+                    'DelaySeconds': str(self._properties['message.delay.seconds']),
+                    'ContentBasedDeduplication': 'True'
+                }
+            )
 
-        if response['ResponseMetadata']['HTTPStatusCode'] != httplib.OK:
-            raise Exception(str(response))
-        else:
-            queue_url = response['QueueUrl']
+            if response['ResponseMetadata']['HTTPStatusCode'] != httplib.OK:
+                raise Exception(str(response))
+            else:
+                queue_url = response['QueueUrl']
 
         # Create the queue.
-        session = self._create_session(role_name=PRODUCER_ROLE_NAME)
+        session = boto3.session.Session(
+            profile_name=self._properties['profile.name'])
         sqs_resource = session.resource(service_name=SqsFifoQueue._SERVICE_NAME)
 
         sqs_queue = sqs_resource.Queue(url=queue_url)
@@ -95,23 +97,6 @@ class SqsFifoQueue(object):
                                               properties=self._properties)
 
         return queue_
-
-    @staticmethod
-    def _create_session(role_name):
-
-        """
-        Parameters
-        ----------
-        role_name : str
-
-        Returns
-        -------
-        Boto3 Session
-        """
-
-        profile_name = SqsFifoQueue._SERVICE_NAME + '.' + role_name
-        session = boto3.session.Session(profile_name=profile_name)
-        return session
 
     def __repr__(self):
         repr_ = '{}(properties={})'
@@ -142,15 +127,21 @@ class ApplicationInfrastructure(object):
         # download bot.
         queue_factory = SqsFifoQueue(
             properties=self._properties['room_list_watcher']['queues']['produce_to'])
-        queue_ = queue_factory.create()
+        produce_to_queue = queue_factory.create()
 
         # Create the room list watcher infrastructure.
         room_list_watcher_infrastructure = infrastructures.RoomListWatcher(
-            produce_to_queue=queue_)
+            produce_to_queue=produce_to_queue)
+
+        # Create the queue from the room list watcher to the
+        # download bot.
+        queue_factory = SqsFifoQueue(
+            properties=self._properties['room_list_watcher']['queues']['consume_from'])
+        consume_from_queue = queue_factory.create()
 
         # Create the download bot infrastructure.
         download_bot_infrastructure = infrastructures.DownloadBot(
-            consume_from_queue=queue_)
+            consume_from_queue=consume_from_queue)
 
         # Create the application infrastructure.
         application_infrastructure = infrastructures.Application(
