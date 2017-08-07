@@ -63,7 +63,7 @@ class SqsFifoQueueToQueue(messaging.interfaces.Queue):
         except IndexError:
             # There was a cache miss.
             messages = self._sqs_queue.receive_messages(
-                MaxNumberOfMessages=str(self._properties['message.receive.maximum.count']),
+                MaxNumberOfMessages=self._properties['message.receive.maximum.count'],
                 WaitTimeSeconds=self._properties['message.receive.wait.seconds'])
             self._buffer.extend(messages)
             message = self._buffer.popleft()
