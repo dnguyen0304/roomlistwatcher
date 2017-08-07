@@ -8,7 +8,7 @@ class DownloadBot(object):
         """
         Parameters
         ----------
-        consume_from_queue : typing.Type[clare.infrastructure.interfaces.IQueue]
+        consume_from_queue : typing.Type[clare.common.messaging.interfaces.Queue]
         """
 
         self.consume_from_queue = consume_from_queue
@@ -25,7 +25,7 @@ class RoomListWatcher(object):
         """
         Parameters
         ----------
-        produce_to_queue : typing.Type[clare.infrastructure.interfaces.IQueue]
+        produce_to_queue : typing.Type[clare.common.messaging.interfaces.Queue]
         """
 
         self.produce_to_queue = produce_to_queue
