@@ -57,9 +57,9 @@ class SqsFifoQueue(object):
         typing.Type[clare.application.infrastructure.interfaces.IQueue]
         """
 
-        # Construct the queue resource.
+        # Create the queue resource.
         session = self._create_session(role_name=ADMINISTRATOR_ROLE_NAME)
-        client = session.client(SQS_SERVICE_NAME)
+        client = session.client(service_name=SQS_SERVICE_NAME)
 
         response = client.create_queue(
             QueueName=self._properties['name'],
@@ -78,11 +78,11 @@ class SqsFifoQueue(object):
         else:
             queue_url = response['QueueUrl']
 
-        # Construct the queue.
+        # Create the queue.
         session = self._create_session(role_name=PRODUCER_ROLE_NAME)
-        sqs_resource = session.resource(SQS_SERVICE_NAME)
+        sqs_resource = session.resource(service_name=SQS_SERVICE_NAME)
 
-        sqs_queue = sqs_resource.Queue(queue_url)
+        sqs_queue = sqs_resource.Queue(url=queue_url)
         queue_ = adapters.SqsFifoQueueToQueue(sqs_queue=sqs_queue)
 
         return queue_
