@@ -2,10 +2,10 @@
 
 import uuid
 
-from . import interfaces
+from clare.common import messaging
 
 
-class QueueToQueue(interfaces.IQueue):
+class QueueToQueue(messaging.interfaces.Queue):
 
     def __init__(self, queue):
 
@@ -25,7 +25,7 @@ class QueueToQueue(interfaces.IQueue):
         return repr_.format(self.__class__.__name__, self._queue)
 
 
-class SqsFifoQueueToQueue(interfaces.IQueue):
+class SqsFifoQueueToQueue(messaging.interfaces.Queue):
 
     def __init__(self, sqs_queue):
 

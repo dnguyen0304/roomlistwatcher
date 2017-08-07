@@ -2,6 +2,9 @@
 
 import abc
 
+from . import consumer
+from . import producer
+
 
 class IFilter(object):
 
@@ -24,3 +27,8 @@ class IFilter(object):
         """
 
         pass
+
+
+class Queue(producer.interfaces.ISender, consumer.interfaces.IFetcher):
+
+    __metaclass__ = abc.ABCMeta
