@@ -5,3 +5,7 @@ from .. import exceptions
 
 class EmitTimeout(exceptions.Timeout):
     pass
+
+
+class SendTimeout(exceptions.Timeout):
+    pass
