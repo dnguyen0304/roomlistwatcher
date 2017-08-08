@@ -69,11 +69,13 @@ class Sqs(consumer.receivers.Buffering):
     def __repr__(self):
         repr_ = ('{}('
                  'sqs_queue={}, '
-                 'batch_size_count={}, '
+                 'batch_size_maximum_count={}, '
+                 'batch_size_minimum_count={}, '
                  'wait_time_seconds={}, '
                  'message_factory={})')
         return repr_.format(self.__class__.__name__,
                             self._sqs_queue,
                             self._original_batch_size_maximum_count,
+                            self._original_batch_size_minimum_count,
                             self._wait_time_seconds,
                             self._message_factory)
