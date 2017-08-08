@@ -1,23 +1,6 @@
 # -*- coding: utf-8 -*-
 
 
-class DownloadBot(object):
-
-    def __init__(self, receiver):
-
-        """
-        Parameters
-        ----------
-        receiver : typing.Type[clare.common.messaging.consumer.receivers.Buffering]
-        """
-
-        self.receiver = receiver
-
-    def __repr__(self):
-        repr_ = '{}(receiver={})'
-        return repr_.format(self.__class__.__name__, self.receiver)
-
-
 class RoomListWatcher(object):
 
     def __init__(self, sender):
@@ -33,6 +16,23 @@ class RoomListWatcher(object):
     def __repr__(self):
         repr_ = '{}(sender={})'
         return repr_.format(self.__class__.__name__, self.sender)
+
+
+class DownloadBot(object):
+
+    def __init__(self, receiver):
+
+        """
+        Parameters
+        ----------
+        receiver : typing.Type[clare.common.messaging.consumer.receivers.Buffering]
+        """
+
+        self.receiver = receiver
+
+    def __repr__(self):
+        repr_ = '{}(receiver={})'
+        return repr_.format(self.__class__.__name__, self.receiver)
 
 
 class Application(object):
