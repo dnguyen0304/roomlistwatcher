@@ -3,36 +3,36 @@
 
 class DownloadBot(object):
 
-    def __init__(self, consume_from_queue):
+    def __init__(self, receiver):
 
         """
         Parameters
         ----------
-        consume_from_queue : typing.Type[clare.common.messaging.interfaces.Queue]
+        receiver : typing.Type[clare.common.messaging.consumer.receivers.Buffering]
         """
 
-        self.consume_from_queue = consume_from_queue
+        self.receiver = receiver
 
     def __repr__(self):
-        repr_ = '{}(consume_from_queue={})'
-        return repr_.format(self.__class__.__name__, self.consume_from_queue)
+        repr_ = '{}(receiver={})'
+        return repr_.format(self.__class__.__name__, self.receiver)
 
 
 class RoomListWatcher(object):
 
-    def __init__(self, produce_to_queue):
+    def __init__(self, sender):
 
         """
         Parameters
         ----------
-        produce_to_queue : typing.Type[clare.common.messaging.interfaces.Queue]
+        sender : typing.Type[clare.common.messaging.producer.senders.Sender]
         """
 
-        self.produce_to_queue = produce_to_queue
+        self.sender = sender
 
     def __repr__(self):
-        repr_ = '{}(produce_to_queue={})'
-        return repr_.format(self.__class__.__name__, self.produce_to_queue)
+        repr_ = '{}(sender={})'
+        return repr_.format(self.__class__.__name__, self.sender)
 
 
 class Application(object):
