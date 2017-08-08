@@ -17,7 +17,7 @@ class MockSqsQueue(object):
         pass
 
 
-class TestQueue(object):
+class TestReceiver(object):
 
     def __init__(self):
         self.message_factory = None
@@ -38,6 +38,9 @@ class TestQueue(object):
         self.messages.append(factories.Message().create(body='foobar'))
 
         self.message = self.messages[0]
+
+
+class TestQueue(TestReceiver):
 
     def test_receive_does_fill_when_buffer_is_empty(self):
         batch_size_maximum_count = 1
@@ -236,21 +239,7 @@ class TestQueue(object):
         return mock_countdown_timer
 
 
-class TestSqs(object):
-
-    def __init__(self):
-        self.message_factory = None
-        self.messages = None
-        self.message = None
-
-    def setup(self):
-        self.message_factory = factories.Message()
-
-        self.messages = list()
-        self.messages.append(factories.Message().create(body='foo'))
-        self.messages.append(factories.Message().create(body='bar'))
-
-        self.message = self.messages[0]
+class TestSqs(TestReceiver):
 
     def test_receive(self):
         sqs_queue = MockSqsQueue()
