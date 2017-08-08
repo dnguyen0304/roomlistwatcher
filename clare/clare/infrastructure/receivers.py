@@ -55,25 +55,9 @@ class Sqs(consumer.receivers.Buffering):
             self._buffer.append(marshalled)
 
     def minimize_batch_size_count(self):
-
-        """
-        Update the configuration to receive the fewest number of
-        messages possible in each batch.
-
-        See Also
-        --------
-        clare.infrastructure.receivers.SqsReceiver.BATCH_SIZE_MINIMUM_COUNT
-        """
-
         self._current_batch_size_count = Sqs.BATCH_SIZE_MINIMUM_COUNT
 
     def restore_batch_size_count(self):
-
-        """
-        Update the configuration to receive the originally set number of
-        messages in each batch.
-        """
-
         self._current_batch_size_count = self._original_batch_size_count
 
     def __repr__(self):
