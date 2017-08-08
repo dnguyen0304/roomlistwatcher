@@ -241,7 +241,7 @@ class TestQueue(TestReceiver):
 
 class TestSqs(TestReceiver):
 
-    def test_receive(self):
+    def test_receive_does_fill_when_buffer_is_empty(self):
         sqs_queue = MockSqsQueue()
         sqs_queue.receive_messages = mock.Mock(return_value=[self.message])
 
@@ -252,15 +252,14 @@ class TestSqs(TestReceiver):
         message = receiver.receive()
         assert_equal(self.message.body, message.body)
 
-    def test_receive_from_buffer(self):
-        _buffer = collections.deque()
-        _buffer.append(self.message)
+    def test_receive_does_not_fill_while_buffer_has_messages(self):
+        self._buffer.append(self.message)
 
         receiver = receivers.Sqs(sqs_queue=None,
                                  batch_size_maximum_count=None,
                                  wait_time_seconds=None,
                                  message_factory=None,
-                                 _buffer=_buffer)
+                                 _buffer=self._buffer)
         message = receiver.receive()
         assert_equal(self.message.body, message.body)
 
