@@ -239,7 +239,7 @@ class TestQueue(TestReceiver):
         return mock_countdown_timer
 
 
-class TestSqs(TestReceiver):
+class TestSqsFifo(TestReceiver):
 
     def test_receive_does_fill_when_buffer_is_empty(self):
         sqs_queue = MockSqsQueue()
