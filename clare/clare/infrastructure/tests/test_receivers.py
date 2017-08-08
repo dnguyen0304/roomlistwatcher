@@ -252,17 +252,6 @@ class TestSqs(TestReceiver):
         message = receiver.receive()
         assert_equal(self.message.body, message.body)
 
-    @raises(consumer.exceptions.ReceiveTimeout)
-    def test_receive_raises_exception(self):
-        sqs_queue = MockSqsQueue()
-        sqs_queue.receive_messages = mock.Mock(return_value=list())
-
-        receiver = receivers.Sqs(sqs_queue=sqs_queue,
-                                 batch_size_maximum_count=None,
-                                 wait_time_seconds=None,
-                                 message_factory=None)
-        receiver.receive()
-
     def test_receive_from_buffer(self):
         _buffer = collections.deque()
         _buffer.append(self.message)
@@ -274,6 +263,17 @@ class TestSqs(TestReceiver):
                                  _buffer=_buffer)
         message = receiver.receive()
         assert_equal(self.message.body, message.body)
+
+    @raises(consumer.exceptions.ReceiveTimeout)
+    def test_receive_timeout_raises_exception(self):
+        sqs_queue = MockSqsQueue()
+        sqs_queue.receive_messages = mock.Mock(return_value=list())
+
+        receiver = receivers.Sqs(sqs_queue=sqs_queue,
+                                 batch_size_maximum_count=None,
+                                 wait_time_seconds=None,
+                                 message_factory=None)
+        receiver.receive()
 
     def test_minimize_batch_size_count(self):
         sqs_queue = MockSqsQueue()
