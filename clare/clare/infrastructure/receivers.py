@@ -103,7 +103,7 @@ class Queue(consumer.receivers.Buffering):
                             self._message_factory)
 
 
-class Sqs(consumer.receivers.Buffering):
+class SqsFifoQueue(consumer.receivers.Buffering):
 
     def __init__(self,
                  sqs_queue,

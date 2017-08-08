@@ -245,21 +245,21 @@ class TestSqsFifo(TestReceiver):
         sqs_queue = MockSqsQueue()
         sqs_queue.receive_messages = mock.Mock(return_value=[self.message])
 
-        receiver = receivers.Sqs(sqs_queue=sqs_queue,
-                                 batch_size_maximum_count=None,
-                                 wait_time_seconds=None,
-                                 message_factory=self.message_factory)
+        receiver = receivers.SqsFifoQueue(sqs_queue=sqs_queue,
+                                          batch_size_maximum_count=None,
+                                          wait_time_seconds=None,
+                                          message_factory=self.message_factory)
         message = receiver.receive()
         assert_equal(self.message.body, message.body)
 
     def test_receive_does_not_fill_while_buffer_has_messages(self):
         self._buffer.append(self.message)
 
-        receiver = receivers.Sqs(sqs_queue=None,
-                                 batch_size_maximum_count=None,
-                                 wait_time_seconds=None,
-                                 message_factory=None,
-                                 _buffer=self._buffer)
+        receiver = receivers.SqsFifoQueue(sqs_queue=None,
+                                          batch_size_maximum_count=None,
+                                          wait_time_seconds=None,
+                                          message_factory=None,
+                                          _buffer=self._buffer)
         message = receiver.receive()
         assert_equal(self.message.body, message.body)
 
@@ -268,20 +268,20 @@ class TestSqsFifo(TestReceiver):
         sqs_queue = MockSqsQueue()
         sqs_queue.receive_messages = mock.Mock(return_value=list())
 
-        receiver = receivers.Sqs(sqs_queue=sqs_queue,
-                                 batch_size_maximum_count=None,
-                                 wait_time_seconds=None,
-                                 message_factory=None)
+        receiver = receivers.SqsFifoQueue(sqs_queue=sqs_queue,
+                                          batch_size_maximum_count=None,
+                                          wait_time_seconds=None,
+                                          message_factory=None)
         receiver.receive()
 
     def test_minimize_batch_size_count(self):
         sqs_queue = MockSqsQueue()
         sqs_queue.receive_messages = mock.Mock(return_value=self.messages)
 
-        receiver = receivers.Sqs(sqs_queue=sqs_queue,
-                                 batch_size_maximum_count=None,
-                                 wait_time_seconds=None,
-                                 message_factory=self.message_factory)
+        receiver = receivers.SqsFifoQueue(sqs_queue=sqs_queue,
+                                          batch_size_maximum_count=None,
+                                          wait_time_seconds=None,
+                                          message_factory=self.message_factory)
         receiver.minimize_batch_size_count()
         receiver.receive()
         sqs_queue.receive_messages.assert_called_with(
@@ -294,10 +294,10 @@ class TestSqsFifo(TestReceiver):
 
         batch_size_count = len(self.messages)
 
-        receiver = receivers.Sqs(sqs_queue=sqs_queue,
-                                 batch_size_maximum_count=batch_size_count,
-                                 wait_time_seconds=None,
-                                 message_factory=self.message_factory)
+        receiver = receivers.SqsFifoQueue(sqs_queue=sqs_queue,
+                                          batch_size_maximum_count=batch_size_count,
+                                          wait_time_seconds=None,
+                                          message_factory=self.message_factory)
         receiver.minimize_batch_size_count()
         receiver.restore_batch_size_count()
         receiver.receive()
