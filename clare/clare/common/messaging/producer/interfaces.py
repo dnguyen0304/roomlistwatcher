@@ -14,6 +14,10 @@ class ISender(object):
         Parameters
         ----------
         message : clare.common.messaging.models.Message
+
+        Raises
+        ------
+        clare.common.messaging.producer.exceptions.SendTimeout
         """
 
         raise NotImplementedError
