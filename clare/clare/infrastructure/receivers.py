@@ -5,7 +5,7 @@ import collections
 from clare.common.messaging import consumer
 
 
-class SqsReceiver(consumer.interfaces.Receiver):
+class Sqs(consumer.receivers.Buffering):
 
     BATCH_SIZE_MINIMUM_COUNT = 1
 
@@ -65,7 +65,7 @@ class SqsReceiver(consumer.interfaces.Receiver):
         clare.infrastructure.receivers.SqsReceiver.BATCH_SIZE_MINIMUM_COUNT
         """
 
-        self._current_batch_size_count = SqsReceiver.BATCH_SIZE_MINIMUM_COUNT
+        self._current_batch_size_count = Sqs.BATCH_SIZE_MINIMUM_COUNT
 
     def restore_batch_size_count(self):
 
