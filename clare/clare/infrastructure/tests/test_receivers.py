@@ -37,7 +37,7 @@ class TestSqs(object):
         sqs_queue.receive_messages = mock.Mock(return_value=[self.message])
 
         receiver = receivers.Sqs(sqs_queue=sqs_queue,
-                                 batch_size_count=None,
+                                 batch_size_maximum_count=None,
                                  wait_time_seconds=None,
                                  message_factory=self.message_factory)
         message = receiver.receive()
@@ -49,7 +49,7 @@ class TestSqs(object):
         sqs_queue.receive_messages = mock.Mock(return_value=list())
 
         receiver = receivers.Sqs(sqs_queue=sqs_queue,
-                                 batch_size_count=None,
+                                 batch_size_maximum_count=None,
                                  wait_time_seconds=None,
                                  message_factory=None)
         receiver.receive()
@@ -59,7 +59,7 @@ class TestSqs(object):
         _buffer.append(self.message)
 
         receiver = receivers.Sqs(sqs_queue=None,
-                                 batch_size_count=None,
+                                 batch_size_maximum_count=None,
                                  wait_time_seconds=None,
                                  message_factory=None,
                                  _buffer=_buffer)
@@ -71,13 +71,13 @@ class TestSqs(object):
         sqs_queue.receive_messages = mock.Mock(return_value=self.messages)
 
         receiver = receivers.Sqs(sqs_queue=sqs_queue,
-                                 batch_size_count=None,
+                                 batch_size_maximum_count=None,
                                  wait_time_seconds=None,
                                  message_factory=self.message_factory)
         receiver.minimize_batch_size_count()
         receiver.receive()
         sqs_queue.receive_messages.assert_called_with(
-            MaxNumberOfMessages=receivers.Sqs.BATCH_SIZE_MINIMUM_COUNT,
+            MaxNumberOfMessages=receivers.BATCH_SIZE_MINIMUM_COUNT,
             WaitTimeSeconds=None)
 
     def test_restore_batch_size_count(self):
@@ -87,7 +87,7 @@ class TestSqs(object):
         batch_size_count = len(self.messages)
 
         receiver = receivers.Sqs(sqs_queue=sqs_queue,
-                                 batch_size_count=batch_size_count,
+                                 batch_size_maximum_count=batch_size_count,
                                  wait_time_seconds=None,
                                  message_factory=self.message_factory)
         receiver.minimize_batch_size_count()
