@@ -16,7 +16,7 @@ class MockSqsQueue(object):
         pass
 
 
-class TestSqsReceiver(object):
+class TestSqs(object):
 
     def __init__(self):
         self.message_factory = None
@@ -36,10 +36,10 @@ class TestSqsReceiver(object):
         sqs_queue = MockSqsQueue()
         sqs_queue.receive_messages = mock.Mock(return_value=[self.message])
 
-        receiver = receivers.SqsReceiver(sqs_queue=sqs_queue,
-                                         batch_size_count=None,
-                                         wait_time_seconds=None,
-                                         message_factory=self.message_factory)
+        receiver = receivers.Sqs(sqs_queue=sqs_queue,
+                                 batch_size_count=None,
+                                 wait_time_seconds=None,
+                                 message_factory=self.message_factory)
         message = receiver.receive()
         assert_equal(self.message.body, message.body)
 
@@ -48,21 +48,21 @@ class TestSqsReceiver(object):
         sqs_queue = MockSqsQueue()
         sqs_queue.receive_messages = mock.Mock(return_value=list())
 
-        receiver = receivers.SqsReceiver(sqs_queue=sqs_queue,
-                                         batch_size_count=None,
-                                         wait_time_seconds=None,
-                                         message_factory=None)
+        receiver = receivers.Sqs(sqs_queue=sqs_queue,
+                                 batch_size_count=None,
+                                 wait_time_seconds=None,
+                                 message_factory=None)
         receiver.receive()
 
     def test_receive_from_buffer(self):
         _buffer = collections.deque()
         _buffer.append(self.message)
 
-        receiver = receivers.SqsReceiver(sqs_queue=None,
-                                         batch_size_count=None,
-                                         wait_time_seconds=None,
-                                         message_factory=None,
-                                         _buffer=_buffer)
+        receiver = receivers.Sqs(sqs_queue=None,
+                                 batch_size_count=None,
+                                 wait_time_seconds=None,
+                                 message_factory=None,
+                                 _buffer=_buffer)
         message = receiver.receive()
         assert_equal(self.message.body, message.body)
 
@@ -70,14 +70,14 @@ class TestSqsReceiver(object):
         sqs_queue = MockSqsQueue()
         sqs_queue.receive_messages = mock.Mock(return_value=self.messages)
 
-        receiver = receivers.SqsReceiver(sqs_queue=sqs_queue,
-                                         batch_size_count=None,
-                                         wait_time_seconds=None,
-                                         message_factory=self.message_factory)
+        receiver = receivers.Sqs(sqs_queue=sqs_queue,
+                                 batch_size_count=None,
+                                 wait_time_seconds=None,
+                                 message_factory=self.message_factory)
         receiver.minimize_batch_size_count()
         receiver.receive()
         sqs_queue.receive_messages.assert_called_with(
-            MaxNumberOfMessages=receivers.SqsReceiver.BATCH_SIZE_MINIMUM_COUNT,
+            MaxNumberOfMessages=receivers.Sqs.BATCH_SIZE_MINIMUM_COUNT,
             WaitTimeSeconds=None)
 
     def test_restore_batch_size_count(self):
@@ -86,10 +86,10 @@ class TestSqsReceiver(object):
 
         batch_size_count = len(self.messages)
 
-        receiver = receivers.SqsReceiver(sqs_queue=sqs_queue,
-                                         batch_size_count=batch_size_count,
-                                         wait_time_seconds=None,
-                                         message_factory=self.message_factory)
+        receiver = receivers.Sqs(sqs_queue=sqs_queue,
+                                 batch_size_count=batch_size_count,
+                                 wait_time_seconds=None,
+                                 message_factory=self.message_factory)
         receiver.minimize_batch_size_count()
         receiver.restore_batch_size_count()
         receiver.receive()
