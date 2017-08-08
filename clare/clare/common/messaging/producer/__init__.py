@@ -3,7 +3,9 @@
 from . import exceptions
 from . import interfaces
 from . import producers
+from . import senders
 
 __all__ = ['exceptions',
            'interfaces',
-           'producers']
+           'producers',
+           'senders']
