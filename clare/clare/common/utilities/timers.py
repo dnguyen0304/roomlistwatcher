@@ -11,7 +11,7 @@ class CountdownTimer(object):
         Parameters
         ----------
         duration : float
-            The units are in seconds since the epoch.
+            The units are in seconds.
         get_now_in_seconds : collections.Callable
             Accepts no arguments and returns a float. Defaults to
             time.time.
