@@ -115,7 +115,7 @@ class SqsFifoQueue(consumer.receivers.Buffering):
         """
         Parameters
         ----------
-        sqs_queue : Boto3 SQS Queue Resource
+        sqs_queue : boto3.resources.factory.sqs.Queue
         batch_size_maximum_count : int
             Maximum size of the batch. The units are in number of
             messages.
