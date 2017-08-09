@@ -7,14 +7,14 @@ from clare.common.messaging import consumer
 BATCH_SIZE_MINIMUM_COUNT = 1
 
 
-class Queue(consumer.receivers.Buffering):
+class ConcurrentLinkedDeque(consumer.receivers.Buffering):
 
     def __init__(self,
                  batch_size_maximum_count,
                  countdown_timer,
                  message_factory,
                  batch_size_minimum_count=BATCH_SIZE_MINIMUM_COUNT,
-                 _queue=None,
+                 _deque=None,
                  _buffer=None):
 
         """
@@ -35,8 +35,7 @@ class Queue(consumer.receivers.Buffering):
         self._countdown_timer = countdown_timer
         self._message_factory = message_factory
 
-        # Deques are thread-safe.
-        self._queue = _queue if _queue is not None else collections.deque()
+        self._deque = _deque if _deque is not None else collections.deque()
         self._buffer = _buffer if _buffer is not None else collections.deque()
 
         self._current_batch_size_maximum_count = batch_size_maximum_count
@@ -60,7 +59,7 @@ class Queue(consumer.receivers.Buffering):
         while True:
             # This must run at least once (i.e. do-while semantics).
             try:
-                message = self._queue.popleft()
+                message = self._deque.popleft()
             except IndexError:
                 pass
             else:
@@ -74,9 +73,9 @@ class Queue(consumer.receivers.Buffering):
         self._countdown_timer.reset()
 
         if len(messages) < self._current_batch_size_minimum_count:
-            # Return the messages to the queue.
+            # Return the messages to the deque.
             # Use extendleft alongside reversed to maintain the order.
-            self._queue.extendleft(reversed(messages))
+            self._deque.extendleft(reversed(messages))
         else:
             # Add the marshalled messages to the buffer.
             marshalled = (self._message_factory.create(message.body)
