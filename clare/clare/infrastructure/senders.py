@@ -6,24 +6,24 @@ import uuid
 from clare.common.messaging import producer
 
 
-class ConcurrentLinkedDeque(producer.senders.Sender):
+class ConcurrentLinkedQueue(producer.senders.Sender):
 
-    def __init__(self, deque):
+    def __init__(self, queue):
 
         """
         Parameters
         ----------
-        deque : collections.deque
+        queue : Queue.Queue
         """
 
-        self._deque = deque
+        self._queue = queue
 
     def send(self, data):
-        self._deque.append(data)
+        self._queue.put(item=data)
 
     def __repr__(self):
-        repr_ = '{}(deque={})'
-        return repr_.format(self.__class__.__name__, self._deque)
+        repr_ = '{}(queue={})'
+        return repr_.format(self.__class__.__name__, self._queue)
 
 
 class SqsFifoQueue(producer.senders.Sender):

@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
 
+import Queue as queue
 import collections
 import uuid
 
 from clare.common.messaging import consumer
 
 
-class ConcurrentLinkedDeque(consumer.receivers.Receiver):
+class ConcurrentLinkedQueue(consumer.receivers.Receiver):
 
     def __init__(self,
-                 deque,
+                 queue,
                  batch_size_maximum_count,
                  countdown_timer,
                  message_factory,
@@ -18,7 +19,7 @@ class ConcurrentLinkedDeque(consumer.receivers.Receiver):
         """
         Parameters
         ----------
-        deque : collections.deque
+        queue : Queue.Queue
         batch_size_maximum_count : int
             Maximum size of the batch. The units are in number of
             messages.
@@ -26,7 +27,7 @@ class ConcurrentLinkedDeque(consumer.receivers.Receiver):
         message_factory : clare.common.messaging.factories.Message2
         """
 
-        self._deque = deque
+        self._queue = queue
         self._batch_size_maximum_count = batch_size_maximum_count
         self._countdown_timer = countdown_timer
         self._message_factory = message_factory
@@ -50,8 +51,8 @@ class ConcurrentLinkedDeque(consumer.receivers.Receiver):
         while True:
             # This must run at least once (i.e. do-while semantics).
             try:
-                x = self._deque.popleft()
-            except IndexError:
+                x = self._queue.get(block=False)
+            except queue.Empty:
                 pass
             else:
                 data.append(x)
@@ -74,10 +75,12 @@ class ConcurrentLinkedDeque(consumer.receivers.Receiver):
 
     def __repr__(self):
         repr_ = ('{}('
+                 'queue={}, '
                  'batch_size_maximum_count={}, '
                  'countdown_timer={}, '
                  'message_factory={})')
         return repr_.format(self.__class__.__name__,
+                            self._queue,
                             self._batch_size_maximum_count,
                             self._countdown_timer,
                             self._message_factory)
