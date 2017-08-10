@@ -9,15 +9,16 @@ from clare.common.messaging import consumer
 class ConcurrentLinkedDeque(consumer.receivers.Receiver):
 
     def __init__(self,
+                 deque,
                  batch_size_maximum_count,
                  countdown_timer,
                  message_factory,
-                 _deque=None,
                  _buffer=None):
 
         """
         Parameters
         ----------
+        deque : collections.deque
         batch_size_maximum_count : int
             Maximum size of the batch. The units are in number of
             messages.
@@ -25,11 +26,11 @@ class ConcurrentLinkedDeque(consumer.receivers.Receiver):
         message_factory : clare.common.messaging.factories.Message2
         """
 
+        self._deque = deque
         self._batch_size_maximum_count = batch_size_maximum_count
         self._countdown_timer = countdown_timer
         self._message_factory = message_factory
 
-        self._deque = _deque if _deque is not None else collections.deque()
         self._buffer = _buffer if _buffer is not None else collections.deque()
 
     def receive(self):
@@ -124,11 +125,14 @@ class SqsFifoQueue(consumer.receivers.Receiver):
         messages = self._sqs_queue.receive_messages(
             MaxNumberOfMessages=self._batch_size_maximum_count,
             WaitTimeSeconds=self._wait_time_seconds)
+
         for message in messages:
             marshalled = self._message_factory.create()
+
             marshalled.id = message.message_id
             marshalled.body = message.body
             marshalled.delivery_receipt = message.receipt_handle
+
             self._buffer.append(marshalled)
 
     def __repr__(self):

@@ -97,10 +97,10 @@ class TestConcurrentLinkedDeque(TestReceiver):
             self.sender.send(x)
 
         receiver = receivers.ConcurrentLinkedDeque(
+            deque=self._deque,
             batch_size_maximum_count=batch_size_maximum_count,
             countdown_timer=countdown_timer,
             message_factory=self.message_factory,
-            _deque=self._deque,
             _buffer=self._buffer)
 
         expected_deque_count = len(self._deque) - batch_size_maximum_count
@@ -118,10 +118,10 @@ class TestConcurrentLinkedDeque(TestReceiver):
         self._buffer.append(self.message)
 
         receiver = receivers.ConcurrentLinkedDeque(
+            deque=self._deque,
             batch_size_maximum_count=None,
             countdown_timer=None,
             message_factory=None,
-            _deque=self._deque,
             _buffer=self._buffer)
 
         expected_buffer_count = len(self._buffer) - 1
@@ -138,6 +138,7 @@ class TestConcurrentLinkedDeque(TestReceiver):
             has_time_remaining=(False,))
 
         receiver = receivers.ConcurrentLinkedDeque(
+            deque=self._deque,
             batch_size_maximum_count=batch_size_maximum_count,
             countdown_timer=countdown_timer,
             message_factory=None)
@@ -154,10 +155,10 @@ class TestConcurrentLinkedDeque(TestReceiver):
         self._deque.extend(self.data)
 
         receiver = receivers.ConcurrentLinkedDeque(
+            deque=self._deque,
             batch_size_maximum_count=batch_size_maximum_count,
             countdown_timer=countdown_timer,
-            message_factory=self.message_factory,
-            _deque=self._deque)
+            message_factory=self.message_factory)
 
         for expected_body in self.data:
             message = receiver.receive()
