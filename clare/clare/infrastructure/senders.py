@@ -18,8 +18,8 @@ class ConcurrentLinkedDeque(producer.senders.Sender):
 
         self._deque = deque
 
-    def send(self, message):
-        self._deque.append(message)
+    def send(self, data):
+        self._deque.append(data)
 
     def __repr__(self):
         repr_ = '{}(deque={})'
