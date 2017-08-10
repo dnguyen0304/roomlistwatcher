@@ -25,7 +25,7 @@ class DownloadBot(object):
         """
         Parameters
         ----------
-        receiver : typing.Type[clare.common.messaging.consumer.receivers.Buffering]
+        receiver : typing.Type[clare.common.messaging.consumer.receivers.Receiver]
         deleter : typing.Type[clare.common.messaging.consumer.deleters.Deleter]
         """
 
