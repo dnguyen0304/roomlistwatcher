@@ -14,6 +14,10 @@ class Deleter(object):
         Parameters
         ----------
         message : clare.common.messaging.models.Message2
+
+        Raises
+        ------
+        clare.common.messaging.consumer.exceptions.DeleteFailed
         """
 
         raise NotImplementedError
