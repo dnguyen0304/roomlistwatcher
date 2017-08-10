@@ -153,7 +153,9 @@ class SqsFifoQueue(consumer.receivers.Buffering):
             WaitTimeSeconds=self._wait_time_seconds)
         for message in messages:
             marshalled = self._message_factory.create()
+            marshalled.id = message.message_id
             marshalled.body = message.body
+            marshalled.delivery_receipt = message.receipt_handle
             self._buffer.append(marshalled)
 
     def minimize_batch_size_count(self):
