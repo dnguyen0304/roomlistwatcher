@@ -3,7 +3,7 @@
 from clare.common.messaging import consumer
 
 
-class Nop(consumer.deleters):
+class Nop(consumer.deleters.Deleter):
 
     def delete(self, message):
         pass
@@ -13,7 +13,7 @@ class Nop(consumer.deleters):
         return repr_.format(self.__class__.__name__)
 
 
-class SqsFifoQueue(consumer.deleters):
+class SqsFifoQueue(consumer.deleters.Deleter):
 
     def __init__(self, sqs_queue):
 
