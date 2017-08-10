@@ -85,7 +85,7 @@ class TestConcurrentLinkedDeque(TestReceiver):
         super(TestConcurrentLinkedDeque, self).setup()
 
         self.queue = queue.Queue()
-        self.sender = senders.ConcurrentLinkedDeque(queue=self.queue)
+        self.sender = senders.ConcurrentLinkedQueue(queue=self.queue)
 
     def test_receive_does_fill_when_buffer_is_empty(self):
         batch_size_maximum_count = 1
