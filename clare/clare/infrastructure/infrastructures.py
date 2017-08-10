@@ -20,19 +20,23 @@ class RoomListWatcher(object):
 
 class DownloadBot(object):
 
-    def __init__(self, receiver):
+    def __init__(self, receiver, deleter):
 
         """
         Parameters
         ----------
         receiver : typing.Type[clare.common.messaging.consumer.receivers.Buffering]
+        deleter : typing.Type[clare.common.messaging.consumer.deleters.Deleter]
         """
 
         self.receiver = receiver
+        self.deleter = deleter
 
     def __repr__(self):
-        repr_ = '{}(receiver={})'
-        return repr_.format(self.__class__.__name__, self.receiver)
+        repr_ = '{}(receiver={}, deleter={})'
+        return repr_.format(self.__class__.__name__,
+                            self.receiver,
+                            self.deleter)
 
 
 class Application(object):
