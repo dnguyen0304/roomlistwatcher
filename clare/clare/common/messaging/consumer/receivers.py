@@ -23,28 +23,3 @@ class Receiver(object):
         """
 
         raise NotImplementedError
-
-
-class Buffering(Receiver):
-
-    __metaclass__ = abc.ABCMeta
-
-    @abc.abstractmethod
-    def minimize_batch_size_count(self):
-
-        """
-        Update the configuration to receive the fewest number of
-        messages possible in each batch.
-        """
-
-        raise NotImplementedError
-
-    @abc.abstractmethod
-    def restore_batch_size_count(self):
-
-        """
-        Update the configuration to receive the originally set number of
-        messages in each batch.
-        """
-
-        raise NotImplementedError
