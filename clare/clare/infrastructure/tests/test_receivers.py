@@ -61,15 +61,6 @@ class MockSqsQueue(object):
 
 class TestReceiver(object):
 
-    def __init__(self):
-        self.message_factory = None
-        self._deque = None
-        self._buffer = None
-
-        self.data = None
-        self.messages = None
-        self.message = None
-
     def setup(self):
         self.message_factory = factories.Message2()
         self._deque = collections.deque()
