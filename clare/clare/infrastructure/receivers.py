@@ -124,7 +124,7 @@ class SqsFifoQueue(consumer.receivers.Buffering):
             messages. Defaults to BATCH_SIZE_MINIMUM_COUNT.
         wait_time_seconds : int
             Duration for which to wait. The units are in seconds.
-        message_factory : clare.common.messaging.factories.Message
+        message_factory : clare.common.messaging.factories.Message2
         """
 
         self._sqs_queue = sqs_queue
@@ -152,7 +152,8 @@ class SqsFifoQueue(consumer.receivers.Buffering):
             MaxNumberOfMessages=self._current_batch_size_maximum_count,
             WaitTimeSeconds=self._wait_time_seconds)
         for message in messages:
-            marshalled = self._message_factory.create(message.body)
+            marshalled = self._message_factory.create()
+            marshalled.body = message.body
             self._buffer.append(marshalled)
 
     def minimize_batch_size_count(self):

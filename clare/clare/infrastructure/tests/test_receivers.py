@@ -25,6 +25,7 @@ class TestReceiver(object):
         self._buffer = None
 
         self.data = None
+        self.messages = None
         self.message = None
 
     def setup(self):
@@ -33,8 +34,12 @@ class TestReceiver(object):
         self._buffer = collections.deque()
 
         self.data = ('foo', 'bar', 'foobar')
-        self.message = self.message_factory.create()
-        self.message.body = self.data[0]
+        self.messages = list()
+        for body in self.data:
+            message = self.message_factory.create()
+            message.body = body
+            self.messages.append(message)
+        self.message = self.messages[0]
 
 
 class TestConcurrentLinkedDeque(TestReceiver):
@@ -240,17 +245,17 @@ class TestSqsFifo(TestReceiver):
 
     def test_receive_does_fill_when_buffer_is_empty(self):
         sqs_queue = MockSqsQueue()
-        sqs_queue.receive_messages = mock.Mock(return_value=[self.body])
+        sqs_queue.receive_messages = mock.Mock(return_value=[self.message])
 
         receiver = receivers.SqsFifoQueue(sqs_queue=sqs_queue,
                                           batch_size_maximum_count=None,
                                           wait_time_seconds=None,
                                           message_factory=self.message_factory)
         message = receiver.receive()
-        assert_equal(self.body.body, message.body)
+        assert_equal(self.message.body, message.body)
 
     def test_receive_does_not_fill_while_buffer_has_messages(self):
-        self._buffer.append(self.body)
+        self._buffer.append(self.message)
 
         receiver = receivers.SqsFifoQueue(sqs_queue=None,
                                           batch_size_maximum_count=None,
@@ -258,7 +263,7 @@ class TestSqsFifo(TestReceiver):
                                           message_factory=None,
                                           _buffer=self._buffer)
         message = receiver.receive()
-        assert_equal(self.body.body, message.body)
+        assert_equal(self.message.body, message.body)
 
     @raises(consumer.exceptions.ReceiveTimeout)
     def test_receive_timeout_raises_exception(self):
@@ -273,7 +278,7 @@ class TestSqsFifo(TestReceiver):
 
     def test_minimize_batch_size_count(self):
         sqs_queue = MockSqsQueue()
-        sqs_queue.receive_messages = mock.Mock(return_value=self.data)
+        sqs_queue.receive_messages = mock.Mock(return_value=self.messages)
 
         receiver = receivers.SqsFifoQueue(sqs_queue=sqs_queue,
                                           batch_size_maximum_count=None,
@@ -287,7 +292,7 @@ class TestSqsFifo(TestReceiver):
 
     def test_restore_batch_size_count(self):
         sqs_queue = MockSqsQueue()
-        sqs_queue.receive_messages = mock.Mock(return_value=self.data)
+        sqs_queue.receive_messages = mock.Mock(return_value=self.messages)
 
         batch_size_count = len(self.data)
 
