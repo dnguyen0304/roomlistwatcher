@@ -37,7 +37,15 @@ class SqsFifoQueue(consumer.deleters.Deleter):
 
         response = self._sqs_queue.delete_messages(**request)
 
-        for failure in response['Failed']:
+        # See this warning.
+        # http://boto3.readthedocs.io/en/latest/reference/services/sqs.html#SQS.Queue.delete_messages
+        try:
+            failures = response['Failed']
+        except KeyError:
+            # The deletion completed successfully.
+            return
+
+        for failure in failures:
             if failure['Id'] == message.id:
                 raise consumer.exceptions.DeleteFailed(str(failure))
 
