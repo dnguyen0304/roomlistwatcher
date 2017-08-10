@@ -20,18 +20,18 @@ class Message(object):
 
 class Message2(object):
 
-    def __init__(self, id, body, delivery_receipt):
+    def __init__(self, id='', body='', delivery_receipt=''):
 
         """
         Parameters
         ----------
         id : str
-            Unique identifier.
+            Unique identifier. Defaults to "".
         body : str
-            Content.
+            Content. Defaults to "".
         delivery_receipt : str
             Unique identifier associated with the transaction of
-            receiving this message.
+            receiving this message. Defaults to "".
         """
 
         self.id = id
