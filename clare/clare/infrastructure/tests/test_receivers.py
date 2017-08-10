@@ -62,11 +62,11 @@ class MockSqsQueue(object):
 class TestReceiver(object):
 
     def setup(self):
+        self.deque = collections.deque()
         self.message_factory = factories.Message2()
-        self._deque = collections.deque()
         self._buffer = collections.deque()
 
-        self.sender = senders.ConcurrentLinkedDeque(deque=self._deque)
+        self.sender = senders.ConcurrentLinkedDeque(deque=self.deque)
 
         self.data = ('foo', 'bar', 'foobar')
         self.messages = list()
@@ -88,28 +88,28 @@ class TestConcurrentLinkedDeque(TestReceiver):
             self.sender.send(x)
 
         receiver = receivers.ConcurrentLinkedDeque(
-            deque=self._deque,
+            deque=self.deque,
             batch_size_maximum_count=batch_size_maximum_count,
             countdown_timer=countdown_timer,
             message_factory=self.message_factory,
             _buffer=self._buffer)
 
-        expected_deque_count = len(self._deque) - batch_size_maximum_count
+        expected_deque_count = len(self.deque) - batch_size_maximum_count
 
         message = receiver.receive()
 
-        assert_equal(expected_deque_count, len(self._deque))
+        assert_equal(expected_deque_count, len(self.deque))
         assert_equal(batch_size_maximum_count - 1, len(self._buffer))
         assert_equal(self.message.body, message.body)
 
         assert_true(countdown_timer.reset.called)
 
     def test_receive_does_not_fill_while_buffer_has_messages(self):
-        self._deque.extend(self.data)
+        self.deque.extend(self.data)
         self._buffer.append(self.message)
 
         receiver = receivers.ConcurrentLinkedDeque(
-            deque=self._deque,
+            deque=self.deque,
             batch_size_maximum_count=None,
             countdown_timer=None,
             message_factory=None,
@@ -119,7 +119,7 @@ class TestConcurrentLinkedDeque(TestReceiver):
 
         message = receiver.receive()
 
-        assert_equal(len(self.data), len(self._deque))
+        assert_equal(len(self.data), len(self.deque))
         assert_equal(expected_buffer_count, len(self._buffer))
         assert_equal(self.message.body, message.body)
 
@@ -129,7 +129,7 @@ class TestConcurrentLinkedDeque(TestReceiver):
             has_time_remaining=(False,))
 
         receiver = receivers.ConcurrentLinkedDeque(
-            deque=self._deque,
+            deque=self.deque,
             batch_size_maximum_count=batch_size_maximum_count,
             countdown_timer=countdown_timer,
             message_factory=None)
@@ -143,10 +143,10 @@ class TestConcurrentLinkedDeque(TestReceiver):
         countdown_timer = TestConcurrentLinkedDeque.create_mock_countdown_timer(
             has_time_remaining=itertools.repeat(True))
 
-        self._deque.extend(self.data)
+        self.deque.extend(self.data)
 
         receiver = receivers.ConcurrentLinkedDeque(
-            deque=self._deque,
+            deque=self.deque,
             batch_size_maximum_count=batch_size_maximum_count,
             countdown_timer=countdown_timer,
             message_factory=self.message_factory)
