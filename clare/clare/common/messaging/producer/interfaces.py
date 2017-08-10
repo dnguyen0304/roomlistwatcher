@@ -8,12 +8,12 @@ class ISender(object):
     __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod
-    def send(self, message):
+    def send(self, data):
 
         """
         Parameters
         ----------
-        message : clare.common.messaging.models.Message
+        data : object
 
         Raises
         ------
