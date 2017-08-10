@@ -44,9 +44,9 @@ class SqsFifoQueue(producer.senders.Sender):
                                   if _message_group_id is not None
                                   else str(uuid.uuid4()))
 
-    def send(self, message):
+    def send(self, data):
         response = self._sqs_queue.send_message(
-            MessageBody=message.body,
+            MessageBody=str(data),
             MessageGroupId=self._message_group_id)
         if response['ResponseMetadata']['HTTPStatusCode'] != httplib.OK:
             raise producer.exceptions.SendTimeout(str(response))
