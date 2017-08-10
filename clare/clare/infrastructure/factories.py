@@ -14,7 +14,7 @@ from clare.common import messaging
 from clare.common import utilities
 
 
-class ConcurrentLinkedQueue(object):
+class _ConcurrentLinkedQueue(object):
 
     def create(self):
 
@@ -27,7 +27,7 @@ class ConcurrentLinkedQueue(object):
         return queue.Queue()
 
 
-class ConcurrentLinkedQueueSender(object):
+class _ConcurrentLinkedQueueSender(object):
 
     def __init__(self, queue):
 
@@ -54,7 +54,7 @@ class ConcurrentLinkedQueueSender(object):
         return repr_.format(self.__class__.__name__, self._queue)
 
 
-class ConcurrentLinkedQueueReceiver(object):
+class _ConcurrentLinkedQueueReceiver(object):
 
     def __init__(self, queue, batch_size_maximum_count, wait_time_seconds):
 
@@ -96,7 +96,7 @@ class ConcurrentLinkedQueueReceiver(object):
         return repr_.format(self.__class__.__name__, self._queue)
 
 
-class NopDeleter(object):
+class _NopDeleter(object):
 
     def create(self):
         return deleters.Nop()
@@ -106,7 +106,7 @@ class NopDeleter(object):
         return repr_.format(self.__class__.__name__)
 
 
-class SqsFifoQueue(object):
+class _SqsFifoQueue(object):
 
     SERVICE_NAME = 'sqs'
 
@@ -131,7 +131,7 @@ class SqsFifoQueue(object):
         # Create the queue resource if one does not already exist.
         session = boto3.session.Session(
             profile_name=self._properties['administrator.profile.name'])
-        client = session.client(service_name=SqsFifoQueue.SERVICE_NAME)
+        client = session.client(service_name=_SqsFifoQueue.SERVICE_NAME)
 
         try:
             response = client.get_queue_url(QueueName=self._properties['name'])
@@ -158,7 +158,7 @@ class SqsFifoQueue(object):
         return repr_.format(self.__class__.__name__, self._properties)
 
 
-class SqsFifoQueueSender(object):
+class _SqsFifoQueueSender(object):
 
     def __init__(self, sqs_queue):
 
@@ -185,7 +185,7 @@ class SqsFifoQueueSender(object):
         return repr_.format(self.__class__.__name__, self._sqs_queue)
 
 
-class SqsFifoQueueReceiver(object):
+class _SqsFifoQueueReceiver(object):
 
     def __init__(self,
                  sqs_queue,
@@ -234,7 +234,7 @@ class SqsFifoQueueReceiver(object):
                             self._message_factory)
 
 
-class SqsFifoQueueDeleter(object):
+class _SqsFifoQueueDeleter(object):
 
     def __init__(self, sqs_queue):
 
@@ -261,7 +261,7 @@ class SqsFifoQueueDeleter(object):
         return repr_.format(self.__class__.__name__, self._sqs_queue)
 
 
-class QueueAbstractFactory(object):
+class _QueueAbstractFactory(object):
 
     def __init__(self, sender_factory, receiver_factory, deleter_factory):
         self._sender_factory = sender_factory
@@ -282,23 +282,23 @@ class QueueAbstractFactory(object):
         """
 
         # Create the queue.
-        queue_ = ConcurrentLinkedQueue().create()
+        queue_ = _ConcurrentLinkedQueue().create()
 
         # Create the sender factory.
-        sender_factory = ConcurrentLinkedQueueSender(queue=queue_)
+        sender_factory = _ConcurrentLinkedQueueSender(queue=queue_)
 
         # Create the receiver factory.
         properties_ = properties['download_bot']['queues']['consume_from']
-        receiver_factory = ConcurrentLinkedQueueReceiver(
+        receiver_factory = _ConcurrentLinkedQueueReceiver(
             queue=queue_,
             batch_size_maximum_count=properties_['message.receive.maximum.count'],
             wait_time_seconds=properties_['message.receive.wait.seconds'])
 
         # Create the deleter factory.
-        deleter_factory = NopDeleter()
+        deleter_factory = _NopDeleter()
 
         # Create the queue abstract factory.
-        queue_abstract_factory = QueueAbstractFactory(
+        queue_abstract_factory = _QueueAbstractFactory(
             sender_factory=sender_factory,
             receiver_factory=receiver_factory,
             deleter_factory=deleter_factory)
@@ -319,7 +319,7 @@ class QueueAbstractFactory(object):
         """
 
         # Create the SQS FIFO queue resource.
-        queue_factory = SqsFifoQueue(
+        queue_factory = _SqsFifoQueue(
             properties=properties['room_list_watcher']['queues']['produce_to'])
         queue_url = queue_factory.create()
 
@@ -328,35 +328,35 @@ class QueueAbstractFactory(object):
         session = boto3.session.Session(
             profile_name=properties_['profile.name'])
         sqs_resource = session.resource(
-            service_name=SqsFifoQueue.SERVICE_NAME)
+            service_name=_SqsFifoQueue.SERVICE_NAME)
         sqs_queue = sqs_resource.Queue(url=queue_url)
 
         # Create the sender factory.
-        sender_factory = SqsFifoQueueSender(sqs_queue=sqs_queue)
+        sender_factory = _SqsFifoQueueSender(sqs_queue=sqs_queue)
 
         # Create the SQS FIFO queue to consume from.
         properties_ = properties['download_bot']['queues']['consume_from']
         session = boto3.session.Session(
             profile_name=properties_['profile.name'])
         sqs_resource = session.resource(
-            service_name=SqsFifoQueue.SERVICE_NAME)
+            service_name=_SqsFifoQueue.SERVICE_NAME)
         sqs_queue = sqs_resource.Queue(url=queue_url)
 
         # Create the message factory.
         message_factory = messaging.factories.Message2()
 
         # Create the receiver factory.
-        receiver_factory = SqsFifoQueueReceiver(
+        receiver_factory = _SqsFifoQueueReceiver(
             sqs_queue=sqs_queue,
             batch_size_maximum_count=properties_['message.receive.maximum.count'],
             wait_time_seconds=properties_['message.receive.wait.seconds'],
             message_factory=message_factory)
 
         # Create the deleter factory.
-        deleter_factory = SqsFifoQueueDeleter(sqs_queue=sqs_queue)
+        deleter_factory = _SqsFifoQueueDeleter(sqs_queue=sqs_queue)
 
         # Create the queue abstract factory.
-        queue_abstract_factory = QueueAbstractFactory(
+        queue_abstract_factory = _QueueAbstractFactory(
             sender_factory=sender_factory,
             receiver_factory=receiver_factory,
             deleter_factory=deleter_factory)
@@ -425,7 +425,7 @@ class ApplicationInfrastructure(object):
         """
 
         # Create the queue factory.
-        queue_factory = QueueAbstractFactory.new_sqs_fifo(
+        queue_factory = _QueueAbstractFactory.new_sqs_fifo(
             properties=self._properties)
 
         # Create the room list watcher infrastructure.
