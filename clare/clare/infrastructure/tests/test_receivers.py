@@ -72,7 +72,11 @@ class TestReceiver(object):
         self.messages = list()
         for body in self.data:
             message = self.message_factory.create()
+
+            message.id = None
             message.body = body
+            message.delivery_receipt = None
+
             self.messages.append(message)
         self.message = self.messages[0]
 
