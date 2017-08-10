@@ -27,7 +27,7 @@ class ConcurrentLinkedDeque(consumer.receivers.Buffering):
             Minimum size of the batch. The units are in number of
             messages. Defaults to BATCH_SIZE_MINIMUM_COUNT.
         countdown_timer : clare.common.utilities.timers.CountdownTimer
-        message_factory : clare.common.messaging.factories.Message
+        message_factory : clare.common.messaging.factories.Message2
         """
 
         self._original_batch_size_maximum_count = batch_size_maximum_count
@@ -52,36 +52,36 @@ class ConcurrentLinkedDeque(consumer.receivers.Buffering):
         return message
 
     def _fill_buffer(self):
-        messages = list()
+        data = list()
 
         self._countdown_timer.start()
 
         while True:
             # This must run at least once (i.e. do-while semantics).
             try:
-                message = self._deque.popleft()
+                x = self._deque.popleft()
             except IndexError:
                 pass
             else:
-                messages.append(message)
+                data.append(x)
 
-            if len(messages) == self._current_batch_size_maximum_count:
+            if len(data) == self._current_batch_size_maximum_count:
                 break
             if not self._countdown_timer.has_time_remaining:
                 break
 
         self._countdown_timer.reset()
 
-        if len(messages) < self._current_batch_size_minimum_count:
+        if len(data) < self._current_batch_size_minimum_count:
             # Return the messages to the deque.
             # Use extendleft alongside reversed to maintain the order.
-            self._deque.extendleft(reversed(messages))
+            self._deque.extendleft(reversed(data))
         else:
             # Add the marshalled messages to the buffer.
-            marshalled = (self._message_factory.create(message.body)
-                          for message
-                          in messages)
-            self._buffer.extend(marshalled)
+            for x in data:
+                message = self._message_factory.create()
+                message.body = x
+                self._buffer.append(message)
 
     def minimize_batch_size_count(self):
         self._current_batch_size_maximum_count = self._original_batch_size_minimum_count
