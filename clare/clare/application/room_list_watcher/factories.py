@@ -46,7 +46,7 @@ class _Scraper(object):
         web_driver = selenium.webdriver.Chrome()
         wait_context = WebDriverWait(
             driver=web_driver,
-            timeout=self._properties['scraper']['wait_context']['timeout'])
+            timeout=self._properties['wait_context']['timeout'])
         scraper = scrapers.RoomList(web_driver=web_driver,
                                     wait_context=wait_context)
 
@@ -58,18 +58,18 @@ class _Scraper(object):
         # Include validation.
         wait_context = WebDriverWait(
             web_driver,
-            timeout=self._properties['scraper']['validator']['wait_context']['timeout'])
+            timeout=self._properties['validator']['wait_context']['timeout'])
         validator = automation.validators.PokemonShowdown(
             wait_context=wait_context)
         scraper = scrapers.Validating(scraper=scraper, validator=validator)
 
         # Include retrying.
         stop_strategy = retry.stop_strategies.AfterAttempt(
-            maximum_attempt=self._properties['scraper']['retry_policy']['stop_strategy']['maximum_attempt'])
+            maximum_attempt=self._properties['retry_policy']['stop_strategy']['maximum_attempt'])
         wait_strategy = retry.wait_strategies.Fixed(
-            wait_time=self._properties['scraper']['retry_policy']['wait_strategy']['wait_time'])
+            wait_time=self._properties['retry_policy']['wait_strategy']['wait_time'])
         logger = logging.getLogger(
-            name=self._properties['scraper']['retry_policy']['messaging_broker']['logger']['name'])
+            name=self._properties['retry_policy']['messaging_broker']['logger']['name'])
         messaging_broker_factory = retry.messaging.broker_factories.Logging(
             logger=logger)
         messaging_broker = messaging_broker_factory.create(
@@ -85,8 +85,7 @@ class _Scraper(object):
         scraper = scrapers.Retrying(scraper=scraper, policy=policy)
 
         # Include orchestration.
-        logger = logging.getLogger(
-            name=self._properties['scraper']['logger']['name'])
+        logger = logging.getLogger(name=self._properties['logger']['name'])
         scraper = scrapers.Orchestrating(scraper=scraper, logger=logger)
 
         return scraper
@@ -107,7 +106,7 @@ class Producer(object):
         properties : collections.Mapping
         """
 
-        self._factory = _Scraper(properties=properties)
+        self._factory = _Scraper(properties=properties['scraper'])
         self._infrastructure = infrastructure
         self._properties = properties
 
