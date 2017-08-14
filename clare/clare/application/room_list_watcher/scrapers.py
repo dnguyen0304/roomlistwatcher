@@ -169,7 +169,7 @@ class Orchestrating(BaseScraper):
         """
         Parameters
         ----------
-        scraper : clare.application.room_list_watcher.interfaces.IScraper
+        scraper : clare.application.room_list_watcher.scrapers.BaseScraper
         logger : logging.Logger
         """
 
@@ -211,7 +211,7 @@ class Repeating(BaseScraper):
 
         Parameters
         ----------
-        scraper : clare.application.room_list_watcher.interfaces.IScraper
+        scraper : clare.application.room_list_watcher.scrapers.BaseScraper
         """
 
         self._scraper = scraper
@@ -246,7 +246,7 @@ class Retrying(BaseScraper):
         """
         Parameters
         ----------
-        scraper : clare.application.room_list_watcher.interfaces.IScraper
+        scraper : clare.application.room_list_watcher.scrapers.BaseScraper
         policy : clare.common.retry.policy.Policy
         """
 
@@ -282,7 +282,7 @@ class Validating(BaseScraper):
         """
         Parameters
         ----------
-        scraper : clare.application.room_list_watcher.interfaces.IScraper
+        scraper : clare.application.room_list_watcher.scrapers.BaseScraper
         validator : clare.common.automation.validators.PokemonShowdown
         """
 
@@ -327,7 +327,7 @@ class ProfilingDecorator(object):
         """
         Parameters
         ----------
-        scraper : clare.application.room_list_watcher.interfaces.IScraper
+        scraper : clare.application.room_list_watcher.scrapers.BaseScraper
         """
 
         self._scraper = scraper
