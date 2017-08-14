@@ -204,6 +204,33 @@ class Orchestrating(BaseScraper):
                             self._logger)
 
 
+class Profiling(Scraper):
+
+    def __init__(self, scraper):
+
+        """
+        Parameters
+        ----------
+        scraper : clare.application.room_list_watcher.scrapers.Scraper
+        """
+
+        self._scraper = scraper
+
+    def scrape(self, url):
+        started_at = time.time()
+        elements = self._scraper.scrape(url=url)
+        elapsed_time = time.time() - started_at
+        print('Elapsed Time (in seconds):', elapsed_time)
+        return elements
+
+    def dispose(self):
+        self._scraper.dispose()
+
+    def __repr__(self):
+        repr_ = '{}(scraper={})'
+        return repr_.format(self.__class__.__name__, self._scraper)
+
+
 class Repeating(BaseScraper):
 
     def __init__(self, scraper):
@@ -320,30 +347,3 @@ class Validating(BaseScraper):
         return repr_.format(self.__class__.__name__,
                             self._scraper,
                             self._validator)
-
-
-class Profiling(Scraper):
-
-    def __init__(self, scraper):
-
-        """
-        Parameters
-        ----------
-        scraper : clare.application.room_list_watcher.scrapers.Scraper
-        """
-
-        self._scraper = scraper
-
-    def scrape(self, url):
-        started_at = time.time()
-        elements = self._scraper.scrape(url=url)
-        elapsed_time = time.time() - started_at
-        print('Elapsed Time (in seconds):', elapsed_time)
-        return elements
-
-    def dispose(self):
-        self._scraper.dispose()
-
-    def __repr__(self):
-        repr_ = '{}(scraper={})'
-        return repr_.format(self.__class__.__name__, self._scraper)
