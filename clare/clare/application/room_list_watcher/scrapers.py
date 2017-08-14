@@ -36,6 +36,8 @@ class Scraper(common.io.interfaces.Disposable):
         pass
 
 
+# There should be Initializer and Extractor classes instead of protected
+# methods.
 class BaseScraper(Scraper):
 
     __metaclass__ = abc.ABCMeta
