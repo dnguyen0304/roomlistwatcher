@@ -16,7 +16,7 @@ from clare.common import automation
 from clare.common import retry
 
 
-class Scraper(object):
+class Scraper(common.io.interfaces.Disposable):
 
     __metaclass__ = abc.ABCMeta
 
@@ -59,10 +59,6 @@ class Scraper(object):
         collections.Sequence
         """
 
-        pass
-
-    @abc.abstractmethod
-    def dispose(self):
         pass
 
 
