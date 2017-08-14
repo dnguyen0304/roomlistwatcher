@@ -31,6 +31,11 @@ class Scraper(common.io.interfaces.Disposable):
         Returns
         -------
         collections.Sequence
+
+        Raises
+        ------
+        clare.common.automation.exceptions.AutomationFailed
+            If the scrape failed.
         """
 
         pass
