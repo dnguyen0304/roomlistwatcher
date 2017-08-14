@@ -73,7 +73,7 @@ class _Scraper(object):
         messaging_broker_factory = retry.messaging.broker_factories.Logging(
             logger=logger)
         messaging_broker = messaging_broker_factory.create(
-            event_name='ROOM_LIST_SCRAPE')
+            event_name=self._properties['event']['name'])
         policy = retry.PolicyBuilder() \
             .with_stop_strategy(stop_strategy) \
             .with_wait_strategy(wait_strategy) \
