@@ -96,7 +96,7 @@ class Producer(object):
         """
         Parameters
         ----------
-        infrastructure : clare.infrastructure.infrastructures.RoomListWatcherInfrastructure
+        infrastructure : clare.infrastructure.infrastructures.RoomListWatcher
         properties : collections.Mapping
         """
 
