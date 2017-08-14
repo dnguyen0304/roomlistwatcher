@@ -5,9 +5,9 @@ class AutomationFailed(Exception):
     pass
 
 
-class ConnectionLost(Exception):
+class ConnectionLost(AutomationFailed):
     pass
 
 
-class ValidationFailed(Exception):
+class ValidationFailed(AutomationFailed):
     pass
