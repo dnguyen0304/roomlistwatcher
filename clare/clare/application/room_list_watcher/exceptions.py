@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 
+from clare.common import automation
 
-class InitializationFailed(Exception):
+
+class InitializationFailed(automation.exceptions.AutomationFailed):
     pass
 
 
-class ExtractFailed(Exception):
+class ExtractFailed(automation.exceptions.AutomationFailed):
     pass
