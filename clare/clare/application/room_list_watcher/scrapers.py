@@ -35,6 +35,11 @@ class Scraper(common.io.interfaces.Disposable):
 
         pass
 
+
+class BaseScraper(Scraper):
+
+    __metaclass__ = abc.ABCMeta
+
     @abc.abstractmethod
     def _initialize(self, url):
 
@@ -42,10 +47,6 @@ class Scraper(common.io.interfaces.Disposable):
         Parameters
         ----------
         url : str
-
-        Returns
-        -------
-        None
         """
 
         pass
@@ -62,7 +63,7 @@ class Scraper(common.io.interfaces.Disposable):
         pass
 
 
-class Nop(Scraper):
+class Nop(BaseScraper):
 
     def scrape(self, url):
         return list()
@@ -81,7 +82,7 @@ class Nop(Scraper):
         return repr_.format(self.__class__.__name__)
 
 
-class RoomList(Scraper):
+class RoomList(BaseScraper):
 
     def __init__(self, web_driver, wait_context):
 
@@ -161,7 +162,7 @@ class RoomList(Scraper):
                             self._wait_context)
 
 
-class Orchestrating(Scraper):
+class Orchestrating(BaseScraper):
 
     def __init__(self, scraper, logger):
 
@@ -201,7 +202,7 @@ class Orchestrating(Scraper):
                             self._logger)
 
 
-class Repeating(Scraper):
+class Repeating(BaseScraper):
 
     def __init__(self, scraper):
 
@@ -238,7 +239,7 @@ class Repeating(Scraper):
         return repr_.format(self.__class__.__name__, self._scraper)
 
 
-class Retrying(Scraper):
+class Retrying(BaseScraper):
 
     def __init__(self, scraper, policy):
 
@@ -274,7 +275,7 @@ class Retrying(Scraper):
                             self._policy)
 
 
-class Validating(Scraper):
+class Validating(BaseScraper):
 
     def __init__(self, scraper, validator):
 
