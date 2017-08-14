@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
 
-class AutomationFailed(Exception):
+class ScrapeFailed(Exception):
     pass
 
 
-class ConnectionLost(AutomationFailed):
+class ConnectionLost(ScrapeFailed):
     pass
 
 
-class ValidationFailed(AutomationFailed):
+class ValidationFailed(ScrapeFailed):
     pass

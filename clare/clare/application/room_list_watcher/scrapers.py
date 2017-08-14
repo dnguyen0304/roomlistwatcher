@@ -34,7 +34,7 @@ class Scraper(common.io.interfaces.Disposable):
 
         Raises
         ------
-        clare.common.automation.exceptions.AutomationFailed
+        clare.common.automation.exceptions.ScrapeFailed
             If the scrape failed.
         """
 
