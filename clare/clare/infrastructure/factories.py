@@ -4,7 +4,7 @@ import Queue as queue
 import httplib
 
 import boto3
-import botocore.errorfactory
+import botocore.exceptions
 
 from . import deleters
 from . import infrastructures
@@ -128,14 +128,75 @@ class _SqsFifoQueue(object):
         str
         """
 
-        # Create the queue resource if one does not already exist.
         session = boto3.session.Session(
             profile_name=self._properties['administrator.profile.name'])
         client = session.client(service_name=_SqsFifoQueue.SERVICE_NAME)
 
         try:
+            queue_url = self._find_queue_resource(client=client)
+        except botocore.exceptions.ClientError as e:
+            # See this documentation.
+            # http://botocore.readthedocs.io/en/latest/client_upgrades.html#error-handling
+            if e.response['ResponseMetadata']['HTTPStatusCode'] != httplib.BAD_REQUEST:
+                raise
+            if e.response['Error']['Code'] != 'AWS.SimpleQueueService.NonExistentQueue':
+                raise
+            queue_url = self._create_queue_resource(client=client)
+
+        return queue_url
+
+    def _find_queue_resource(self, client):
+
+        """
+        Parameters
+        ----------
+        client : typing.Type[botocore.client.BaseClient]
+
+        Returns
+        -------
+        str
+            URL to the existing queue resource.
+
+        Raises
+        ------
+        Exception
+            If there was an error while trying to find the queue
+            resource.
+        botocore.exceptions.ClientError
+            If there was an error caused by the client while trying to
+            find the queue resource.
+        """
+
+        try:
             response = client.get_queue_url(QueueName=self._properties['name'])
-        except botocore.errorfactory.QueueDoesNotExist:
+        except Exception:
+            raise
+
+        if response['ResponseMetadata']['HTTPStatusCode'] != httplib.OK:
+            raise Exception(str(response['Error']))
+
+        return response['QueueUrl']
+
+    def _create_queue_resource(self, client):
+
+        """
+        Parameters
+        ----------
+        client : typing.Type[botocore.client.BaseClient]
+
+        Returns
+        -------
+        str
+            URL to the newly created queue resource.
+
+        Raises
+        ------
+        Exception
+            If there was an error while trying to create the queue
+            resource.
+        """
+
+        try:
             response = client.create_queue(
                 QueueName=self._properties['name'],
                 Attributes={
@@ -147,9 +208,11 @@ class _SqsFifoQueue(object):
                     'ContentBasedDeduplication': 'True'
                 }
             )
+        except Exception:
+            raise
 
         if response['ResponseMetadata']['HTTPStatusCode'] != httplib.OK:
-            raise Exception(str(response))
+            raise Exception(str(response['Error']))
 
         return response['QueueUrl']
 
@@ -175,7 +238,7 @@ class _SqsFifoQueueSender(object):
         """
         Returns
         -------
-        typing.Type[clare.common.messaging.producer.senders.Receiver]
+        typing.Type[clare.common.messaging.producer.senders.Sender]
         """
 
         return senders.SqsFifoQueue(sqs_queue=self._sqs_queue)
@@ -212,7 +275,7 @@ class _SqsFifoQueueReceiver(object):
         """
         Returns
         -------
-        typing.Type[clare.common.messaging.producer.senders.Receiver]
+        typing.Type[clare.common.messaging.consumer.receivers.Receiver]
         """
 
         return receivers.SqsFifoQueue(
@@ -278,7 +341,7 @@ class _QueueAbstractFactory(object):
 
         Returns
         -------
-        clare.infrastructure.factories.QueueAbstractFactory
+        clare.infrastructure.factories._QueueAbstractFactory
         """
 
         # Create the queue.
@@ -315,7 +378,7 @@ class _QueueAbstractFactory(object):
 
         Returns
         -------
-        clare.infrastructure.factories.QueueAbstractFactory
+        clare.infrastructure.factories._QueueAbstractFactory
         """
 
         # Create the SQS FIFO queue resource.
