@@ -35,6 +35,13 @@ class _Scraper(object):
         self._properties = properties
 
     def create(self):
+
+        """
+        Returns
+        -------
+        clare.application.room_list_watcher.scrapers.Scraper
+        """
+
         # Construct the room list scraper.
         web_driver = selenium.webdriver.Chrome()
         wait_context = WebDriverWait(
