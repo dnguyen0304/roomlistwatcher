@@ -171,23 +171,26 @@ class RoomList(BaseScraper):
 
 class Orchestrating(BaseScraper):
 
-    def __init__(self, scraper, logger):
+    def __init__(self, scraper, logger, policy):
 
         """
         Parameters
         ----------
         scraper : clare.application.room_list_watcher.scrapers.BaseScraper
         logger : logging.Logger
+        policy : clare.common.retry.policy.Policy
         """
 
         self._scraper = scraper
         self._logger = logger
+        self._policy = policy
 
     def scrape(self, url):
-        elements = list()
+        scrape = functools.partial(self._scraper.scrape, url=url)
         try:
-            elements = self._scraper.scrape(url=url)
+            elements = self._policy.execute(scrape)
         except retry.exceptions.MaximumRetry as e:
+            elements = list()
             message = common.logging.utilities.format_exception(e=e)
             self._logger.debug(msg=message)
         return elements
@@ -203,10 +206,11 @@ class Orchestrating(BaseScraper):
         self._scraper.dispose()
 
     def __repr__(self):
-        repr_ = '{}(scraper={}, logger={})'
+        repr_ = '{}(scraper={}, logger={}, policy={})'
         return repr_.format(self.__class__.__name__,
                             self._scraper,
-                            self._logger)
+                            self._logger,
+                            self._policy)
 
 
 class Profiling(Scraper):
@@ -271,42 +275,6 @@ class Repeating(BaseScraper):
     def __repr__(self):
         repr_ = '{}(scraper={})'
         return repr_.format(self.__class__.__name__, self._scraper)
-
-
-class Retrying(BaseScraper):
-
-    def __init__(self, scraper, policy):
-
-        """
-        Parameters
-        ----------
-        scraper : clare.application.room_list_watcher.scrapers.BaseScraper
-        policy : clare.common.retry.policy.Policy
-        """
-
-        self._scraper = scraper
-        self._policy = policy
-
-    def scrape(self, url):
-        scrape = functools.partial(self._scraper.scrape, url=url)
-        elements = self._policy.execute(scrape)
-        return elements
-
-    def _initialize(self, url):
-        self._scraper._initialize(url=url)
-
-    def _extract(self):
-        elements = self._scraper._extract()
-        return elements
-
-    def dispose(self):
-        self._scraper.dispose()
-
-    def __repr__(self):
-        repr_ = '{}(scraper={}, policy={})'
-        return repr_.format(self.__class__.__name__,
-                            self._scraper,
-                            self._policy)
 
 
 class Validating(BaseScraper):

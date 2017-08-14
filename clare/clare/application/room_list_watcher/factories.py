@@ -63,7 +63,7 @@ class _Scraper(object):
             wait_context=wait_context)
         scraper = scrapers.Validating(scraper=scraper, validator=validator)
 
-        # Include retrying.
+        # Create the retry policy.
         stop_strategy = retry.stop_strategies.AfterAttempt(
             maximum_attempt=self._properties['retry_policy']['stop_strategy']['maximum_attempt'])
         wait_strategy = retry.wait_strategies.Fixed(
@@ -82,11 +82,12 @@ class _Scraper(object):
             .continue_on_exception(exceptions.ExtractFailed) \
             .with_messaging_broker(messaging_broker) \
             .build()
-        scraper = scrapers.Retrying(scraper=scraper, policy=policy)
 
         # Include orchestration.
         logger = logging.getLogger(name=self._properties['logger']['name'])
-        scraper = scrapers.Orchestrating(scraper=scraper, logger=logger)
+        scraper = scrapers.Orchestrating(scraper=scraper,
+                                         logger=logger,
+                                         policy=policy)
 
         return scraper
 
