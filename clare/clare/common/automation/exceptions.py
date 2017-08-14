@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
-class Base(Exception):
+class AutomationFailed(Exception):
     pass
 
 
