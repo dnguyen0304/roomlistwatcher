@@ -322,30 +322,24 @@ class Validating(BaseScraper):
                             self._validator)
 
 
-class ProfilingDecorator(object):
+class Profiling(Scraper):
 
     def __init__(self, scraper):
 
         """
         Parameters
         ----------
-        scraper : clare.application.room_list_watcher.scrapers.BaseScraper
+        scraper : clare.application.room_list_watcher.scrapers.Scraper
         """
 
         self._scraper = scraper
 
     def scrape(self, url):
-
-        """
-        Returns
-        -------
-        None
-        """
-
         started_at = time.time()
-        self._scraper.scrape(url=url)
+        elements = self._scraper.scrape(url=url)
         elapsed_time = time.time() - started_at
         print('Elapsed Time (in seconds):', elapsed_time)
+        return elements
 
     def dispose(self):
         self._scraper.dispose()
