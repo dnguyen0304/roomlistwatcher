@@ -2,6 +2,7 @@
 
 from __future__ import print_function
 
+import abc
 import functools
 import time
 
@@ -10,13 +11,62 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
 
 from . import exceptions
-from . import interfaces
 from clare import common
 from clare.common import automation
 from clare.common import retry
 
 
-class Nop(interfaces.IScraper):
+class IScraper(object):
+
+    __metaclass__ = abc.ABCMeta
+
+    @abc.abstractmethod
+    def scrape(self, url):
+
+        """
+        Parameters
+        ----------
+        url : str
+
+        Returns
+        -------
+        collections.Sequence
+        """
+
+        pass
+
+    @abc.abstractmethod
+    def _initialize(self, url):
+
+        """
+        Parameters
+        ----------
+        url : str
+
+        Returns
+        -------
+        None
+        """
+
+        pass
+
+    @abc.abstractmethod
+    def _extract(self):
+
+        """
+        Returns
+        -------
+        collections.Sequence
+        """
+
+        pass
+
+    @abc.abstractmethod
+    def dispose(self):
+        pass
+
+
+class Nop(IScraper):
 
     def scrape(self, url):
         return list()
@@ -35,7 +85,7 @@ class Nop(interfaces.IScraper):
         return repr_.format(self.__class__.__name__)
 
 
-class RoomList(interfaces.IScraper):
+class RoomList(IScraper):
 
     def __init__(self, web_driver, wait_context):
 
@@ -115,7 +165,7 @@ class RoomList(interfaces.IScraper):
                             self._wait_context)
 
 
-class Orchestrating(interfaces.IScraper):
+class Orchestrating(IScraper):
 
     def __init__(self, scraper, logger):
 
@@ -155,7 +205,7 @@ class Orchestrating(interfaces.IScraper):
                             self._logger)
 
 
-class Repeating(interfaces.IScraper):
+class Repeating(IScraper):
 
     def __init__(self, scraper):
 
@@ -192,7 +242,7 @@ class Repeating(interfaces.IScraper):
         return repr_.format(self.__class__.__name__, self._scraper)
 
 
-class Retrying(interfaces.IScraper):
+class Retrying(IScraper):
 
     def __init__(self, scraper, policy):
 
@@ -228,7 +278,7 @@ class Retrying(interfaces.IScraper):
                             self._policy)
 
 
-class Validating(interfaces.IScraper):
+class Validating(IScraper):
 
     def __init__(self, scraper, validator):
 
