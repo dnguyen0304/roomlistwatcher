@@ -16,7 +16,7 @@ from clare.common import automation
 from clare.common import retry
 
 
-class IScraper(object):
+class Scraper(object):
 
     __metaclass__ = abc.ABCMeta
 
@@ -66,7 +66,7 @@ class IScraper(object):
         pass
 
 
-class Nop(IScraper):
+class Nop(Scraper):
 
     def scrape(self, url):
         return list()
@@ -85,7 +85,7 @@ class Nop(IScraper):
         return repr_.format(self.__class__.__name__)
 
 
-class RoomList(IScraper):
+class RoomList(Scraper):
 
     def __init__(self, web_driver, wait_context):
 
@@ -165,7 +165,7 @@ class RoomList(IScraper):
                             self._wait_context)
 
 
-class Orchestrating(IScraper):
+class Orchestrating(Scraper):
 
     def __init__(self, scraper, logger):
 
@@ -205,7 +205,7 @@ class Orchestrating(IScraper):
                             self._logger)
 
 
-class Repeating(IScraper):
+class Repeating(Scraper):
 
     def __init__(self, scraper):
 
@@ -242,7 +242,7 @@ class Repeating(IScraper):
         return repr_.format(self.__class__.__name__, self._scraper)
 
 
-class Retrying(IScraper):
+class Retrying(Scraper):
 
     def __init__(self, scraper, policy):
 
@@ -278,7 +278,7 @@ class Retrying(IScraper):
                             self._policy)
 
 
-class Validating(IScraper):
+class Validating(Scraper):
 
     def __init__(self, scraper, validator):
 

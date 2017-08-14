@@ -12,7 +12,7 @@ class ScraperToBufferingSource(messaging.producer.interfaces.ISource):
         """
         Parameters
         ----------
-        scraper : typing.Type[clare.application.room_list_watcher.interfaces.IScraper]
+        scraper : typing.Type[clare.application.room_list_watcher.scrapers.Scraper]
         url : str
         marshall_strategy : clare.application.room_list_watcher.marshall_strategies.SeleniumWebElementToMessage
         """
