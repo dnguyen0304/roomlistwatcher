@@ -177,10 +177,10 @@ class Producer(object):
                             self._properties)
 
 
-class CommandLineArguments(Producer):
+class CommandLineArgumentsWatcher(Producer):
 
     def create_dependencies(self):
-        dependencies = super(CommandLineArguments, self).create_dependencies()
+        dependencies = super(CommandLineArgumentsWatcher, self).create_dependencies()
 
         # Construct the deque source.
         deque = collections.deque(sys.argv[1:])
