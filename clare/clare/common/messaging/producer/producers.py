@@ -10,8 +10,8 @@ class Producer(object):
         """
         Parameters
         ----------
-        source : typing.Type[clare.common.messaging.producer.interfaces.ISource]
-        sender : typing.Type[clare.common.messaging.producer.interfaces.ISender]
+        source : clare.common.messaging.producer.sources.Source
+        sender : clare.common.messaging.producer.senders.Sender
         filters : typing.Iterable[clare.common.messaging.interfaces.IFilter]
             Defaults to list.
         """
