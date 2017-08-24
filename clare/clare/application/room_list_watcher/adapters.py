@@ -5,7 +5,7 @@ import collections
 from clare.common import messaging
 
 
-class ScraperToBufferingSource(messaging.producer.interfaces.ISource):
+class ScraperToBufferingSource(messaging.producer.sources.Source):
 
     def __init__(self, scraper, url, marshall_strategy):
 
