@@ -108,8 +108,8 @@ class RoomList(BaseScraper):
         """
         Raises
         ------
-        clare.application.room_list_watcher.exceptions.InitializationFailed
-        clare.application.room_list_watcher.exceptions.ExtractFailed
+        clare.application.room_list_watcher.automation.exceptions.InitializationFailed
+        clare.application.room_list_watcher.automation.exceptions.ExtractFailed
         """
 
         self._initialize(url=url)
@@ -176,7 +176,7 @@ class Orchestrating(BaseScraper):
         """
         Parameters
         ----------
-        scraper : clare.application.room_list_watcher.scrapers.BaseScraper
+        scraper : clare.application.room_list_watcher.automation.scrapers.BaseScraper
         logger : logging.Logger
         policy : clare.common.retry.policy.Policy
         """
@@ -220,7 +220,7 @@ class Profiling(Scraper):
         """
         Parameters
         ----------
-        scraper : clare.application.room_list_watcher.scrapers.Scraper
+        scraper : clare.application.room_list_watcher.automation.scrapers.Scraper
         """
 
         self._scraper = scraper
@@ -249,7 +249,7 @@ class Repeating(BaseScraper):
 
         Parameters
         ----------
-        scraper : clare.application.room_list_watcher.scrapers.BaseScraper
+        scraper : clare.application.room_list_watcher.automation.scrapers.BaseScraper
         """
 
         self._scraper = scraper
@@ -284,7 +284,7 @@ class Validating(BaseScraper):
         """
         Parameters
         ----------
-        scraper : clare.application.room_list_watcher.scrapers.BaseScraper
+        scraper : clare.application.room_list_watcher.automation.scrapers.BaseScraper
         validator : clare.common.automation.validators.PokemonShowdown
         """
 
