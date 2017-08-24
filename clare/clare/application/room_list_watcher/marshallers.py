@@ -1,18 +1,33 @@
 # -*- coding: utf-8 -*-
 
+import abc
+
 import lxml.html
 
 
-class Nop(object):
+class Marshaller(object):
 
+    __metaclass__ = abc.ABCMeta
+
+    @abc.abstractmethod
     def marshall(self, object_):
 
         """
         Parameters
         ----------
         object_ : typing.Any
+
+        Returns
+        -------
+        object
         """
 
+        raise NotImplementedError
+
+
+class Nop(Marshaller):
+
+    def marshall(self, object_):
         return object_
 
     def __repr__(self):
@@ -20,7 +35,7 @@ class Nop(object):
         return repr_.format(self.__class__.__name__)
 
 
-class SeleniumWebElementToMessage(object):
+class SeleniumWebElementToMessage(Marshaller):
 
     def __init__(self, message_factory):
 
