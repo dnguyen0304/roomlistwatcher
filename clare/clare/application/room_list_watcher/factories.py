@@ -100,10 +100,9 @@ class CommandLineArgumentsWatcher(RoomListWatcher):
     def create_dependencies(self):
         dependencies = super(CommandLineArgumentsWatcher, self).create_dependencies()
 
-        # Create the deque source.
+        # Create the source.
         deque = collections.deque(sys.argv[1:])
-        message_factory = messaging.factories.Message2()
-        source = sources.Deque(deque=deque, message_factory=message_factory)
+        source = sources.Deque(deque=deque)
         dependencies['source'] = source
 
         return dependencies
