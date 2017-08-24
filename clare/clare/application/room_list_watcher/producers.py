@@ -3,7 +3,7 @@
 from clare import common
 
 
-class Orchestrating(object):
+class OrchestratingProducer(object):
 
     def __init__(self, producer, logger):
 
