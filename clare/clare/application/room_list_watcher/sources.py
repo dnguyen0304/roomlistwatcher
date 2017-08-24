@@ -3,7 +3,7 @@
 from clare.common import messaging
 
 
-class Deque(messaging.producer.interfaces.ISource):
+class Deque(messaging.producer.sources.Source):
 
     def __init__(self, deque, message_factory):
 
