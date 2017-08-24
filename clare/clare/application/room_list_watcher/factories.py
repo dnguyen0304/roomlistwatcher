@@ -32,7 +32,7 @@ class Producer(object):
         self._properties = properties
 
     def create(self):
-        # Construct the producer.
+        # Create the producer.
         dependencies = self.create_dependencies()
 
         producer = messaging.producer.producers.Producer(
@@ -57,7 +57,7 @@ class Producer(object):
 
         dependencies = dict()
 
-        # Construct the source.
+        # Create the source.
         scraper = self._factory.create()
         message_factory = messaging.factories.Message()
         marshaller = marshallers.SeleniumWebElementToMessage(
@@ -68,7 +68,7 @@ class Producer(object):
             marshaller=marshaller)
         dependencies['source'] = source
 
-        # Construct the sender.
+        # Create the sender.
         sender = senders.Sender(queue=self._infrastructure.produce_to_queue)
 
         # Include logging.
@@ -77,10 +77,10 @@ class Producer(object):
         sender = senders.Logging(sender=sender, logger=logger)
         dependencies['sender'] = sender
 
-        # Construct the filters.
+        # Create the filters.
         dependencies['filters'] = list()
 
-        # Construct the no duplicate filter.
+        # Create the no duplicate filter.
         countdown_timer = utilities.timers.CountdownTimer(
             duration=self._properties['filter']['flush_strategy']['duration'])
         after_duration = flush_strategies.AfterDuration(
@@ -102,7 +102,7 @@ class CommandLineArgumentsWatcher(Producer):
     def create_dependencies(self):
         dependencies = super(CommandLineArgumentsWatcher, self).create_dependencies()
 
-        # Construct the deque source.
+        # Create the deque source.
         deque = collections.deque(sys.argv[1:])
         message_factory = messaging.factories.Message()
         source = sources.Deque(deque=deque, message_factory=message_factory)
