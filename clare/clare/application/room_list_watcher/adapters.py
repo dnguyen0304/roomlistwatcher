@@ -7,19 +7,19 @@ from clare.common import messaging
 
 class ScraperToBufferingSource(messaging.producer.sources.Source):
 
-    def __init__(self, scraper, url, marshall_strategy):
+    def __init__(self, scraper, url, marshaller):
 
         """
         Parameters
         ----------
-        scraper : typing.Type[clare.application.room_list_watcher.scrapers.Scraper]
+        scraper : clare.application.room_list_watcher.automation.scrapers.Scraper
         url : str
-        marshall_strategy : clare.application.room_list_watcher.marshall_strategies.SeleniumWebElementToMessage
+        marshaller : clare.application.room_list_watcher.marshallers.Marshaller
         """
 
         self._scraper = scraper
         self._url = url
-        self._marshall_strategy = marshall_strategy
+        self._marshaller = marshaller
 
         self._buffer = collections.deque()
 
@@ -36,12 +36,12 @@ class ScraperToBufferingSource(messaging.producer.sources.Source):
             elements = self._scraper.scrape(url=self._url)
             self._buffer.extend(reversed(elements))
         element = self._buffer.popleft()
-        message = self._marshall_strategy.marshall(element)
+        message = self._marshaller.marshall(element)
         return message
 
     def __repr__(self):
-        repr_ = '{}(scraper={}, url="{}", marshall_strategy={})'
+        repr_ = '{}(scraper={}, url="{}", marshaller={})'
         return repr_.format(self.__class__.__name__,
                             self._scraper,
                             self._url,
-                            self._marshall_strategy)
+                            self._marshaller)

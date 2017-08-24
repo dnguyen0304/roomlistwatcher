@@ -65,7 +65,7 @@ class Producer(object):
         source = adapters.ScraperToBufferingSource(
             scraper=scraper,
             url=self._properties['scraper']['url'],
-            marshall_strategy=marshaller)
+            marshaller=marshaller)
         dependencies['source'] = source
 
         # Construct the sender.
