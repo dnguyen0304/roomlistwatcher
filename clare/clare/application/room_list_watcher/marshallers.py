@@ -42,7 +42,7 @@ class SeleniumWebElementToMessage(Marshaller):
         """
         Parameters
         ----------
-        message_factory : clare.common.messaging.factories.MessageFactory
+        message_factory : clare.common.messaging.factories.Message2
         """
 
         self._message_factory = message_factory
@@ -58,7 +58,8 @@ class SeleniumWebElementToMessage(Marshaller):
         html = object_.get_attribute('outerHTML')
         element = lxml.html.fragment_fromstring(html=html)
         room_path = element.get(key='href')
-        message = self._message_factory.create(body=room_path)
+        message = self._message_factory.create()
+        message.body = room_path
         return message
 
     def __repr__(self):
