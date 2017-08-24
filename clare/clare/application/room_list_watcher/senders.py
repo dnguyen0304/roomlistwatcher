@@ -21,11 +21,11 @@ class Logging(messaging.producer.senders.Sender):
         self._sender = sender
         self._logger = logger
 
-    def send(self, message):
-        self._sender.send(message=message)
+    def send(self, data):
+        self._sender.send(data=data)
 
         arguments = collections.OrderedDict()
-        arguments['path'] = message.body
+        arguments['path'] = data
         event = common.logging.Event(topic=topics.Topic.ROOM_FOUND,
                                      arguments=arguments)
         message = event.to_json()
