@@ -1,50 +1,9 @@
 # -*- coding: utf-8 -*-
 
-import abc
-
 from clare.common import messaging
 
 
-class Base(messaging.interfaces.IFilter):
-
-    def filter(self, message):
-        if not self._should_filter(message=message):
-            self._process(message=message)
-            return message
-
-    @abc.abstractmethod
-    def _should_filter(self, message):
-
-        """
-        Parameters
-        ----------
-        message : clare.common.messaging.models.Message
-
-        Returns
-        -------
-        bool
-            True if the message should be filtered.
-        """
-
-        pass
-
-    @abc.abstractmethod
-    def _process(self, message):
-
-        """
-        Parameters
-        ----------
-        message : clare.common.messaging.models.Message
-
-        Returns
-        -------
-        clare.common.messaging.models.Message
-        """
-
-        pass
-
-
-class NoDuplicateBody(Base):
+class NoDuplicateString(messaging.filters.StringFilter):
 
     def __init__(self, flush_strategy):
 
@@ -55,7 +14,7 @@ class NoDuplicateBody(Base):
         Parameters
         ----------
         flush_strategy : clare.application.room_list_watcher.flush_strategies.FlushStrategy
-            Strategy for deciding if the collection of seen messages
+            Strategy for deciding if the collection of seen strings
             should be flushed.
         """
 
@@ -71,24 +30,50 @@ class NoDuplicateBody(Base):
         self._collection = list()
         self._seen = set()
 
-    def filter(self, message):
-        message = super(NoDuplicateBody, self).filter(message=message)
+    def filter(self, string):
+        if not self._should_filter(string=string):
+            self._process(string=string)
+        else:
+            string = None
         if self._flush_strategy.should_flush(collection=self._collection):
             self._collection = list()
             self._seen = set()
-        return message
+        return string
 
-    def _should_filter(self, message):
-        if message.body in self._seen:
+    def _should_filter(self, string):
+
+        """
+        Parameters
+        ----------
+        string : str
+
+        Returns
+        -------
+        bool
+            True if the string should be filtered.
+        """
+
+        if string in self._seen:
             should_filter = True
         else:
-            self._collection.append(message.body)
-            self._seen.add(message.body)
+            self._collection.append(string)
+            self._seen.add(string)
             should_filter = False
         return should_filter
 
-    def _process(self, message):
-        return message
+    def _process(self, string):
+
+        """
+        Parameters
+        ----------
+        string : str
+
+        Returns
+        -------
+        str
+        """
+
+        return string
 
     def __repr__(self):
         repr_ = '{}(flush_strategy={})'
