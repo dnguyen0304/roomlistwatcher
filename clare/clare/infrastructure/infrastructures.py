@@ -8,7 +8,7 @@ class RoomListWatcher(object):
         """
         Parameters
         ----------
-        sender : typing.Type[clare.common.messaging.producer.senders.Sender]
+        sender : clare.common.messaging.producer.senders.Sender
         """
 
         self.sender = sender
@@ -25,8 +25,8 @@ class DownloadBot(object):
         """
         Parameters
         ----------
-        receiver : typing.Type[clare.common.messaging.consumer.receivers.Receiver]
-        deleter : typing.Type[clare.common.messaging.consumer.deleters.Deleter]
+        receiver : clare.common.messaging.consumer.receivers.Receiver
+        deleter : clare.common.messaging.consumer.deleters.Deleter
         """
 
         self.receiver = receiver
