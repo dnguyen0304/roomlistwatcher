@@ -4,8 +4,8 @@ import mock
 from nose.tools import assert_equal
 
 from .. import adapters
-from .. import marshall_strategies
-from .. import scrapers
+from .. import marshallers
+from ..automation import scrapers
 
 
 class TestScraperToBufferingSource(object):
@@ -20,11 +20,11 @@ class TestScraperToBufferingSource(object):
         self.elements = xrange(2)
         self.scraper = scrapers.Nop()
         self.scraper.scrape = mock.Mock(return_value=self.elements)
-        marshall_strategy = marshall_strategies.Nop()
+        marshaller = marshallers.Nop()
         self.source = adapters.ScraperToBufferingSource(
             scraper=self.scraper,
             url=None,
-            marshall_strategy=marshall_strategy)
+            marshaller=marshaller)
         self.n = len(self.elements)
 
     def test_scrape_is_not_called_while_buffer_has_elements(self):
@@ -38,5 +38,5 @@ class TestScraperToBufferingSource(object):
         assert_equal(self.scraper.scrape.call_count, 2)
 
     def test_messages_are_ordered_and_reversed(self):
-        messages = [self.source.emit() for i in xrange(self.n)]
+        messages = [self.source.emit() for _ in xrange(self.n)]
         assert_equal(*map(list, (reversed(messages), self.elements)))
