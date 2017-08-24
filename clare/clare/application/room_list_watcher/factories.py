@@ -16,7 +16,7 @@ from clare.common import messaging
 from clare.common import utilities
 
 
-class Producer(object):
+class RoomListWatcher(object):
 
     def __init__(self, infrastructure, properties):
 
@@ -97,7 +97,7 @@ class Producer(object):
                             self._properties)
 
 
-class CommandLineArgumentsWatcher(Producer):
+class CommandLineArgumentsWatcher(RoomListWatcher):
 
     def create_dependencies(self):
         dependencies = super(CommandLineArgumentsWatcher, self).create_dependencies()
