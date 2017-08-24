@@ -104,7 +104,7 @@ class CommandLineArgumentsWatcher(Producer):
 
         # Create the deque source.
         deque = collections.deque(sys.argv[1:])
-        message_factory = messaging.factories.Message()
+        message_factory = messaging.factories.Message2()
         source = sources.Deque(deque=deque, message_factory=message_factory)
         dependencies['source'] = source
 
