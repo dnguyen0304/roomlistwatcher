@@ -11,7 +11,7 @@ class Deque(messaging.producer.sources.Source):
         Parameters
         ----------
         deque : collections.deque
-        message_factory : clare.common.messaging.factories.Message
+        message_factory : clare.common.messaging.factories.Message2
         """
 
         self._deque = deque
@@ -24,7 +24,8 @@ class Deque(messaging.producer.sources.Source):
             message = 'The source timed out.'
             raise messaging.producer.exceptions.EmitTimeout(message)
         else:
-            message = self._message_factory.create(body=value)
+            message = self._message_factory.create()
+            message.body = value
             return message
 
     def __repr__(self):
