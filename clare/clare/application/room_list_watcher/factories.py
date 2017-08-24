@@ -42,7 +42,7 @@ class _Scraper(object):
         clare.application.room_list_watcher.scrapers.Scraper
         """
 
-        # Construct the room list scraper.
+        # Create the room list scraper.
         web_driver = selenium.webdriver.Chrome()
         wait_context = WebDriverWait(
             driver=web_driver,
@@ -83,8 +83,10 @@ class _Scraper(object):
             .with_messaging_broker(messaging_broker) \
             .build()
 
-        # Include orchestration.
+        # Create the logger.
         logger = logging.getLogger(name=self._properties['logger']['name'])
+
+        # Include orchestration.
         scraper = scrapers.Orchestrating(scraper=scraper,
                                          logger=logger,
                                          policy=policy)
