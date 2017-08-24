@@ -8,12 +8,12 @@ class StringFilter(object):
     __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod
-    def filter(self, data):
+    def filter(self, string):
 
         """
         Parameters
         ----------
-        data : str
+        string : str
 
         Returns
         -------
