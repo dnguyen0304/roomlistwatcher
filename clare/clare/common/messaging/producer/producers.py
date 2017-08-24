@@ -12,7 +12,7 @@ class Producer(object):
         ----------
         source : clare.common.messaging.producer.sources.Source
         sender : clare.common.messaging.producer.senders.Sender
-        filters : typing.Iterable[clare.common.messaging.interfaces.IFilter]
+        filters : typing.Iterable[clare.common.messaging.filters.StringFilter]
             Defaults to list.
         """
 
@@ -33,13 +33,13 @@ class Producer(object):
             time.sleep(interval)
 
     def _produce_once(self):
-        message = self._source.emit()
+        data = self._source.emit()
         for filter_ in self._filters:
-            message = filter_.filter(message=message)
-            if message is None:
+            data = filter_.filter(data)
+            if data is None:
                 break
         else:
-            self._sender.send(message=message)
+            self._sender.send(data=data)
 
     def __repr__(self):
         repr_ = '{}(source={}, sender={}, filters={})'
