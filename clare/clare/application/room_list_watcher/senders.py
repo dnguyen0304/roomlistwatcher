@@ -7,14 +7,14 @@ from clare import common
 from clare.common import messaging
 
 
-class Logging(messaging.producer.interfaces.ISender):
+class Logging(messaging.producer.senders.Sender):
 
     def __init__(self, sender, logger):
 
         """
         Parameters
         ----------
-        sender : clare.common.messaging.producer.interfaces.ISender
+        sender : clare.common.messaging.producer.senders.Sender
         logger : logging.Logger
         """
 
