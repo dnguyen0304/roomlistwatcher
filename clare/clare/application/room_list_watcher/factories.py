@@ -7,7 +7,7 @@ import sys
 from . import adapters
 from . import filters
 from . import flush_strategies
-from . import marshall_strategies
+from . import marshallers
 from . import producers
 from . import senders
 from . import sources
@@ -60,12 +60,12 @@ class Producer(object):
         # Construct the source.
         scraper = self._factory.create()
         message_factory = messaging.factories.Message()
-        marshall_strategy = marshall_strategies.SeleniumWebElementToMessage(
+        marshaller = marshallers.SeleniumWebElementToMessage(
             message_factory=message_factory)
         source = adapters.ScraperToBufferingSource(
             scraper=scraper,
             url=self._properties['scraper']['url'],
-            marshall_strategy=marshall_strategy)
+            marshall_strategy=marshaller)
         dependencies['source'] = source
 
         # Construct the sender.
