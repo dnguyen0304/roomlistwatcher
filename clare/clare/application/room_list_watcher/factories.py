@@ -59,9 +59,7 @@ class RoomListWatcher(object):
 
         # Create the source.
         scraper = self._factory.create()
-        message_factory = messaging.factories.Message2()
-        marshaller = marshallers.SeleniumWebElementToMessage(
-            message_factory=message_factory)
+        marshaller = marshallers.SeleniumWebElementToString()
         source = adapters.ScraperToBufferingSource(
             scraper=scraper,
             url=self._properties['scraper']['url'],
