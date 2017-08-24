@@ -85,7 +85,7 @@ class RoomListWatcher(object):
             duration=self._properties['filter']['flush_strategy']['duration'])
         after_duration = flush_strategies.AfterDuration(
             countdown_timer=countdown_timer)
-        no_duplicate = filters.NoDuplicateBody(flush_strategy=after_duration)
+        no_duplicate = filters.NoDuplicateString(flush_strategy=after_duration)
         dependencies['filters'].append(no_duplicate)
 
         return dependencies
