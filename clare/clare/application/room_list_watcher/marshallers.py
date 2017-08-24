@@ -35,17 +35,7 @@ class Nop(Marshaller):
         return repr_.format(self.__class__.__name__)
 
 
-class SeleniumWebElementToMessage(Marshaller):
-
-    def __init__(self, message_factory):
-
-        """
-        Parameters
-        ----------
-        message_factory : clare.common.messaging.factories.Message2
-        """
-
-        self._message_factory = message_factory
+class SeleniumWebElementToString(Marshaller):
 
     def marshall(self, object_):
 
@@ -58,10 +48,8 @@ class SeleniumWebElementToMessage(Marshaller):
         html = object_.get_attribute('outerHTML')
         element = lxml.html.fragment_fromstring(html=html)
         room_path = element.get(key='href')
-        message = self._message_factory.create()
-        message.body = room_path
-        return message
+        return room_path
 
     def __repr__(self):
-        repr_ = '{}(message_factory={})'
-        return repr_.format(self.__class__.__name__, self._message_factory)
+        repr_ = '{}()'
+        return repr_.format(self.__class__.__name__)
