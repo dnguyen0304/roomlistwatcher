@@ -54,17 +54,27 @@ class NoDuplicateBody(Base):
 
         Parameters
         ----------
-        flush_strategy : clare.application.room_list_watcher.interfaces.IFlushStrategy
+        flush_strategy : clare.application.room_list_watcher.flush_strategies.FlushStrategy
             Strategy for deciding if the collection of seen messages
             should be flushed.
         """
 
         self._flush_strategy = flush_strategy
+
+        # This object is backed by both a list and set. The space
+        # complexity for these data structures is amortized. In
+        # general, there is an additional memory overhead of about %25.
+        # Data is duplicated between the two data structures, but this
+        # avoids having to type cast the set into a
+        # collections.Sequence, an O(n) operation, every time the flush
+        # strategy is called.
+        self._collection = list()
         self._seen = set()
 
     def filter(self, message):
         message = super(NoDuplicateBody, self).filter(message=message)
-        if self._flush_strategy.should_flush(collection=self._seen):
+        if self._flush_strategy.should_flush(collection=self._collection):
+            self._collection = list()
             self._seen = set()
         return message
 
@@ -72,6 +82,7 @@ class NoDuplicateBody(Base):
         if message.body in self._seen:
             should_filter = True
         else:
+            self._collection.append(message.body)
             self._seen.add(message.body)
             should_filter = False
         return should_filter
