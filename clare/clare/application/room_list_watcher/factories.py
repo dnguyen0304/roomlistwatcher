@@ -42,8 +42,8 @@ class RoomListWatcher(object):
 
         # Include orchestration.
         logger = logging.getLogger(name=self._properties['logger']['name'])
-        producer = producers.OrchestratingProducer(producer=producer,
-                                                   logger=logger)
+        producer = producers.Orchestrating(producer=producer,
+                                           logger=logger)
 
         return producer
 
