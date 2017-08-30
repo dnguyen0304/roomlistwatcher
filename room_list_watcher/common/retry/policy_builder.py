@@ -2,10 +2,9 @@
 
 from . import continue_strategies
 from .policy import Policy
-from .. import event_driven
 
 
-class HookAdapter(event_driven.interfaces.INotifyable):
+class HookAdapter(room_list_watcher.common.event_driven.interfaces.INotifyable):
 
     def __init__(self, predicate):
         self._predicate = predicate
