@@ -6,11 +6,10 @@ import datetime
 import json
 import uuid
 
-import room_list_watcher.common
-from room_list_watcher.common.logging import interfaces
+from .. import io
 
 
-class IEvent(object):
+class Event(object):
 
     __metaclass__ = abc.ABCMeta
 
@@ -19,7 +18,7 @@ class IEvent(object):
         pass
 
 
-class StructuredEvent(interfaces.IEvent, room_list_watcher.common.io.JsonSerializable):
+class StructuredEvent(Event, io.JsonSerializable):
 
     def __init__(self, topic, arguments):
 
