@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from clare.common import messaging
+from ...common import messaging
 
 
 class NoDuplicateString(messaging.filters.StringFilter):
@@ -13,9 +13,9 @@ class NoDuplicateString(messaging.filters.StringFilter):
 
         Parameters
         ----------
-        flush_strategy : clare.application.room_list_watcher.flush_strategies.FlushStrategy
-            Strategy for deciding if the collection of seen strings
-            should be flushed.
+        flush_strategy : room_list_watcher.infrastructure.producer.flush_strategies.FlushStrategy
+            Strategy for determining if the collection of strings should
+            be flushed.
         """
 
         self._flush_strategy = flush_strategy
@@ -50,7 +50,7 @@ class NoDuplicateString(messaging.filters.StringFilter):
         Returns
         -------
         bool
-            True if the string should be filtered.
+            True if the string should be filtered. False otherwise.
         """
 
         if string in self._seen:

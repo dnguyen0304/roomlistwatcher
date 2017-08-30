@@ -2,8 +2,7 @@
 
 from nose.tools import assert_false, assert_is_not_none, assert_true
 
-from .. import filters
-from .. import flush_strategies
+from .. import filters, flush_strategies
 
 
 class TestNoDuplicateString(object):
