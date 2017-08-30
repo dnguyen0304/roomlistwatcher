@@ -4,7 +4,7 @@ import json
 
 from nose.tools import assert_equal
 
-from .. import utilities
+from .. import utility
 
 
 class Mock(Exception):
@@ -18,7 +18,7 @@ def test_format_exception():
     except Mock as e:
         pass
 
-    message = utilities.format_exception(e=e)
+    message = utility.format_exception(e=e)
     data = json.loads(message)
 
     assert_equal(data['exception_type'], __name__ + '.' + Mock.__name__)
