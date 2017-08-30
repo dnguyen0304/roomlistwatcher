@@ -1,5 +1,23 @@
 # -*- coding: utf-8 -*-
 
-from . import interfaces
+import abc
 
-Source = interfaces.ISource
+
+class ISource(object):
+
+    __metaclass__ = abc.ABCMeta
+
+    @abc.abstractmethod
+    def emit(self):
+
+        """
+        Returns
+        -------
+        clare.common.messaging.models.Message
+
+        Raises
+        ------
+        clare.common.messaging.producer.exceptions.EmitTimeout
+        """
+
+        raise NotImplementedError

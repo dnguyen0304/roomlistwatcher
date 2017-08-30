@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from clare.clare.common.messaging import exceptions
+from .. import exceptions
 
 
 class EmitTimeout(exceptions.Timeout):
