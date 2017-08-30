@@ -30,4 +30,4 @@ class JsonSerializable(object):
         str
         """
 
-        pass
+        raise NotImplementedError
