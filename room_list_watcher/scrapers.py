@@ -120,8 +120,8 @@ class RoomList(BaseScraper):
     def _initialize(self, url):
         self._web_driver.get(url=url)
         room_list_button = automation.utility.find_button(
-            locator=(By.CSS_SELECTOR, 'button[name="roomlist"]'),
-            wait_context=self._wait_context)
+            wait_context=self._wait_context,
+            locator=(By.CSS_SELECTOR, 'button[name="roomlist"]'))
         try:
             room_list_button.click()
         except AttributeError:
@@ -131,8 +131,8 @@ class RoomList(BaseScraper):
     def _extract(self):
         # Refresh the room list.
         refresh_button = automation.utility.find_button(
-            locator=(By.CSS_SELECTOR, 'button[name="refresh"]'),
-            wait_context=self._wait_context)
+            wait_context=self._wait_context,
+            locator=(By.CSS_SELECTOR, 'button[name="refresh"]'))
         try:
             refresh_button.click()
         except AttributeError:
