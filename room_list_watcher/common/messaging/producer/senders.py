@@ -3,7 +3,7 @@
 import abc
 
 
-class ISender(object):
+class Sender(object):
 
     __metaclass__ = abc.ABCMeta
 
@@ -13,11 +13,11 @@ class ISender(object):
         """
         Parameters
         ----------
-        data : object
+        data : str
 
         Raises
         ------
-        clare.common.messaging.producer.exceptions.SendTimeout
+        room_list_watcher.common.messaging.producer.exceptions.SendTimeout
         """
 
         raise NotImplementedError
