@@ -19,7 +19,7 @@ class IEvent(object):
         pass
 
 
-class Event(interfaces.IEvent, room_list_watcher.common.io.JsonSerializable):
+class StructuredEvent(interfaces.IEvent, room_list_watcher.common.io.JsonSerializable):
 
     def __init__(self, topic, arguments):
 
