@@ -13,7 +13,7 @@ class NoDuplicateString(messaging.filters.StringFilter):
 
         Parameters
         ----------
-        flush_strategy : room_list_watcher.infrastructure.producer.flush_strategies.FlushStrategy
+        flush_strategy : room_list_watcher.infrastructure.producing.flush_strategies.FlushStrategy
             Strategy for determining if the collection of strings should
             be flushed.
         """

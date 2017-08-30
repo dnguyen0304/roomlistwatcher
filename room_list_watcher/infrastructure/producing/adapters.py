@@ -14,7 +14,7 @@ class ScraperToBufferingSource(messaging.producing.sources.Source):
         ----------
         scraper : room_list_watcher.scrapers.Scraper
         url : str
-        marshaller : room_list_watcher.infrastructure.producer.marshallers.Marshaller
+        marshaller : room_list_watcher.infrastructure.producing.marshallers.Marshaller
         """
 
         self._scraper = scraper
