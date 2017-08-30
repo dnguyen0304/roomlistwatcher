@@ -3,7 +3,7 @@
 from . import events
 from . import exceptions
 from . import filters
-from . import producer
+from . import producing
 
 __all__ = ['events',
            'exceptions',

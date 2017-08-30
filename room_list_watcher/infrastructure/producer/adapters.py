@@ -5,7 +5,7 @@ import collections
 from ...common import messaging
 
 
-class ScraperToBufferingSource(messaging.producer.sources.Source):
+class ScraperToBufferingSource(messaging.producing.sources.Source):
 
     def __init__(self, scraper, url, marshaller):
 

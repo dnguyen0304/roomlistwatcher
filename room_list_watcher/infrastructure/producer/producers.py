@@ -4,7 +4,7 @@ from room_list_watcher.common import messaging
 from room_list_watcher.common import utility
 
 
-class Orchestrating(messaging.producer.producers.Producer):
+class Orchestrating(messaging.producing.producers.Producer):
 
     def __init__(self, producer, logger):
 
@@ -13,7 +13,7 @@ class Orchestrating(messaging.producer.producers.Producer):
 
         Parameters
         ----------
-        producer : room_list_watcher.common.messaging.producer.producers.Blocking
+        producer : room_list_watcher.common.messaging.producing.producers.Producer
         logger : logging.Logger
         """
 

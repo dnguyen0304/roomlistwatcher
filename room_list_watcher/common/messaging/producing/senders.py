@@ -3,22 +3,25 @@
 import abc
 
 
-class Source(object):
+class Sender(object):
 
     __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod
-    def emit(self):
+    def send(self, data):
 
         """
+        Parameters
+        ----------
+        data : str
+
         Returns
         -------
-        str
+        None
 
         Raises
         ------
-        room_list_watcher.common.messaging.producer.exceptions.EmitTimeout
-            If the source times out.
+        room_list_watcher.common.messaging.producing.exceptions.SendTimeout
         """
 
         raise NotImplementedError

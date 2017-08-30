@@ -29,8 +29,8 @@ class Simple(Producer):
         """
         Parameters
         ----------
-        source : room_list_watcher.common.messaging.producer.sources.Source
-        sender : room_list_watcher.common.messaging.producer.senders.Sender
+        source : room_list_watcher.common.messaging.producing.sources.Source
+        sender : room_list_watcher.common.messaging.producing.senders.Sender
         filters : typing.Iterable[room_list_watcher.common.messaging.filters.StringFilter]
             Defaults to list.
         """
@@ -63,7 +63,7 @@ class Blocking(Producer):
         """
         Parameters
         ----------
-        producer : room_list_watcher.common.messaging.producer.producers.Producer
+        producer : room_list_watcher.common.messaging.producing.producers.Producer
         interval : float
         """
 

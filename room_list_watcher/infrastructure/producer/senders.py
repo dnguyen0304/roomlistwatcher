@@ -6,14 +6,14 @@ from . import topics
 from room_list_watcher.common import messaging
 
 
-class Logging(messaging.producer.senders.Sender):
+class Logging(messaging.producing.senders.Sender):
 
     def __init__(self, sender, logger):
 
         """
         Parameters
         ----------
-        sender : room_list_watcher.common.messaging.producer.senders.Sender
+        sender : room_list_watcher.common.messaging.producing.senders.Sender
         logger : logging.Logger
         """
 

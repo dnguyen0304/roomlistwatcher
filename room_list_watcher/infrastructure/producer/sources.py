@@ -3,7 +3,7 @@
 from ...common import messaging
 
 
-class Deque(messaging.producer.sources.Source):
+class Deque(messaging.producing.sources.Source):
 
     def __init__(self, deque):
 
@@ -20,7 +20,7 @@ class Deque(messaging.producer.sources.Source):
             data = self._deque.popleft()
         except IndexError:
             message = 'The source timed out.'
-            raise messaging.producer.exceptions.EmitTimeout(message)
+            raise messaging.producing.exceptions.EmitTimeout(message)
         else:
             return data
 
