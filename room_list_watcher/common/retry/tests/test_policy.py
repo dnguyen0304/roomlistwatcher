@@ -95,8 +95,8 @@ class TestPolicy(object):
 
     def setup(self):
         self.service = MockService()
-        self.messaging_broker = common.event_driven.messaging.Broker(
-            observable_class=common.event_driven.Observable)
+        self.messaging_broker = common.event.messaging.Broker(
+            observable_class=common.event.notifiables.Observable)
         self.messaging_broker.create_topic(name=Topic.ATTEMPT_STARTED.name)
         self.messaging_broker.create_topic(name=Topic.ATTEMPT_COMPLETED.name)
 

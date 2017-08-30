@@ -3,10 +3,10 @@
 import collections
 import json
 
-from clare.common import event_driven
+from ....common import event
 
 
-class Subscriber(event_driven.interfaces.INotifyable):
+class Subscriber(event.notifiables.Notifyable):
 
     _event_suffix = ''
 
@@ -39,7 +39,7 @@ class AttemptCompleted(Subscriber):
     _event_suffix = 'ATTEMPT_COMPLETED'
 
 
-class Logging(event_driven.interfaces.INotifyable):
+class Logging(event.notifiables.Notifyable):
 
     def __init__(self, subscriber, logger):
 
