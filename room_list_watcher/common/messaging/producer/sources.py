@@ -18,6 +18,7 @@ class Source(object):
         Raises
         ------
         room_list_watcher.common.messaging.producer.exceptions.EmitTimeout
+            If the source times out.
         """
 
         raise NotImplementedError
