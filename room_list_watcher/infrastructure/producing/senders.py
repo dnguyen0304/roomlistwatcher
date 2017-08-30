@@ -14,6 +14,8 @@ class ConcurrentLinkedQueue(producing.senders.Sender):
     def __init__(self, queue):
 
         """
+        Send the data to an in-memory queue.
+
         Parameters
         ----------
         queue : Queue.Queue
@@ -34,6 +36,8 @@ class SqsFifoQueue(producing.senders.Sender):
     def __init__(self, sqs_queue, _message_group_id=None):
 
         """
+        Send the data to an SQS FIFO queue.
+
         Parameters
         ----------
         sqs_queue : boto3.resources.factory.sqs.Queue
@@ -64,6 +68,8 @@ class Logging(producing.senders.Sender):
     def __init__(self, sender, logger):
 
         """
+        Extend to include logging.
+
         Parameters
         ----------
         sender : room_list_watcher.common.messaging.producing.senders.Sender
