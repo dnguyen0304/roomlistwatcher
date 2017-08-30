@@ -23,4 +23,4 @@ class StringFilter(object):
             If the data should be filtered.
         """
 
-        pass
+        raise NotImplementedError
