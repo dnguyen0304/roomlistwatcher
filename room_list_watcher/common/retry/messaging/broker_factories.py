@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
+from room_list_watcher.common import event
+
 from . import subscribers
 from .. import policy
-from clare.common import event_driven
 
 
 class Logging(object):
@@ -46,8 +47,8 @@ class Logging(object):
             logger=self._logger)
 
         # Construct the messaging broker.
-        messaging_broker = event_driven.messaging.Broker(
-            observable_class=event_driven.Observable)
+        messaging_broker = event.messaging.Broker(
+            observable_class=event.notifiables.Observable)
         # Initialize topics.
         messaging_broker.create_topic(name=policy.Topic.ATTEMPT_STARTED.name)
         messaging_broker.create_topic(name=policy.Topic.ATTEMPT_COMPLETED.name)
