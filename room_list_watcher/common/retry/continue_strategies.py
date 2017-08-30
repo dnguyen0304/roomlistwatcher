@@ -13,7 +13,7 @@ class IContinueStrategy(object):
         """
         Parameters
         ----------
-        attempt : clare.common.retry.attempt.Attempt
+        attempt : room_list_watcher.common.retry.attempt.Attempt
 
         Returns
         -------
