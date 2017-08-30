@@ -6,10 +6,11 @@ import json
 import uuid
 
 import clare.common
+
 from . import interfaces
 
 
-class Event(interfaces.IEvent, interfaces.IJsonSerializable):
+class Event(interfaces.IEvent, interfaces.JsonSerializable):
 
     def __init__(self, topic, arguments):
 

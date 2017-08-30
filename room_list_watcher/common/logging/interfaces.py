@@ -3,7 +3,7 @@
 import abc
 
 
-class IJsonSerializable(object):
+class JsonSerializable(object):
 
     __metaclass__ = abc.ABCMeta
 
