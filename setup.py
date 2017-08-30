@@ -11,7 +11,8 @@ if __name__ == '__main__':
     with open('./README.md', 'r') as file:
         long_description = file.read()
 
-    install_requires = ['enum34==1.1.6',
+    install_requires = ['boto3==1.4.7',
+                        'enum34==1.1.6',
                         'lxml==3.7.3',
                         'selenium==3.3.3']
 
