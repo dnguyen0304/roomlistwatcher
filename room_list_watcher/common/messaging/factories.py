@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from . import models
+from clare.clare.common.messaging import models
 
 
 class Message(object):
