@@ -3,7 +3,7 @@
 import abc
 
 
-class ISource(object):
+class Source(object):
 
     __metaclass__ = abc.ABCMeta
 
@@ -13,11 +13,11 @@ class ISource(object):
         """
         Returns
         -------
-        clare.common.messaging.models.Message
+        str
 
         Raises
         ------
-        clare.common.messaging.producer.exceptions.EmitTimeout
+        room_list_watcher.common.messaging.producer.exceptions.EmitTimeout
         """
 
         raise NotImplementedError
