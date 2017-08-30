@@ -12,6 +12,10 @@ class Disposable(object):
 
         """
         Garbage collect the resources.
+
+        Returns
+        -------
+        None
         """
 
         raise NotImplementedError
@@ -25,6 +29,8 @@ class JsonSerializable(object):
     def to_json(self):
 
         """
+        Convert the object to JSON.
+
         Returns
         -------
         str
