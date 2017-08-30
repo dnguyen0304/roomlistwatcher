@@ -5,7 +5,6 @@ from . import enumerations
 from . import io
 from . import logging
 from . import messaging
-from . import retry
 from . import utilities
 
 __all__ = ['automation',
@@ -13,5 +12,4 @@ __all__ = ['automation',
            'io',
            'logging',
            'messaging',
-           'retry',
            'utilities']
