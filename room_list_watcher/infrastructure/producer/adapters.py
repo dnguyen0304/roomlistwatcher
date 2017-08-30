@@ -2,7 +2,7 @@
 
 import collections
 
-from clare.common import messaging
+from ...common import messaging
 
 
 class ScraperToBufferingSource(messaging.producer.sources.Source):
@@ -12,9 +12,9 @@ class ScraperToBufferingSource(messaging.producer.sources.Source):
         """
         Parameters
         ----------
-        scraper : clare.application.room_list_watcher.automation.scrapers.Scraper
+        scraper : room_list_watcher.scrapers.Scraper
         url : str
-        marshaller : clare.application.room_list_watcher.marshallers.Marshaller
+        marshaller : room_list_watcher.infrastructure.producer.marshallers.Marshaller
         """
 
         self._scraper = scraper
