@@ -26,16 +26,16 @@ class Producer(object):
         raise NotImplementedError
 
 
-class Blocking(object):
+class Blocking(Producer):
 
     def __init__(self, sender, source, filters=None):
 
         """
         Parameters
         ----------
-        source : clare.common.messaging.producer.sources.Source
-        sender : clare.common.messaging.producer.senders.Sender
-        filters : typing.Iterable[clare.common.messaging.filters.StringFilter]
+        source : room_list_watcher.common.messaging.producer.sources.Source
+        sender : room_list_watcher.common.messaging.producer.senders.Sender
+        filters : typing.Iterable[room_list_watcher.common.messaging.filters.StringFilter]
             Defaults to list.
         """
 
