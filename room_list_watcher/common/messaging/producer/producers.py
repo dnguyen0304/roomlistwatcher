@@ -1,6 +1,29 @@
 # -*- coding: utf-8 -*-
 
+import abc
 import time
+
+
+class Producer(object):
+
+    __metaclass__ = abc.ABCMeta
+
+    @abc.abstractmethod
+    def produce(self, interval):
+
+        """
+        Start emitting and sending data.
+
+        Parameters
+        ----------
+        interval : float
+
+        Returns
+        -------
+        None
+        """
+
+        raise NotImplementedError
 
 
 class Blocking(object):
@@ -21,13 +44,6 @@ class Blocking(object):
         self._filters = filters or list()
 
     def produce(self, interval):
-
-        """
-        Parameters
-        ----------
-        interval : float
-        """
-
         while True:
             self._produce_once()
             time.sleep(interval)
