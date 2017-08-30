@@ -9,14 +9,10 @@ class Producer(object):
     __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod
-    def produce(self, interval):
+    def produce(self):
 
         """
-        Start emitting and sending data.
-
-        Parameters
-        ----------
-        interval : float
+        Emit and send data.
 
         Returns
         -------
