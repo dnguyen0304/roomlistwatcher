@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from . import notifiables
-from .observable import Observable
 from . import messaging
+from . import notifiables
 
-__all__ = ['Observable',
-           'messaging',
+__all__ = ['messaging',
            'notifiables']
