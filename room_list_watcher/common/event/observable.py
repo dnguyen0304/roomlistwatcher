@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from . import interfaces
+from . import notifiables
 
 
-class Observable(interfaces.INotifyable):
+class Observable(notifiables.Notifyable):
 
     def __init__(self):
         self._observers = set()
@@ -13,7 +13,7 @@ class Observable(interfaces.INotifyable):
         """
         Parameters
         ----------
-        observer : clare.common.event_driven.interfaces.INotifyable
+        observer : clare.common.event_driven.interfaces.Notifyable
         """
 
         self._observers.add(observer)

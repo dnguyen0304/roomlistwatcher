@@ -3,7 +3,7 @@
 import abc
 
 
-class INotifyable(object):
+class Notifyable(object):
 
     __metaclass__ = abc.ABCMeta
 

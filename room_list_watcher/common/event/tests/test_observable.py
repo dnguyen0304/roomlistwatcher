@@ -3,10 +3,10 @@
 import mock
 from nose.tools import assert_equal
 
-from .. import interfaces, observable
+from .. import notifiables, observable
 
 
-class MockObserver(interfaces.INotifyable):
+class MockObserver(notifiables.Notifyable):
 
     def notify(self, event):
         pass
