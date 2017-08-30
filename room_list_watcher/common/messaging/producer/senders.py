@@ -15,6 +15,10 @@ class Sender(object):
         ----------
         data : str
 
+        Returns
+        -------
+        None
+
         Raises
         ------
         room_list_watcher.common.messaging.producer.exceptions.SendTimeout
