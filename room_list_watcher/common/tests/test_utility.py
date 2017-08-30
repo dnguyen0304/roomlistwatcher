@@ -2,7 +2,7 @@
 
 from nose.tools import assert_false, assert_true
 
-from .. import timers
+from .. import utility
 
 
 class MockGetNowInSeconds(object):
@@ -65,16 +65,16 @@ class TestCountdownTimer(object):
         self.start_time = 0.0
 
     def test_state_before_starting(self):
-        timer = timers.CountdownTimer(duration=self.duration)
+        timer = utility.CountdownTimer(duration=self.duration)
         assert_false(timer.is_running)
 
     def test_state_after_starting_and_before_resetting(self):
-        timer = timers.CountdownTimer(duration=self.duration)
+        timer = utility.CountdownTimer(duration=self.duration)
         timer.start()
         assert_true(timer.is_running)
 
     def test_state_after_resetting(self):
-        timer = timers.CountdownTimer(duration=self.duration)
+        timer = utility.CountdownTimer(duration=self.duration)
         timer.start()
         timer.reset()
         assert_false(timer.is_running)
@@ -83,8 +83,8 @@ class TestCountdownTimer(object):
         get_now_in_seconds = MockGetNowInSeconds.less_than(
             duration=self.duration,
             start_time=self.start_time)
-        timer = timers.CountdownTimer(duration=self.duration,
-                                      get_now_in_seconds=get_now_in_seconds)
+        timer = utility.CountdownTimer(duration=self.duration,
+                                       get_now_in_seconds=get_now_in_seconds)
         timer.start()
         has_time_remaining = timer.has_time_remaining
         assert_true(has_time_remaining)
@@ -93,8 +93,8 @@ class TestCountdownTimer(object):
         get_now_in_seconds = MockGetNowInSeconds.equal_to(
             duration=self.duration,
             start_time=self.start_time)
-        timer = timers.CountdownTimer(duration=self.duration,
-                                      get_now_in_seconds=get_now_in_seconds)
+        timer = utility.CountdownTimer(duration=self.duration,
+                                       get_now_in_seconds=get_now_in_seconds)
         timer.start()
         has_time_remaining = timer.has_time_remaining
         assert_false(has_time_remaining)
@@ -103,8 +103,8 @@ class TestCountdownTimer(object):
         get_now_in_seconds = MockGetNowInSeconds.greater_than(
             duration=self.duration,
             start_time=self.start_time)
-        timer = timers.CountdownTimer(duration=self.duration,
-                                      get_now_in_seconds=get_now_in_seconds)
+        timer = utility.CountdownTimer(duration=self.duration,
+                                       get_now_in_seconds=get_now_in_seconds)
         timer.start()
         has_time_remaining = timer.has_time_remaining
         assert_false(has_time_remaining)

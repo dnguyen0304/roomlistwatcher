@@ -2,8 +2,6 @@
 
 from . import enumerations
 from . import messaging
-from . import utilities
 
 __all__ = ['enumerations',
-           'messaging',
-           'utilities']
+           'messaging']
