@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 
-import httplib
-
 import mock
 from nose.tools import raises
 
 from .. import senders
-from clare.common.messaging import producer
+from ..compat import HttpStatus
+from room_list_watcher.common.messaging import producing
 
 
 class TestSqsFifoQueue(object):
@@ -20,7 +19,7 @@ class TestSqsFifoQueue(object):
     def test_send(self):
         return_value = {
             'ResponseMetadata': {
-                'HTTPStatusCode': httplib.OK
+                'HTTPStatusCode': HttpStatus.OK
             }
         }
         sqs_queue = mock.Mock()
@@ -36,7 +35,7 @@ class TestSqsFifoQueue(object):
             MessageBody=self.data,
             MessageGroupId=_message_group_id)
 
-    @raises(producer.exceptions.SendTimeout)
+    @raises(producing.exceptions.SendTimeout)
     def test_send_http_error_raises_exception(self):
         return_value = {
             'ResponseMetadata': {
