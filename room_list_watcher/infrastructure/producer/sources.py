@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from clare.common import messaging
+from ...common import messaging
 
 
 class Deque(messaging.producer.sources.Source):
