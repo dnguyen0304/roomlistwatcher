@@ -39,7 +39,7 @@ class MockSqsMessage(object):
         """
         Parameters
         ----------
-        message : clare.common.messaging.models.Message2
+        message : clare.common.messaging.models.Message
         """
 
         return cls(message_id=message.id,

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
-class Message2(object):
+class Message(object):
 
     def __init__(self, id='', body='', delivery_receipt=''):
 

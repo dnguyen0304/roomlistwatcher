@@ -3,19 +3,19 @@
 from . import models
 
 
-class Message2(object):
+class Message(object):
 
-    _MESSAGE_TYPE = models.Message2
+    _MESSAGE_TYPE = models.Message
 
     def create(self):
 
         """
         Returns
         -------
-        clare.common.messaging.models.Message2
+        clare.common.messaging.models.Message
         """
 
-        return Message2._MESSAGE_TYPE()
+        return self.__class__._MESSAGE_TYPE()
 
     def __repr__(self):
         repr_ = '{}()'

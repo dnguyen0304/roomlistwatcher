@@ -262,7 +262,7 @@ class _SqsFifoQueueReceiver(object):
         sqs_queue : boto3.resources.factory.sqs.Queue
         batch_size_maximum_count : int
         wait_time_seconds : int
-        message_factory : clare.common.messaging.factories.Message2
+        message_factory : clare.common.messaging.factories.Message
         """
 
         self._sqs_queue = sqs_queue

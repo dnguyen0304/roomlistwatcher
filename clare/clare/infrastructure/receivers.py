@@ -24,7 +24,7 @@ class ConcurrentLinkedQueue(consumer.receivers.Receiver):
             Maximum size of the batch. The units are in number of
             messages.
         countdown_timer : clare.common.utilities.timers.CountdownTimer
-        message_factory : clare.common.messaging.factories.Message2
+        message_factory : clare.common.messaging.factories.Message
         """
 
         self._queue = queue
@@ -104,7 +104,7 @@ class SqsFifoQueue(consumer.receivers.Receiver):
             messages.
         wait_time_seconds : int
             Duration for which to wait. The units are in seconds.
-        message_factory : clare.common.messaging.factories.Message2
+        message_factory : clare.common.messaging.factories.Message
         """
 
         self._sqs_queue = sqs_queue

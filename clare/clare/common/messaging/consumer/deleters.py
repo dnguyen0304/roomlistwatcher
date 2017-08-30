@@ -13,7 +13,7 @@ class Deleter(object):
         """
         Parameters
         ----------
-        message : clare.common.messaging.models.Message2
+        message : clare.common.messaging.models.Message
 
         Raises
         ------
