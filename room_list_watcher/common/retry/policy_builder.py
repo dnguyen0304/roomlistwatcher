@@ -71,7 +71,7 @@ class PolicyBuilder(object):
         """
         Parameters
         ----------
-        continue_strategy : clare.common.retry.continue_strategies.IContinueStrategy
+        continue_strategy : clare.common.retry.continue_strategies.ContinueStrategy
         """
 
         self._continue_strategies.append(continue_strategy)

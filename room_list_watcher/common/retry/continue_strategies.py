@@ -3,7 +3,7 @@
 import abc
 
 
-class IContinueStrategy(object):
+class ContinueStrategy(object):
 
     __metaclass__ = abc.ABCMeta
 
@@ -24,7 +24,7 @@ class IContinueStrategy(object):
         pass
 
 
-class AfterResult(IContinueStrategy):
+class AfterResult(ContinueStrategy):
 
     def __init__(self, predicate):
 
