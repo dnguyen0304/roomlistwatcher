@@ -4,23 +4,22 @@
 import setuptools
 
 if __name__ == '__main__':
-    package_name = 'clare'
+    package_name = 'room_list_watcher'
 
-    description = ''
+    description = 'A Pokemon Showdown web scraper.'
 
     with open('./README.md', 'r') as file:
         long_description = file.read()
 
     install_requires = ['enum34==1.1.6',
                         'lxml==3.7.3',
-                        'pandas==0.19.2',
                         'selenium==3.3.3']
 
     setuptools.setup(name=package_name,
-                     version='0.3.0',
+                     version='0.1.0',
                      description=description,
                      long_description=long_description,
-                     url='https://github.com/dnguyen0304/clare.git',
+                     url='https://github.com/dnguyen0304/room-list-watcher.git',
                      author='Duy Nguyen',
                      author_email='dnguyen0304@gmail.com',
                      license='MIT',
