@@ -3,22 +3,6 @@
 import abc
 
 
-class JsonSerializable(object):
-
-    __metaclass__ = abc.ABCMeta
-
-    @abc.abstractmethod
-    def to_json(self):
-
-        """
-        Returns
-        -------
-        str
-        """
-
-        pass
-
-
 class IEvent(object):
 
     __metaclass__ = abc.ABCMeta
