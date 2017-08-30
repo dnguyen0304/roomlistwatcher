@@ -6,7 +6,18 @@ import json
 import os
 import time
 
+import enum
+
 _ENVIRONMENT_VARIABLE_NAME = 'ROOM_LIST_WATCHER_CONFIGURATION_FILE_PATH'
+
+
+class AutomatedEnum(enum.Enum):
+
+    def __new__(cls):
+        value = len(cls.__members__) + 1
+        object_ = object.__new__(cls)
+        object_._value_ = value
+        return object_
 
 
 # This implementation closely mirrors the UTC class in pytz and
