@@ -7,3 +7,4 @@ if __name__ == '__main__':
     properties = utility.get_configuration()['scraper']
     scraper = factories.Scraper(properties=properties).create()
     scraper.scrape(url=properties['url'])
+    scraper.dispose()
