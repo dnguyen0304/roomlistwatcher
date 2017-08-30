@@ -4,7 +4,7 @@ import mock
 from nose.tools import assert_false, assert_true
 
 from .. import flush_strategies
-from clare.common import utilities
+from ....common import utility
 
 
 class TestAfterDuration(object):
@@ -19,8 +19,7 @@ class TestAfterDuration(object):
         self.start_time = 0.0
 
     def test_first_call_does_not_flush(self):
-        countdown_timer = utilities.timers.CountdownTimer(
-            duration=self.duration)
+        countdown_timer = utility.CountdownTimer(duration=self.duration)
         flush_strategy = flush_strategies.AfterDuration(
             countdown_timer=countdown_timer)
         should_flush = flush_strategy.should_flush(collection=self.collection)
@@ -30,7 +29,7 @@ class TestAfterDuration(object):
         side_effect = (self.start_time,
                        self.start_time + self.duration)
         get_now_in_seconds = mock.Mock(side_effect=side_effect)
-        countdown_timer = utilities.timers.CountdownTimer(
+        countdown_timer = utility.CountdownTimer(
             duration=self.duration,
             get_now_in_seconds=get_now_in_seconds)
         flush_strategy = flush_strategies.AfterDuration(

@@ -11,6 +11,8 @@ class FlushStrategy(object):
     def should_flush(self, collection):
 
         """
+        Determine if the collection should be flushed.
+
         Parameters
         ----------
         collection : collections.Sequence
@@ -18,10 +20,10 @@ class FlushStrategy(object):
         Returns
         -------
         bool
-            True if the collection should be flushed.
+            True if the collection should be flushed. False otherwise.
         """
 
-        pass
+        raise NotImplementedError
 
 
 class AfterDuration(FlushStrategy):
@@ -29,9 +31,12 @@ class AfterDuration(FlushStrategy):
     def __init__(self, countdown_timer):
 
         """
+        Determine if the collection should be flushed based on how much
+        time has passed since the first item was added.
+
         Parameters
         ----------
-        countdown_timer : clare.common.utilities.timers.CountdownTimer
+        countdown_timer : room_list_watcher.common.utility.CountdownTimer
         """
 
         self._countdown_timer = countdown_timer
@@ -58,6 +63,8 @@ class AfterSize(FlushStrategy):
     def __init__(self, maximum_size):
 
         """
+        Determine if the collection should be flushed based on its size.
+
         Parameters
         ----------
         maximum_size : int
