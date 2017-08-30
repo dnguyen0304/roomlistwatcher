@@ -58,38 +58,26 @@ class Simple(Producer):
 
 class Blocking(Producer):
 
-    def __init__(self, sender, source, filters=None):
+    def __init__(self, producer, interval, _sleeper=None):
 
         """
         Parameters
         ----------
-        source : room_list_watcher.common.messaging.producer.sources.Source
-        sender : room_list_watcher.common.messaging.producer.senders.Sender
-        filters : typing.Iterable[room_list_watcher.common.messaging.filters.StringFilter]
-            Defaults to list.
+        producer : room_list_watcher.common.messaging.producer.producers.Producer
+        interval : float
         """
 
-        self._source = source
-        self._sender = sender
-        self._filters = filters or list()
+        self._producer = producer
+        self._interval = interval
+        self._sleeper = _sleeper or time.sleep
 
-    def produce(self, interval):
+    def produce(self):
         while True:
-            self._produce_once()
-            time.sleep(interval)
-
-    def _produce_once(self):
-        data = self._source.emit()
-        for filter_ in self._filters:
-            data = filter_.filter(data)
-            if data is None:
-                break
-        else:
-            self._sender.send(data=data)
+            self._producer.produce()
+            self._sleeper.sleep(self._interval)
 
     def __repr__(self):
-        repr_ = '{}(source={}, sender={}, filters={})'
+        repr_ = '{}(producer={}, interval={})'
         return repr_.format(self.__class__.__name__,
-                            self._source,
-                            self._sender,
-                            self._filters)
+                            self._producer,
+                            self._interval)
