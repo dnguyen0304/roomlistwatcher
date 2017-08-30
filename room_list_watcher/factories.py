@@ -4,6 +4,9 @@ import collections
 import logging
 import sys
 
+from clare.common import messaging
+from clare.common import utilities
+
 from . import adapters
 from . import filters
 from . import flush_strategies
@@ -12,8 +15,6 @@ from . import producers
 from . import senders
 from . import sources
 from .automation import factories
-from clare.common import messaging
-from clare.common import utilities
 
 
 class RoomListWatcher(object):

@@ -3,12 +3,12 @@
 import logging
 
 import selenium.webdriver
+from clare.common import automation
+from clare.common import retry
 from selenium.webdriver.support.wait import WebDriverWait
 
 from . import exceptions
 from . import scrapers
-from clare.common import automation
-from clare.common import retry
 
 
 class Scraper(object):

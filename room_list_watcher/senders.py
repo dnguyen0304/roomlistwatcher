@@ -2,9 +2,10 @@
 
 import collections
 
-from . import topics
 from clare import common
 from clare.common import messaging
+
+from . import topics
 
 
 class Logging(messaging.producer.senders.Sender):

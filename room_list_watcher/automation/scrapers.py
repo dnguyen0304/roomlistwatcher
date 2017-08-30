@@ -7,13 +7,13 @@ import functools
 import time
 
 import selenium.common
+from clare import common
+from clare.common import automation
+from clare.common import retry
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
 
 from . import exceptions
-from clare import common
-from clare.common import automation
-from clare.common import retry
 
 
 class Scraper(common.io.interfaces.Disposable):
