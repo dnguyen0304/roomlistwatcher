@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from . import adapters
+from . import compat
 from . import filters
 from . import flush_strategies
 from . import marshallers
@@ -10,6 +11,7 @@ from . import sources
 from . import topics
 
 __all__ = ['adapters',
+           'compat',
            'filters',
            'flush_strategies',
            'marshallers',
