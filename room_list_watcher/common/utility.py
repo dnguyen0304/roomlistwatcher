@@ -15,6 +15,7 @@ class UTC(datetime.tzinfo):
 
     def utcoffset(self, dt):
         return datetime.timedelta(0)
+
     def tzname(self, dt):
         return 'UTC'
 
@@ -35,6 +36,8 @@ class TimeZone(object):
     def from_name(cls, name):
 
         """
+        Create a tzinfo that corresponds to the specified name.
+
         Parameters
         ----------
         name : str
@@ -51,6 +54,10 @@ def get_configuration():
 
     """
     Read the application configuration.
+
+    Returns
+    -------
+    dict
     """
 
     configuration_file_path = os.environ[_ENVIRONMENT_VARIABLE_NAME]
