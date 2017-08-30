@@ -22,6 +22,40 @@ class Producer(object):
         raise NotImplementedError
 
 
+class Simple(Producer):
+
+    def __init__(self, sender, source, filters=None):
+
+        """
+        Parameters
+        ----------
+        source : room_list_watcher.common.messaging.producer.sources.Source
+        sender : room_list_watcher.common.messaging.producer.senders.Sender
+        filters : typing.Iterable[room_list_watcher.common.messaging.filters.StringFilter]
+            Defaults to list.
+        """
+
+        self._source = source
+        self._sender = sender
+        self._filters = filters or list()
+
+    def produce(self):
+        data = self._source.emit()
+        for filter_ in self._filters:
+            data = filter_.filter(data)
+            if data is None:
+                break
+        else:
+            self._sender.send(data=data)
+
+    def __repr__(self):
+        repr_ = '{}(source={}, sender={}, filters={})'
+        return repr_.format(self.__class__.__name__,
+                            self._source,
+                            self._sender,
+                            self._filters)
+
+
 class Blocking(Producer):
 
     def __init__(self, sender, source, filters=None):
