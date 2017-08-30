@@ -7,6 +7,7 @@ import json
 import uuid
 
 from .. import io
+from .. import utility
 
 
 class Event(object):
@@ -34,7 +35,7 @@ class StructuredEvent(Event, io.JsonSerializable):
         self.topic = topic
         self.arguments = arguments
 
-        time_zone = clare.common.utilities.TimeZone.from_name('UTC')
+        time_zone = utility.TimeZone.from_name('UTC')
         self.created_at = datetime.datetime.utcnow().replace(tzinfo=time_zone)
 
     @property
