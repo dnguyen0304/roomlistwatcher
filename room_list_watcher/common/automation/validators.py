@@ -32,6 +32,20 @@ class PokemonShowdown(object):
         self._wait_context = wait_context
 
     def check_room_was_entered(self):
+
+        """
+        Assert the room was entered successfully.
+
+        Returns
+        -------
+        None
+
+        Raises
+        ------
+        room_list_watcher.common.automation.exceptions.ValidationFailed
+            If the room was not entered successfully.
+        """
+
         condition = title_not_equal(title='Showdown!')
         try:
             self._wait_context.until(condition)
@@ -40,6 +54,20 @@ class PokemonShowdown(object):
             raise exceptions.ValidationFailed(message)
 
     def check_connection_exists(self):
+
+        """
+        Assert the connection was established successfully.
+
+        Returns
+        -------
+        None
+
+        Raises
+        ------
+        room_list_watcher.common.automation.exceptions.ConnectionLost
+            If the connection was not established successfully.
+        """
+
         css_selector = 'body > div.ps-overlay > div > form > p:first-child'
         locator = (By.CSS_SELECTOR, css_selector)
         text_ = 'disconnected'
