@@ -3,7 +3,7 @@
 import time
 
 
-class Producer(object):
+class Blocking(object):
 
     def __init__(self, sender, source, filters=None):
 

@@ -10,7 +10,7 @@ class Orchestrating(object):
         """
         Parameters
         ----------
-        producer : clare.common.messaging.producer.producers.Producer
+        producer : clare.common.messaging.producer.producers.Blocking
         logger : logging.Logger
         """
 
