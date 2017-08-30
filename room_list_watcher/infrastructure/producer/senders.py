@@ -2,10 +2,8 @@
 
 import collections
 
-from clare import common
-from clare.common import messaging
-
 from . import topics
+from room_list_watcher.common import messaging
 
 
 class Logging(messaging.producer.senders.Sender):
@@ -15,7 +13,7 @@ class Logging(messaging.producer.senders.Sender):
         """
         Parameters
         ----------
-        sender : clare.common.messaging.producer.senders.Sender
+        sender : room_list_watcher.common.messaging.producer.senders.Sender
         logger : logging.Logger
         """
 
@@ -27,8 +25,8 @@ class Logging(messaging.producer.senders.Sender):
 
         arguments = collections.OrderedDict()
         arguments['path'] = data
-        event = common.logging.Event(topic=topics.Topic.ROOM_FOUND,
-                                     arguments=arguments)
+        event = messaging.events.StructuredEvent(topic=topics.Topic.ROOM_FOUND,
+                                                 arguments=arguments)
         message = event.to_json()
         self._logger.info(msg=message)
 
