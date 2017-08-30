@@ -8,5 +8,7 @@ _PYTHON_VERSION_27 = (2, 7)
 
 if _PYTHON_VERSION == _PYTHON_VERSION_27:
     import httplib as HttpStatus
+    import Queue as queuing
 else:
     import http.HTTPStatus as HttpStatus
+    import queue as queuing
