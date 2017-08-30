@@ -13,6 +13,8 @@ class Marshaller(object):
     def marshall(self, object_):
 
         """
+        Convert from one type to another.
+
         Parameters
         ----------
         object_ : typing.Any
@@ -43,6 +45,10 @@ class SeleniumWebElementToString(Marshaller):
         Parameters
         ----------
         object_ : selenium.webdriver.remote.webelement.WebElement
+
+        Returns
+        -------
+        str
         """
 
         html = object_.get_attribute('outerHTML')
