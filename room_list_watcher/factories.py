@@ -12,7 +12,6 @@ from selenium.webdriver.support.wait import WebDriverWait
 from . import exceptions
 from . import scrapers
 from .common import automation
-from .common import messaging
 from .common import retry
 from .common import utility
 from .infrastructure import producing
@@ -122,13 +121,12 @@ class RoomListWatcherApplication(object):
         dependencies = self.create_dependencies()
 
         # Create the producer.
-        producer = messaging.producing.producers.Simple(
-            source=dependencies['source'],
-            sender=dependencies['sender'],
-            filters=dependencies['filters'])
+        producer = producing.producers.Simple(source=dependencies['source'],
+                                              sender=dependencies['sender'],
+                                              filters=dependencies['filters'])
 
         # Include blocking.
-        producer = messaging.producing.producers.Blocking(
+        producer = producing.producers.Blocking(
             producer=producer,
             interval=self._properties['interval'])
 
@@ -138,10 +136,10 @@ class RoomListWatcherApplication(object):
                                                      logger=logger)
 
         # Create threading.
-        room_list_watcher = threading.Thread(name='room_list_watcher',
-                                             target=producer.produce)
+        application = threading.Thread(name='room_list_watcher',
+                                       target=producer.produce)
 
-        return room_list_watcher
+        return application
 
     def create_dependencies(self):
 
