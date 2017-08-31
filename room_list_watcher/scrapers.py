@@ -309,14 +309,6 @@ class Validating(BaseScraper):
         self._validator = validator
 
     def scrape(self, url):
-
-        """
-        Raises
-        ------
-        room_list_watcher.common.automation.exceptions.ConnectionLost
-            If the connection with the target server was lost.
-        """
-
         self._initialize(url=url)
         elements = self._scraper._extract()
         return elements
