@@ -34,7 +34,7 @@ class ChromeWebDriver(WebDriverDisposer):
 
         Parameters
         ----------
-        web_driver : selenium.webdriver.chrome.webdriver.WebDriver
+        web_driver : selenium.webdriver.Chrome
 
         Returns
         -------
