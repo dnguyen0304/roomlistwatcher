@@ -314,6 +314,24 @@ class Validating(BaseScraper):
         return elements
 
     def _initialize(self, url):
+
+        """
+        Initialize the page.
+
+        Parameters
+        ----------
+        url : str
+
+        Returns
+        -------
+        None
+
+        Raises
+        ------
+        room_list_watcher.common.automation.exceptions.ConnectionLost
+            If the connection was not established successfully.
+        """
+
         self._scraper._initialize(url=url)
         self._validator.check_connection_exists()
 
