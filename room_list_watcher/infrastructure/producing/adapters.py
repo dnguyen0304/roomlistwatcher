@@ -2,10 +2,10 @@
 
 import collections
 
-from ...common import messaging
+from . import sources
 
 
-class ScraperToBufferingSource(messaging.producing.sources.Source):
+class ScraperToBufferingSource(sources.Disposable):
 
     def __init__(self, scraper, url, marshaller):
 
@@ -38,6 +38,9 @@ class ScraperToBufferingSource(messaging.producing.sources.Source):
         element = self._buffer.popleft()
         message = self._marshaller.marshall(element)
         return message
+
+    def dispose(self):
+        self._scraper.dispose()
 
     def __repr__(self):
         repr_ = '{}(scraper={}, url="{}", marshaller={})'
