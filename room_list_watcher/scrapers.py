@@ -191,9 +191,14 @@ class Orchestrating(BaseScraper):
         try:
             elements = self._policy.execute(scrape)
         except retry.exceptions.MaximumRetry as e:
-            elements = list()
             message = utility.format_exception(e=e)
             self._logger.debug(msg=message)
+            elements = list()
+        except Exception as e:
+            message = utility.format_exception(e=e)
+            self._logger.critical(msg=message, exc_info=True)
+            self.dispose()
+            raise
         return elements
 
     def _initialize(self, url):
