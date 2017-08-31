@@ -3,9 +3,13 @@
 from room_list_watcher.common import automation
 
 
-class InitializationFailed(automation.exceptions.AutomationFailed):
+class ScrapeFailed(automation.exceptions.AutomationFailed):
     pass
 
 
-class ExtractFailed(automation.exceptions.AutomationFailed):
+class InitializationFailed(ScrapeFailed):
+    pass
+
+
+class ExtractFailed(ScrapeFailed):
     pass
