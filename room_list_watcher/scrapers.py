@@ -329,7 +329,7 @@ class Validating(BaseScraper):
         Raises
         ------
         room_list_watcher.common.automation.exceptions.ConnectionLost
-            If the connection was not established successfully.
+            If the connection was not established successfully or was lost.
         """
 
         self._scraper._initialize(url=url)
