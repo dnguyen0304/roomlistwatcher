@@ -3,7 +3,7 @@
 from .. import exceptions
 
 
-class EmitTimeout(exceptions.Timeout):
+class EmitFailed(Exception):
     pass
 
 
