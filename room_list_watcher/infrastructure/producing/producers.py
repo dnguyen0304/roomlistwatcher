@@ -5,6 +5,7 @@ import time
 
 from room_list_watcher.common import io
 from room_list_watcher.common import messaging
+from room_list_watcher.common import retry
 from room_list_watcher.common import utility
 
 
@@ -82,7 +83,7 @@ class Blocking(Disposable):
 
 class Orchestrating(Disposable):
 
-    def __init__(self, producer, logger):
+    def __init__(self, producer, logger, policy):
 
         """
         Extend to include error handling and logging.
@@ -91,14 +92,21 @@ class Orchestrating(Disposable):
         ----------
         producer : room_list_watcher.infrastructure.producing.producers.Disposable
         logger : logging.Logger
+        policy : room_list_watcher.common.retry.policy.Policy
         """
 
         self._producer = producer
         self._logger = logger
+        self._policy = policy
 
     def produce(self):
         try:
-            self._producer.produce()
+            self._policy.execute(self._producer.produce)
+        except retry.exceptions.MaximumRetry as e:
+            message = utility.format_exception(e=e)
+            self._logger.critical(msg=message)
+            self.dispose()
+            raise
         except Exception as e:
             message = utility.format_exception(e=e)
             self._logger.critical(msg=message, exc_info=True)
@@ -109,7 +117,8 @@ class Orchestrating(Disposable):
         self._producer.dispose()
 
     def __repr__(self):
-        repr_ = '{}(producer={}, logger={})'
+        repr_ = '{}(producer={}, logger={}, policy={})'
         return repr_.format(self.__class__.__name__,
                             self._producer,
-                            self._logger)
+                            self._logger,
+                            self._policy)
