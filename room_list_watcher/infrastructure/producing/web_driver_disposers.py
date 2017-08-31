@@ -23,3 +23,22 @@ class WebDriverDisposer(object):
         """
 
         raise NotImplementedError
+
+
+class Chrome(WebDriverDisposer):
+
+    def dispose(self, web_driver):
+
+        """
+        Garbage collect the resource.
+
+        Parameters
+        ----------
+        web_driver : selenium.webdriver.chrome.webdriver.WebDriver
+
+        Returns
+        -------
+        None
+        """
+
+        web_driver.quit()
