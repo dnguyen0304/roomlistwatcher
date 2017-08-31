@@ -65,7 +65,7 @@ class PokemonShowdown(object):
         Raises
         ------
         room_list_watcher.common.automation.exceptions.ConnectionLost
-            If the connection was not established successfully.
+            If the connection was not established successfully or was lost.
         """
 
         css_selector = 'body > div.ps-overlay > div > form > p:first-child'
