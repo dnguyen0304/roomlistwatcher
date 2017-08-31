@@ -27,8 +27,8 @@ class Deque(Disposable):
         try:
             data = self._deque.popleft()
         except IndexError:
-            message = 'The source timed out.'
-            raise messaging.producing.exceptions.EmitTimeout(message)
+            message = 'The source failed to emit data.'
+            raise messaging.producing.exceptions.EmitFailed(message)
         else:
             return data
 
