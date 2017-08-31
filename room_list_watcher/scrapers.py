@@ -107,19 +107,19 @@ class RoomList(BaseScraper):
         self._disposer = disposer
 
     def scrape(self, url):
-
-        """
-        Raises
-        ------
-        room_list_watcher.common.automation.exceptions.InitializationFailed
-        room_list_watcher.common.automation.exceptions.ExtractFailed
-        """
-
         self._initialize(url=url)
         elements = self._extract()
         return elements
 
     def _initialize(self, url):
+
+        """
+        Raises
+        ------
+        room_list_watcher.common.automation.exceptions.InitializationFailed
+            If the initialization of the page failed.
+        """
+
         self._web_driver.get(url=url)
         room_list_button = automation.utility.find_button(
             wait_context=self._wait_context,
@@ -131,6 +131,14 @@ class RoomList(BaseScraper):
             raise exceptions.InitializationFailed(message)
 
     def _extract(self):
+
+        """
+        Raises
+        ------
+        room_list_watcher.common.automation.exceptions.ExtractFailed
+            If the extraction of the elements failed.
+        """
+
         # Refresh the room list.
         refresh_button = automation.utility.find_button(
             wait_context=self._wait_context,
