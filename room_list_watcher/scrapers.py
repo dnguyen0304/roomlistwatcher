@@ -35,7 +35,7 @@ class Scraper(io.Disposable):
 
         Raises
         ------
-        room_list_watcher.common.automation.exceptions.ScrapeFailed
+        room_list_watcher.common.automation.exceptions.AutomationFailed
             If the scrape failed.
         """
 
