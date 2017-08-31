@@ -100,6 +100,8 @@ class Orchestrating(Disposable):
         self._policy = policy
 
     def produce(self):
+        self._logger.debug(msg='The producer has started.')
+
         try:
             self._policy.execute(self._producer.produce)
         except retry.exceptions.MaximumRetry as e:
