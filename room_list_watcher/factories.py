@@ -144,15 +144,15 @@ class RoomListWatcherApplication(object):
 
         # Create the policy.
         stop_strategy = retry.stop_strategies.AfterAttempt(
-            maximum_attempt=self._properties['policy']['stop_strategy']['maximum_attempt'])
+            maximum_attempt=properties['policy']['stop_strategy']['maximum_attempt'])
         wait_strategy = retry.wait_strategies.Fixed(
-            wait_time=self._properties['policy']['wait_strategy']['wait_time'])
+            wait_time=properties['policy']['wait_strategy']['wait_time'])
         logger = logging.getLogger(
-            name=self._properties['policy']['messaging_broker']['logger']['name'])
+            name=properties['policy']['messaging_broker']['logger']['name'])
         messaging_broker_factory = retry.messaging.broker_factories.Logging(
             logger=logger)
         messaging_broker = messaging_broker_factory.create(
-            event_name=self._properties['policy']['messaging_broker']['event']['name'])
+            event_name=properties['policy']['messaging_broker']['event']['name'])
         policy = retry.PolicyBuilder() \
             .with_stop_strategy(stop_strategy) \
             .with_wait_strategy(wait_strategy) \
