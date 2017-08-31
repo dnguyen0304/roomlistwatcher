@@ -4,7 +4,7 @@ import mock
 from nose.tools import assert_false, assert_true
 
 from .. import flush_strategies
-from ....common import utility
+from room_list_watcher.common import utility
 
 
 class TestAfterDuration(object):

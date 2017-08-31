@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from .common import automation
+from room_list_watcher.common import automation
 
 
 class InitializationFailed(automation.exceptions.ScrapeFailed):

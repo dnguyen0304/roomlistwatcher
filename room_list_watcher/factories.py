@@ -11,10 +11,10 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 from . import exceptions
 from . import scrapers
-from .common import automation
-from .common import retry
-from .common import utility
 from .infrastructure import producing
+from room_list_watcher.common import automation
+from room_list_watcher.common import retry
+from room_list_watcher.common import utility
 
 
 class _Scraper(object):

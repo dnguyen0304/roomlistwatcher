@@ -11,10 +11,10 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
 
 from . import exceptions
-from .common import automation
-from .common import io
-from .common import retry
-from .common import utility
+from room_list_watcher.common import automation
+from room_list_watcher.common import io
+from room_list_watcher.common import retry
+from room_list_watcher.common import utility
 
 
 class Scraper(io.Disposable):
