@@ -46,7 +46,7 @@ class ChromeWebDriver(WebDriverDisposer):
 
 class CapturingWebDriver(WebDriverDisposer):
 
-    def __init__(self, disposer, file_path_generator):
+    def __init__(self, disposer, generator):
 
         """
         Extension to include capturing screenshots.
@@ -54,13 +54,14 @@ class CapturingWebDriver(WebDriverDisposer):
         Parameters
         ----------
         disposer : room_list_watcher.infrastructure.producing.disposers.WebDriverDisposer
-        file_path_generator : typing.Generator[str, None, None]
+        generator : room_list_watcher.infrastructure.producing.generators.FilePathGenerator
+            Generator for creating file paths.
         """
 
         self._disposer = disposer
-        self._file_path_generator = file_path_generator
+        self._generator = generator
 
     def dispose(self, web_driver):
-        file_path = next(self._file_path_generator)
+        file_path = self._generator.generate()
         web_driver.get_screenshot_as_file(file_path)
         self._disposer.dispose(web_driver=web_driver)
