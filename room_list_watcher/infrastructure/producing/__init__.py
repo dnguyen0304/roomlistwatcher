@@ -9,6 +9,7 @@ from . import producers
 from . import senders
 from . import sources
 from . import topics
+from . import web_driver_disposers
 
 __all__ = ['adapters',
            'compat',
@@ -18,4 +19,5 @@ __all__ = ['adapters',
            'producers',
            'senders',
            'sources',
-           'topics']
+           'topics',
+           'web_driver_disposers']
