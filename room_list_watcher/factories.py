@@ -13,6 +13,7 @@ from . import exceptions
 from . import scrapers
 from .infrastructure import producing
 from room_list_watcher.common import automation
+from room_list_watcher.common import messaging
 from room_list_watcher.common import retry
 from room_list_watcher.common import utility
 
@@ -128,6 +129,7 @@ class RoomListWatcherApplication(object):
         threading.Thread
         """
 
+        properties = self._properties['producer']
         dependencies = self.create_dependencies()
 
         # Create the producer.
@@ -138,12 +140,31 @@ class RoomListWatcherApplication(object):
         # Include blocking.
         producer = producing.producers.Blocking(
             producer=producer,
-            interval=self._properties['interval'])
+            interval=properties['interval'])
+
+        # Create the policy.
+        stop_strategy = retry.stop_strategies.AfterAttempt(
+            maximum_attempt=self._properties['policy']['stop_strategy']['maximum_attempt'])
+        wait_strategy = retry.wait_strategies.Fixed(
+            wait_time=self._properties['policy']['wait_strategy']['wait_time'])
+        logger = logging.getLogger(
+            name=self._properties['policy']['messaging_broker']['logger']['name'])
+        messaging_broker_factory = retry.messaging.broker_factories.Logging(
+            logger=logger)
+        messaging_broker = messaging_broker_factory.create(
+            event_name=self._properties['policy']['messaging_broker']['event']['name'])
+        policy = retry.PolicyBuilder() \
+            .with_stop_strategy(stop_strategy) \
+            .with_wait_strategy(wait_strategy) \
+            .continue_on_exception(messaging.producing.exceptions.EmitFailed) \
+            .with_messaging_broker(messaging_broker) \
+            .build()
 
         # Include orchestration.
-        logger = logging.getLogger(name=self._properties['logger']['name'])
+        logger = logging.getLogger(name=properties['logger']['name'])
         producer = producing.producers.Orchestrating(producer=producer,
-                                                     logger=logger)
+                                                     logger=logger,
+                                                     policy=policy)
 
         # Create threading.
         application = threading.Thread(name='room_list_watcher',
