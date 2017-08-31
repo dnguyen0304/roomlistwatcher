@@ -101,7 +101,9 @@ class Orchestrating(Disposable):
             self._producer.produce()
         except Exception as e:
             message = utility.format_exception(e=e)
-            self._logger.exception(msg=message)
+            self._logger.critical(msg=message, exc_info=True)
+            self.dispose()
+            raise
 
     def dispose(self):
         self._producer.dispose()
