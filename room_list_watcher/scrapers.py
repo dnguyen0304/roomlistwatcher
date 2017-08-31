@@ -195,6 +195,7 @@ class Orchestrating(BaseScraper):
         except retry.exceptions.MaximumRetry as e:
             message = utility.format_exception(e=e)
             self._logger.debug(msg=message)
+            # Provide a fallback.
             elements = list()
         except Exception as e:
             message = utility.format_exception(e=e)
