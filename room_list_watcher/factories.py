@@ -17,7 +17,7 @@ from .common import utility
 from .infrastructure import producing
 
 
-class Scraper(object):
+class _Scraper(object):
 
     def __init__(self, properties):
 
@@ -104,7 +104,7 @@ class RoomListWatcher(object):
         properties : collections.Mapping
         """
 
-        self._factory = Scraper(properties=properties['scraper'])
+        self._factory = _Scraper(properties=properties['scraper'])
         self._infrastructure = infrastructure
         self._properties = properties
 
