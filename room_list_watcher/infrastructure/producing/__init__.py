@@ -9,7 +9,7 @@ from . import producers
 from . import senders
 from . import sources
 from . import topics
-from . import web_driver_disposers
+from . import disposers
 
 __all__ = ['adapters',
            'compat',
@@ -20,4 +20,4 @@ __all__ = ['adapters',
            'senders',
            'sources',
            'topics',
-           'web_driver_disposers']
+           'disposers.py']

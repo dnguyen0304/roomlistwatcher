@@ -53,7 +53,7 @@ class Capturing(WebDriverDisposer):
 
         Parameters
         ----------
-        disposer : room_list_watcher.infrastructure.producing.web_driver_disposers.WebDriverDisposer
+        disposer : room_list_watcher.infrastructure.producing.disposers.WebDriverDisposer
         file_path_generator : typing.Generator[str, None, None]
         """
 
