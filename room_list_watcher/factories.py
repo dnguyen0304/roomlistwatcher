@@ -38,8 +38,6 @@ class _Scraper(object):
         room_list_watcher.scrapers.Scraper
         """
 
-        logging.config.dictConfig(config=self._properties['logging'])
-
         # Create the room list scraper.
         web_driver = selenium.webdriver.Chrome()
         wait_context = WebDriverWait(
@@ -154,6 +152,8 @@ class RoomListWatcherApplication(object):
         """
 
         dependencies = dict()
+
+        logging.config.dictConfig(config=self._properties['logging'])
 
         # Create the source.
         scraper = self._factory.create()
