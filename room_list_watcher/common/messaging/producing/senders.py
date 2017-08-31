@@ -22,6 +22,7 @@ class Sender(object):
         Raises
         ------
         room_list_watcher.common.messaging.producing.exceptions.SendTimeout
+            If the sender times out.
         """
 
         raise NotImplementedError
