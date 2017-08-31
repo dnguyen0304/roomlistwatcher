@@ -37,13 +37,23 @@ class _Scraper(object):
         room_list_watcher.scrapers.Scraper
         """
 
-        # Create the room list scraper.
+        # Create the disposer.
+        disposer = producing.disposers.ChromeWebDriver()
+
+        # Include capturing.
+        generator = producing.generators.IncrementingFilePath.from_file_path(
+            self._properties['disposer']['generator']['file_path'])
+        disposer = producing.disposers.CapturingWebDriver(disposer=disposer,
+                                                          generator=generator)
+
+        # Create the scraper.
         web_driver = selenium.webdriver.Chrome()
         wait_context = WebDriverWait(
             driver=web_driver,
             timeout=self._properties['wait_context']['timeout'])
         scraper = scrapers.RoomList(web_driver=web_driver,
-                                    wait_context=wait_context)
+                                    wait_context=wait_context,
+                                    disposer=disposer)
 
         # Include repeating.
         # This should be composed before validation so that validation
