@@ -3,6 +3,7 @@
 import collections
 
 from . import sources
+from room_list_watcher.common import messaging
 
 
 class ScraperToBufferingSource(sources.Disposable):
@@ -35,7 +36,11 @@ class ScraperToBufferingSource(sources.Disposable):
         if not self._buffer:
             elements = self._scraper.scrape(url=self._url)
             self._buffer.extend(reversed(elements))
-        element = self._buffer.popleft()
+        try:
+            element = self._buffer.popleft()
+        except IndexError:
+            message = 'The source failed to emit data.'
+            raise messaging.producing.exceptions.EmitFailed(message)
         message = self._marshaller.marshall(element)
         return message
 
