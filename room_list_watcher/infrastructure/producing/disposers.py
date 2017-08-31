@@ -44,7 +44,7 @@ class ChromeWebDriver(WebDriverDisposer):
         web_driver.quit()
 
 
-class Capturing(WebDriverDisposer):
+class CapturingWebDriver(WebDriverDisposer):
 
     def __init__(self, disposer, file_path_generator):
 
