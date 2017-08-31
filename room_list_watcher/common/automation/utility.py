@@ -19,9 +19,7 @@ def find_button(wait_context, locator):
     Returns
     -------
     selenium.webdriver.remote.webelement.WebElement
-        If the button could be found.
-    None
-        If the button could not be found.
+        If the button could be found. Otherwise None.
     """
 
     condition = expected_conditions.element_to_be_clickable(locator=locator)
