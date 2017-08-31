@@ -16,6 +16,11 @@ class Producer(object):
         Returns
         -------
         None
+
+        Raises
+        ------
+        room_list_watcher.common.messaging.producing.exceptions.EmitFailed
+            If the source fails to emit data.
         """
 
         raise NotImplementedError
