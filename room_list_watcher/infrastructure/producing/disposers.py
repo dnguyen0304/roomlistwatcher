@@ -43,6 +43,10 @@ class ChromeWebDriver(WebDriverDisposer):
 
         web_driver.quit()
 
+    def __repr__(self):
+        repr_ = '{}()'
+        return repr_.format(self.__class__.__name__)
+
 
 class CapturingWebDriver(WebDriverDisposer):
 
