@@ -19,7 +19,7 @@ class Event(object):
         pass
 
 
-class StructuredEvent(Event, io.JsonSerializable):
+class Structured(Event, io.JsonSerializable):
 
     def __init__(self, topic, arguments):
 

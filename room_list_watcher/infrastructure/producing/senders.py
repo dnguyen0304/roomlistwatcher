@@ -84,8 +84,8 @@ class Logging(producing.senders.Sender):
 
         arguments = collections.OrderedDict()
         arguments['path'] = data
-        event = messaging.events.StructuredEvent(topic=topics.Topic.ROOM_FOUND,
-                                                 arguments=arguments)
+        event = messaging.events.Structured(topic=topics.Topic.ROOM_FOUND,
+                                            arguments=arguments)
         message = event.to_json()
         self._logger.info(msg=message)
 
