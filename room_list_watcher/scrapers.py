@@ -92,17 +92,19 @@ class Nop(BaseScraper):
 
 class RoomList(BaseScraper):
 
-    def __init__(self, web_driver, wait_context):
+    def __init__(self, web_driver, wait_context, disposer):
 
         """
         Parameters
         ----------
         web_driver : selenium.webdriver.Chrome
         wait_context : selenium.webdriver.support.ui.WebDriverWait
+        disposer : room_list_watcher.infrastructure.producing.disposers.WebDriverDisposer
         """
 
         self._web_driver = web_driver
         self._wait_context = wait_context
+        self._disposer = disposer
 
     def scrape(self, url):
 
@@ -161,7 +163,7 @@ class RoomList(BaseScraper):
         return elements
 
     def dispose(self):
-        self._web_driver.quit()
+        self._disposer.dispose(web_driver=self._web_driver)
 
     def __repr__(self):
         repr_ = '{}(web_driver={}, wait_context={})'
