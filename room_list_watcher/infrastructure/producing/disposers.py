@@ -69,3 +69,9 @@ class CapturingWebDriver(WebDriverDisposer):
         file_path = self._generator.generate()
         web_driver.get_screenshot_as_file(file_path)
         self._disposer.dispose(web_driver=web_driver)
+
+    def __repr__(self):
+        repr_ = '{}(disposer={}, generator={})'
+        return repr_.format(self.__class__.__name__,
+                            self._disposer,
+                            self._generator)
