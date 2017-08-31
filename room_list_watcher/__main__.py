@@ -11,7 +11,7 @@ if __name__ == '__main__':
         properties=properties)
     infrastructure = infrastructure_factory.create()
 
-    application_factory = factories.RoomListWatcher(
+    application_factory = factories.RoomListWatcherApplication(
         infrastructure=infrastructure,
         properties=properties)
     application = application_factory.create()

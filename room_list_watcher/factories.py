@@ -93,7 +93,7 @@ class _Scraper(object):
         return repr_.format(self.__class__.__name__, self._properties)
 
 
-class RoomListWatcher(object):
+class RoomListWatcherApplication(object):
 
     def __init__(self, infrastructure, properties):
 
@@ -191,10 +191,10 @@ class RoomListWatcher(object):
                             self._properties)
 
 
-class CommandLineArgumentsWatcher(RoomListWatcher):
+class CommandLineArgumentsWatcherApplication(RoomListWatcherApplication):
 
     def create_dependencies(self):
-        dependencies = super(CommandLineArgumentsWatcher, self).create_dependencies()
+        dependencies = super(CommandLineArgumentsWatcherApplication, self).create_dependencies()
 
         # Create the source.
         deque = collections.deque(sys.argv[1:])
