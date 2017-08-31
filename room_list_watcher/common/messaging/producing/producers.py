@@ -69,7 +69,7 @@ class Blocking(Producer):
 
         self._producer = producer
         self._interval = interval
-        self._sleeper = _sleeper or time.sleep
+        self._sleeper = _sleeper or time
 
     def produce(self):
         while True:
