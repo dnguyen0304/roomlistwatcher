@@ -2,7 +2,7 @@
 
 import re
 
-from nose.tools import assert_equal, assert_is_not_none
+from nose.tools import assert_is_not_none
 
 from .. import generators
 
@@ -10,7 +10,7 @@ from .. import generators
 class TestTimestampingFilePath(object):
 
     def setup(self):
-        self.template = '[\w/]+{qualifier_delimiter}(?P<counter>\d)\.\w+'
+        self.template = '[\w/]+{qualifier_delimiter}[^\.]+\.\w+'
 
         self.directory_path = '/home/foo/'
         self.file_name = 'bar'
@@ -33,26 +33,18 @@ class TestTimestampingFilePath(object):
         file_path = generator.generate()
         assert_is_not_none(re.match(pattern, file_path))
 
-    def counter_is_appended(self):
+    def test_timestamp_is_appended(self):
         pattern = self.template.format(
             qualifier_delimiter=self.qualifier_delimiter)
         file_path = self.generator.generate()
         assert_is_not_none(re.match(pattern, file_path))
 
-    def counter_is_incremented(self):
+    def test_from_file_path(self):
         pattern = self.template.format(
             qualifier_delimiter=self.qualifier_delimiter)
-        match = re.match(pattern=pattern, string=self.generator.generate())
-        before = int(match.groupdict()['counter'])
-        match = re.match(pattern=pattern, string=self.generator.generate())
-        after = int(match.groupdict()['counter'])
-        assert_equal(before, after - 1)
-
-    def test_from_file_path(self):
-        expected = self.generator.generate()
-        file_path = ''.join((self.directory_path,
-                             self.file_name,
-                             self.file_extension))
-        generator = generators.TimestampingFilePath.from_file_path(file_path)
+        input = ''.join((self.directory_path,
+                         self.file_name,
+                         self.file_extension))
+        generator = generators.TimestampingFilePath.from_file_path(input)
         output = generator.generate()
-        assert_equal(expected, output)
+        assert_is_not_none(re.match(pattern, output))
