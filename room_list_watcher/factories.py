@@ -42,7 +42,7 @@ class _Scraper(object):
         disposer = producing.disposers.ChromeWebDriver()
 
         # Include capturing.
-        generator = producing.generators.IncrementingFilePath.from_file_path(
+        generator = producing.generators.TimestampingFilePath.from_file_path(
             self._properties['disposer']['generator']['file_path'])
         disposer = producing.disposers.CapturingWebDriver(disposer=disposer,
                                                           generator=generator)
