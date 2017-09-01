@@ -10,7 +10,7 @@ from .. import generators
 class TestTimestampingFilePath(object):
 
     def setup(self):
-        self.template = '[\w/]+{qualifier_delimiter}(?P<>\d)\.\w+'
+        self.template = '[\w/]+{qualifier_delimiter}(?P<counter>\d)\.\w+'
 
         self.directory_path = '/home/foo/'
         self.file_name = 'bar'
