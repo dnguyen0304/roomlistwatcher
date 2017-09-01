@@ -116,15 +116,23 @@ class TestCountdownTimer(object):
         assert_false(has_time_remaining)
 
 
-def test_format_exception():
+class TestFormatException(object):
 
-    try:
-        raise Mock('foo')
-    except Mock as e:
-        pass
+    def __init__(self):
+        self.message = None
+        self.data = None
 
-    message = utility.format_exception(e=e)
-    data = json.loads(message)
+    def setup(self):
+        self.message = 'foo'
+        try:
+            raise Mock(self.message)
+        except Mock as e:
+            formatted = utility.format_exception(e=e)
+            self.data = json.loads(formatted)
 
-    assert_equal(data['exception_type'], __name__ + '.' + Mock.__name__)
-    assert_equal(data['exception_message'], 'foo')
+    def test_format_includes_exception_type(self):
+        assert_equal(self.data['exception_type'],
+                     __name__ + '.' + Mock.__name__)
+
+    def test_format_includes_exception_message(self):
+        assert_equal(self.data['exception_message'], self.message)
