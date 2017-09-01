@@ -212,6 +212,13 @@ class RoomListWatcherApplication(object):
             countdown_timer=countdown_timer)
         no_duplicate = producing.filters.NoDuplicateString(
             flush_strategy=after_duration)
+
+        # Include logging.
+        logger = logging.getLogger(
+            name=self._properties['filter']['logger']['name'])
+        no_duplicate = producing.filters.LoggingString(
+            string_filter=no_duplicate,
+            logger=logger)
         dependencies['filters'].append(no_duplicate)
 
         return dependencies
