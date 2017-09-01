@@ -78,3 +78,36 @@ class NoDuplicateString(messaging.filters.StringFilter):
     def __repr__(self):
         repr_ = '{}(flush_strategy={})'
         return repr_.format(self.__class__.__name__, self._flush_strategy)
+
+
+class LoggingString(messaging.filters.StringFilter):
+
+    def __init__(self, string_filter, logger):
+
+        """
+        Extension to include logging.
+
+        Parameters
+        ----------
+        string_filter : room_list_watcher.common.messaging.filters.StringFilter
+        logger : logging.Logger
+        """
+
+        self._string_filter = string_filter
+        self._logger = logger
+
+    def filter(self, string):
+        filtered = self._string_filter.filter(string=string)
+        if filtered is None:
+            self._logger.debug(
+                msg='The data "{}" was filtered.'.format(string))
+        else:
+            self._logger.debug(
+                msg='The data "{}" was not filtered.'.format(string))
+        return filtered
+
+    def __repr__(self):
+        repr_ = '{}(string_filter={}, logger={})'
+        return repr_.format(self.__class__.__name__,
+                            self._string_filter,
+                            self._logger)
