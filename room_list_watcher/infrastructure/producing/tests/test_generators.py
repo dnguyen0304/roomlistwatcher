@@ -7,7 +7,7 @@ from nose.tools import assert_equal, assert_is_not_none
 from .. import generators
 
 
-class TestIncrementingFilePath(object):
+class TestTimestampingFilePath(object):
 
     def setup(self):
         self.template = '[\w/]+{qualifier_delimiter}(?P<counter>\d)\.\w+'
@@ -17,7 +17,7 @@ class TestIncrementingFilePath(object):
         self.file_extension = '.foobar'
         self.qualifier_delimiter = '-'
 
-        self.generator = generators.IncrementingFilePath(
+        self.generator = generators.TimestampingFilePath(
             directory_path=self.directory_path,
             file_name=self.file_name,
             file_extension=self.file_extension)
@@ -25,7 +25,7 @@ class TestIncrementingFilePath(object):
     def test_qualifier_delimiter(self):
         qualifier_delimiter = '_'
         pattern = self.template.format(qualifier_delimiter=qualifier_delimiter)
-        generator = generators.IncrementingFilePath(
+        generator = generators.TimestampingFilePath(
             directory_path=self.directory_path,
             file_name=self.file_name,
             file_extension=self.file_extension,
@@ -53,6 +53,6 @@ class TestIncrementingFilePath(object):
         file_path = ''.join((self.directory_path,
                              self.file_name,
                              self.file_extension))
-        generator = generators.IncrementingFilePath.from_file_path(file_path)
+        generator = generators.TimestampingFilePath.from_file_path(file_path)
         output = generator.generate()
         assert_equal(expected, output)

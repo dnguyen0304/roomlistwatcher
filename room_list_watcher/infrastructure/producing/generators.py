@@ -22,7 +22,7 @@ class FilePathGenerator(object):
         raise NotImplementedError
 
 
-class IncrementingFilePath(FilePathGenerator):
+class TimestampingFilePath(FilePathGenerator):
 
     _QUALIFIER_SUBSTITUTION = '{qualifier}'
 
@@ -69,7 +69,7 @@ class IncrementingFilePath(FilePathGenerator):
 
         Returns
         -------
-        room_list_watcher.infrastructure.producing.generators.IncrementingFilePath
+        room_list_watcher.infrastructure.producing.generators.TimestampingFilePath
         """
 
         directory_path, file_name = os.path.split(file_path)
