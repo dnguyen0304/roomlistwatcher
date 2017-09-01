@@ -18,9 +18,7 @@ class StringFilter(object):
         Returns
         -------
         str
-            If the data should not be filtered.
-        None
-            If the data should be filtered.
+            If the data should not be filtered. Otherwise None.
         """
 
         raise NotImplementedError
