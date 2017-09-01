@@ -36,7 +36,7 @@ class Simple(Disposable):
         for filter_ in self._filters:
             data = filter_.filter(data)
             if data is None:
-                break
+                return
         else:
             self._sender.send(data=data)
 
