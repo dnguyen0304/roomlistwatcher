@@ -130,9 +130,9 @@ class TestFormatException(object):
             formatted = utility.format_exception(e=e)
             self.data = json.loads(formatted)
 
-    def test_format_includes_exception_type(self):
+    def test_formatted_includes_exception_type(self):
         assert_equal(self.data['exception_type'],
                      __name__ + '.' + Mock.__name__)
 
-    def test_format_includes_exception_message(self):
+    def test_formatted_includes_exception_message(self):
         assert_equal(self.data['exception_message'], self.message)
