@@ -55,6 +55,15 @@ class BaseScraper(Scraper):
         Parameters
         ----------
         url : str
+
+        Returns
+        -------
+        None
+
+        Raises
+        ------
+        room_list_watcher.common.automation.exceptions.AutomationFailed
+            If the initialization of the page failed.
         """
 
         pass
@@ -66,6 +75,11 @@ class BaseScraper(Scraper):
         Returns
         -------
         collections.Sequence
+
+        Raises
+        ------
+        room_list_watcher.common.automation.exceptions.AutomationFailed
+            If the extraction of the elements failed.
         """
 
         pass
@@ -112,14 +126,6 @@ class RoomList(BaseScraper):
         return elements
 
     def _initialize(self, url):
-
-        """
-        Raises
-        ------
-        room_list_watcher.common.automation.exceptions.InitializationFailed
-            If the initialization of the page failed.
-        """
-
         self._web_driver.get(url=url)
         room_list_button = automation.utility.find_button(
             wait_context=self._wait_context,
@@ -131,14 +137,6 @@ class RoomList(BaseScraper):
             raise exceptions.InitializationFailed(message)
 
     def _extract(self):
-
-        """
-        Raises
-        ------
-        room_list_watcher.common.automation.exceptions.ExtractFailed
-            If the extraction of the elements failed.
-        """
-
         # Refresh the room list.
         refresh_button = automation.utility.find_button(
             wait_context=self._wait_context,
@@ -316,16 +314,6 @@ class Validating(BaseScraper):
     def _initialize(self, url):
 
         """
-        Initialize the page.
-
-        Parameters
-        ----------
-        url : str
-
-        Returns
-        -------
-        None
-
         Raises
         ------
         room_list_watcher.common.automation.exceptions.ConnectionLost
