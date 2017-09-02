@@ -18,7 +18,7 @@ from room_list_watcher.common import retry
 from room_list_watcher.common import utility
 
 
-class _Scraper(object):
+class Scraper(object):
 
     def __init__(self, properties):
 
@@ -69,7 +69,33 @@ class _Scraper(object):
             wait_context=wait_context)
         scraper = scrapers.Validating(scraper=scraper, validator=validator)
 
-        # Create the retry policy.
+        return scraper
+
+
+class _Scraper(object):
+
+    def __init__(self, properties):
+
+        """
+        Parameters
+        ----------
+        properties : collections.Mapping
+        """
+
+        self._properties = properties
+
+    def create(self):
+
+        """
+        Returns
+        -------
+        room_list_watcher.scrapers.Scraper
+        """
+
+        # Create the scraper factory.
+        scraper_factory = Scraper(properties=self._properties)
+
+        # Create the policy.
         stop_strategy = retry.stop_strategies.AfterAttempt(
             maximum_attempt=self._properties['retry_policy']['stop_strategy']['maximum_attempt'])
         wait_strategy = retry.wait_strategies.Fixed(
@@ -83,7 +109,6 @@ class _Scraper(object):
         policy = retry.PolicyBuilder() \
             .with_stop_strategy(stop_strategy) \
             .with_wait_strategy(wait_strategy) \
-            .continue_on_exception(automation.exceptions.ConnectionLost) \
             .continue_on_exception(exceptions.InitializationFailed) \
             .continue_on_exception(exceptions.ExtractFailed) \
             .with_messaging_broker(messaging_broker) \
@@ -92,8 +117,8 @@ class _Scraper(object):
         # Create the logger.
         logger = logging.getLogger(name=self._properties['logger']['name'])
 
-        # Include orchestration.
-        scraper = scrapers.Orchestrating(scraper=scraper,
+        # Create the scraper.
+        scraper = scrapers.Orchestrating(scraper_factory=scraper_factory,
                                          logger=logger,
                                          policy=policy)
 

@@ -180,34 +180,51 @@ class RoomList(BaseScraper):
 
 class Orchestrating(BaseScraper):
 
-    def __init__(self, scraper, logger, policy):
+    def __init__(self, scraper_factory, logger, policy):
 
         """
         Parameters
         ----------
-        scraper : room_list_watcher.scrapers.BaseScraper
+        scraper_factory : room_list_watcher.factories.Scraper
         logger : logging.Logger
         policy : room_list_watcher.common.retry.policy.Policy
         """
 
-        self._scraper = scraper
+        self._scraper_factory = scraper_factory
         self._logger = logger
         self._policy = policy
 
+        self._scraper = None
+
     def scrape(self, url):
-        scrape = functools.partial(self._scraper.scrape, url=url)
-        try:
-            elements = self._policy.execute(scrape)
-        except retry.exceptions.MaximumRetry as e:
-            message = utility.format_exception(e=e)
-            self._logger.debug(msg=message)
-            # Provide a fallback.
-            elements = list()
-        except Exception as e:
-            message = utility.format_exception(e=e)
-            self._logger.critical(msg=message, exc_info=True)
-            self.dispose()
-            raise
+        self._load()
+
+        while True:
+            scrape = functools.partial(self._scraper.scrape, url=url)
+
+            try:
+                elements = self._policy.execute(scrape)
+            except retry.exceptions.MaximumRetry as e:
+                # The expected errors have persisted. Defer to the
+                # fallback.
+                self._logger.debug(msg=utility.format_exception(e=e))
+                elements = list()
+                break
+            except automation.exceptions.ConnectionLost as e:
+                # An expected error has occurred that cannot be handled
+                # by alternative measures. Reload the existing scraper.
+                self._logger.debug(msg=utility.format_exception(e=e))
+                self._reload()
+            except Exception as e:
+                # An unexpected error has occurred. Dispose of the
+                # existing scraper and stop the runtime.
+                self._logger.critical(msg=utility.format_exception(e=e),
+                                      exc_info=True)
+                self.dispose()
+                raise
+            else:
+                break
+
         return elements
 
     def _initialize(self, url):
@@ -217,13 +234,58 @@ class Orchestrating(BaseScraper):
         elements = self._scraper._extract()
         return elements
 
+    def _load(self):
+
+        """
+        Create a new scraper.
+
+        If there is already an existing scraper, this is a NOP.
+        Otherwise, a new scraper is created.
+
+        The time complexity is O(1).
+
+        Returns
+        -------
+        None
+        """
+
+        if self._scraper:
+            return
+
+        self._scraper = self._scraper_factory.create()
+
+    def _reload(self):
+
+        """
+        Create a new scraper.
+
+        If there is no existing scraper, this is a NOP. Otherwise, the
+        existing scraper is disposed of and a new one is created.
+
+        The time complexity is O(1).
+
+        Returns
+        -------
+        None
+        """
+
+        if not self._scraper:
+            return
+
+        self._scraper.dispose()
+        self._scraper = self._scraper_factory.create()
+        self._logger.debug(msg='The scraper has reloaded.')
+
     def dispose(self):
+        if not self._scraper:
+            return
+
         self._scraper.dispose()
 
     def __repr__(self):
-        repr_ = '{}(scraper={}, logger={}, policy={})'
+        repr_ = '{}(scraper_factory={}, logger={}, policy={})'
         return repr_.format(self.__class__.__name__,
-                            self._scraper,
+                            self._scraper_factory,
                             self._logger,
                             self._policy)
 
