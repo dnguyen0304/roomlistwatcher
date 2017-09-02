@@ -35,7 +35,7 @@ class Scraper(object):
         """
         Returns
         -------
-        room_list_watcher.scrapers.Scraper
+        roomlistwatcher.scrapers.Scraper
         """
 
         # Create the disposer.
@@ -89,7 +89,7 @@ class _Scraper(object):
         """
         Returns
         -------
-        room_list_watcher.scrapers.Scraper
+        roomlistwatcher.scrapers.Scraper
         """
 
         # Create the scraper factory.
@@ -136,7 +136,7 @@ class RoomListWatcherApplication(object):
         """
         Parameters
         ----------
-        infrastructure : room_list_watcher.infrastructure.infrastructures.RoomListWatcher
+        infrastructure : roomlistwatcher.infrastructure.infrastructures.RoomListWatcher
         properties : collections.Mapping
         """
 

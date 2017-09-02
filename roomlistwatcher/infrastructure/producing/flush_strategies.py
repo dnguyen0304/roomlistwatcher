@@ -36,7 +36,7 @@ class AfterDuration(FlushStrategy):
 
         Parameters
         ----------
-        countdown_timer : room_list_watcher.common.utility.CountdownTimer
+        countdown_timer : roomlistwatcher.common.utility.CountdownTimer
         """
 
         self._countdown_timer = countdown_timer

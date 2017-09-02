@@ -13,7 +13,7 @@ class ContinueStrategy(object):
         """
         Parameters
         ----------
-        attempt : room_list_watcher.common.retry.attempt.Attempt
+        attempt : roomlistwatcher.common.retry.attempt.Attempt
 
         Returns
         -------

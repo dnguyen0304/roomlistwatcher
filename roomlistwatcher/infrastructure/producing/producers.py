@@ -21,9 +21,9 @@ class Simple(Disposable):
         """
         Parameters
         ----------
-        source : room_list_watcher.infrastructure.producing.sources.Disposable
-        sender : room_list_watcher.common.messaging.producing.senders.Sender
-        filters : typing.Iterable[room_list_watcher.common.messaging.filters.StringFilter]
+        source : roomlistwatcher.infrastructure.producing.sources.Disposable
+        sender : roomlistwatcher.common.messaging.producing.senders.Sender
+        filters : typing.Iterable[roomlistwatcher.common.messaging.filters.StringFilter]
             Defaults to list.
         """
 
@@ -58,7 +58,7 @@ class Blocking(Disposable):
         """
         Parameters
         ----------
-        producer : room_list_watcher.infrastructure.producing.producers.Disposable
+        producer : roomlistwatcher.infrastructure.producing.producers.Disposable
         interval : float
         """
 
@@ -90,9 +90,9 @@ class Orchestrating(Disposable):
 
         Parameters
         ----------
-        producer : room_list_watcher.infrastructure.producing.producers.Disposable
+        producer : roomlistwatcher.infrastructure.producing.producers.Disposable
         logger : logging.Logger
-        policy : room_list_watcher.common.retry.policy.Policy
+        policy : roomlistwatcher.common.retry.policy.Policy
         """
 
         self._producer = producer

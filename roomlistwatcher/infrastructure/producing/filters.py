@@ -13,7 +13,7 @@ class NoDuplicateString(messaging.filters.StringFilter):
 
         Parameters
         ----------
-        flush_strategy : room_list_watcher.infrastructure.producing.flush_strategies.FlushStrategy
+        flush_strategy : roomlistwatcher.infrastructure.producing.flush_strategies.FlushStrategy
             Strategy for determining if the collection of strings should
             be flushed.
         """
@@ -89,7 +89,7 @@ class LoggingString(messaging.filters.StringFilter):
 
         Parameters
         ----------
-        string_filter : room_list_watcher.common.messaging.filters.StringFilter
+        string_filter : roomlistwatcher.common.messaging.filters.StringFilter
         logger : logging.Logger
         """
 

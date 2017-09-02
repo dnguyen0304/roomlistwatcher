@@ -33,7 +33,7 @@ class Observable(Notifyable):
         """
         Parameters
         ----------
-        observer : room_list_watcher.common.event.notifiables.Notifyable
+        observer : roomlistwatcher.common.event.notifiables.Notifyable
         """
 
         self._observers.add(observer)

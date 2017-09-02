@@ -13,9 +13,9 @@ class ScraperToBufferingSource(sources.Disposable):
         """
         Parameters
         ----------
-        scraper : room_list_watcher.scrapers.Scraper
+        scraper : roomlistwatcher.scrapers.Scraper
         url : str
-        marshaller : room_list_watcher.infrastructure.producing.marshallers.Marshaller
+        marshaller : roomlistwatcher.infrastructure.producing.marshallers.Marshaller
         """
 
         self._scraper = scraper

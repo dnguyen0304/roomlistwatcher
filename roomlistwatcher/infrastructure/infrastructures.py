@@ -8,7 +8,7 @@ class RoomListWatcher(object):
         """
         Parameters
         ----------
-        sender : room_list_watcher.common.messaging.producing.senders.Sender
+        sender : roomlistwatcher.common.messaging.producing.senders.Sender
         """
 
         self.sender = sender

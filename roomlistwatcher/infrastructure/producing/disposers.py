@@ -57,8 +57,8 @@ class CapturingWebDriver(WebDriverDisposer):
 
         Parameters
         ----------
-        disposer : room_list_watcher.infrastructure.producing.disposers.WebDriverDisposer
-        generator : room_list_watcher.infrastructure.producing.generators.FilePathGenerator
+        disposer : roomlistwatcher.infrastructure.producing.disposers.WebDriverDisposer
+        generator : roomlistwatcher.infrastructure.producing.generators.FilePathGenerator
             Generator for creating file paths.
         """
 

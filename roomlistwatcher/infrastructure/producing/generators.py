@@ -72,7 +72,7 @@ class TimestampingFilePath(FilePathGenerator):
 
         Returns
         -------
-        room_list_watcher.infrastructure.producing.generators.TimestampingFilePath
+        roomlistwatcher.infrastructure.producing.generators.TimestampingFilePath
         """
 
         directory_path, file_name = os.path.split(file_path)

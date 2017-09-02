@@ -39,7 +39,7 @@ class _ConcurrentLinkedQueueSender(object):
         """
         Returns
         -------
-        room_list_watcher.common.messaging.producing.senders.Sender
+        roomlistwatcher.common.messaging.producing.senders.Sender
         """
 
         return producing.senders.ConcurrentLinkedQueue(queue=self._queue)
@@ -181,7 +181,7 @@ class _SqsFifoQueueSender(object):
         """
         Returns
         -------
-        room_list_watcher.common.messaging.producing.senders.Sender
+        roomlistwatcher.common.messaging.producing.senders.Sender
         """
 
         return producing.senders.SqsFifoQueue(sqs_queue=self._sqs_queue)
@@ -208,7 +208,7 @@ class _QueueAbstractFactory(object):
 
         Returns
         -------
-        room_list_watcher.infrastructure.factories._QueueAbstractFactory
+        roomlistwatcher.infrastructure.factories._QueueAbstractFactory
         """
 
         # Create the queue.
@@ -235,7 +235,7 @@ class _QueueAbstractFactory(object):
 
         Returns
         -------
-        room_list_watcher.infrastructure.factories._QueueAbstractFactory
+        roomlistwatcher.infrastructure.factories._QueueAbstractFactory
         """
 
         properties_ = properties['queues']['produce_to']
@@ -267,7 +267,7 @@ class _QueueAbstractFactory(object):
         """
         Returns
         -------
-        room_list_watcher.common.messaging.producing.senders.Sender
+        roomlistwatcher.common.messaging.producing.senders.Sender
         """
 
         return self._sender_factory.create()
@@ -306,7 +306,7 @@ class RoomListWatcherInfrastructure(object):
         """
         Returns
         -------
-        room_list_watcher.infrastructure.infrastructures.RoomListWatcher
+        roomlistwatcher.infrastructure.infrastructures.RoomListWatcher
         """
 
         # Create the queue factory.

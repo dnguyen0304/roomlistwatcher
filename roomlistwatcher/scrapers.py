@@ -113,7 +113,7 @@ class RoomList(BaseScraper):
         ----------
         web_driver : selenium.webdriver.Chrome
         wait_context : selenium.webdriver.support.ui.WebDriverWait
-        disposer : room_list_watcher.infrastructure.producing.disposers.WebDriverDisposer
+        disposer : roomlistwatcher.infrastructure.producing.disposers.WebDriverDisposer
         """
 
         self._web_driver = web_driver
@@ -185,9 +185,9 @@ class Orchestrating(BaseScraper):
         """
         Parameters
         ----------
-        scraper_factory : room_list_watcher.factories.Scraper
+        scraper_factory : roomlistwatcher.factories.Scraper
         logger : logging.Logger
-        policy : room_list_watcher.common.retry.policy.Policy
+        policy : roomlistwatcher.common.retry.policy.Policy
         """
 
         self._scraper_factory = scraper_factory
@@ -303,7 +303,7 @@ class Profiling(Scraper):
         """
         Parameters
         ----------
-        scraper : room_list_watcher.scrapers.Scraper
+        scraper : roomlistwatcher.scrapers.Scraper
         """
 
         self._scraper = scraper
@@ -332,7 +332,7 @@ class Repeating(BaseScraper):
 
         Parameters
         ----------
-        scraper : room_list_watcher.scrapers.BaseScraper
+        scraper : roomlistwatcher.scrapers.BaseScraper
         """
 
         self._scraper = scraper
@@ -367,8 +367,8 @@ class Validating(BaseScraper):
         """
         Parameters
         ----------
-        scraper : room_list_watcher.scrapers.BaseScraper
-        validator : room_list_watcher.common.automation.validators.PokemonShowdown
+        scraper : roomlistwatcher.scrapers.BaseScraper
+        validator : roomlistwatcher.common.automation.validators.PokemonShowdown
         """
 
         self._scraper = scraper

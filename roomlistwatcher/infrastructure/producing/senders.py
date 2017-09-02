@@ -72,7 +72,7 @@ class Logging(producing.senders.Sender):
 
         Parameters
         ----------
-        sender : room_list_watcher.common.messaging.producing.senders.Sender
+        sender : roomlistwatcher.common.messaging.producing.senders.Sender
         logger : logging.Logger
         """
 
