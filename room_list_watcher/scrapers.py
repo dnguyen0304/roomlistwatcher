@@ -215,6 +215,12 @@ class Orchestrating(BaseScraper):
                 # by alternative measures. Reload the existing scraper.
                 self._logger.debug(msg=utility.format_exception(e=e))
                 self._reload()
+            except selenium.common.exceptions.WebDriverException as e:
+                # An unexpected error has occurred. Reload the existing
+                # scraper.
+                self._logger.critical(msg=utility.format_exception(e=e),
+                                      exc_info=True)
+                self._reload()
             except Exception as e:
                 # An unexpected error has occurred. Dispose of the
                 # existing scraper and stop the runtime.
