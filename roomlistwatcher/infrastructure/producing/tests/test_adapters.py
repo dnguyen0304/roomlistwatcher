@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import mock
-from nose.tools import assert_equal
+from nose.tools import assert_equal, raises
 
 from .. import adapters
 from .. import marshallers
+from roomlistwatcher.common import messaging
 
 
 class TestScraperToBufferingSource(object):
@@ -39,3 +40,14 @@ class TestScraperToBufferingSource(object):
     def test_messages_are_ordered_and_reversed(self):
         messages = [self.source.emit() for _ in range(self.n)]
         assert_equal(*map(list, (reversed(messages), self.elements)))
+
+    @raises(messaging.producing.exceptions.EmitFailed)
+    def test_invalid_input_raises_emit_failed(self):
+        element = mock.Mock()
+        element.get_attribute = mock.Mock(return_value='foo')
+        self.scraper.scrape = mock.Mock(return_value=[element])
+        source = adapters.ScraperToBufferingSource(
+            scraper=self.scraper,
+            url=None,
+            marshaller=marshallers.SeleniumWebElementToString())
+        source.emit()
