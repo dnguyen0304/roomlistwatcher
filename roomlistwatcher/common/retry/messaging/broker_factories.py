@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from room_list_watcher.common import event
+from roomlistwatcher.common import event
 
 from . import subscribers
 from .. import policy

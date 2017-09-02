@@ -4,7 +4,7 @@ import abc
 import datetime
 import os
 
-from room_list_watcher.common import utility
+from roomlistwatcher.common import utility
 
 _TIME_ZONE_NAME = 'UTC'
 

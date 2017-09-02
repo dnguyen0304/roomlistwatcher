@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from room_list_watcher.common import messaging
+from roomlistwatcher.common import messaging
 
 
 class NoDuplicateString(messaging.filters.StringFilter):

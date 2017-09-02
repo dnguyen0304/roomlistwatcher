@@ -4,7 +4,7 @@
 import setuptools
 
 if __name__ == '__main__':
-    package_name = 'room_list_watcher'
+    package_name = 'roomlistwatcher'
 
     description = 'A Pokemon Showdown web scraper.'
 

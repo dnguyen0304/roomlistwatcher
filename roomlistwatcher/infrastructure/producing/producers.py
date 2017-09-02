@@ -3,10 +3,10 @@
 import abc
 import time
 
-from room_list_watcher.common import io
-from room_list_watcher.common import messaging
-from room_list_watcher.common import retry
-from room_list_watcher.common import utility
+from roomlistwatcher.common import io
+from roomlistwatcher.common import messaging
+from roomlistwatcher.common import retry
+from roomlistwatcher.common import utility
 
 
 class Disposable(messaging.producing.producers.Producer, io.Disposable):

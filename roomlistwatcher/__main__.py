@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from room_list_watcher import factories
-from room_list_watcher import infrastructure
-from room_list_watcher.common import utility
+from roomlistwatcher import factories
+from roomlistwatcher import infrastructure
+from roomlistwatcher.common import utility
 
 if __name__ == '__main__':
     properties = utility.get_configuration()

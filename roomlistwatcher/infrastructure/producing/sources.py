@@ -2,8 +2,8 @@
 
 import abc
 
-from room_list_watcher.common import io
-from room_list_watcher.common import messaging
+from roomlistwatcher.common import io
+from roomlistwatcher.common import messaging
 
 
 class Disposable(messaging.producing.sources.Source, io.Disposable):

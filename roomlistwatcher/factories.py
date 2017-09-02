@@ -12,10 +12,10 @@ from selenium.webdriver.support.wait import WebDriverWait
 from . import exceptions
 from . import scrapers
 from .infrastructure import producing
-from room_list_watcher.common import automation
-from room_list_watcher.common import messaging
-from room_list_watcher.common import retry
-from room_list_watcher.common import utility
+from roomlistwatcher.common import automation
+from roomlistwatcher.common import messaging
+from roomlistwatcher.common import retry
+from roomlistwatcher.common import utility
 
 
 class Scraper(object):
@@ -192,7 +192,7 @@ class RoomListWatcherApplication(object):
                                                      policy=policy)
 
         # Create threading.
-        application = threading.Thread(name='room_list_watcher',
+        application = threading.Thread(name='roomlistwatcher',
                                        target=producer.produce)
 
         return application

@@ -5,7 +5,7 @@ from nose.tools import raises
 
 from .. import senders
 from ..compat import HttpStatus
-from room_list_watcher.common.messaging import producing
+from roomlistwatcher.common.messaging import producing
 
 
 class TestSqsFifoQueue(object):

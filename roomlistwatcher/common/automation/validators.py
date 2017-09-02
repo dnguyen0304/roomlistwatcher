@@ -42,7 +42,7 @@ class PokemonShowdown(object):
 
         Raises
         ------
-        room_list_watcher.common.automation.exceptions.ValidationFailed
+        roomlistwatcher.common.automation.exceptions.ValidationFailed
             If the room was not entered successfully.
         """
 
@@ -64,7 +64,7 @@ class PokemonShowdown(object):
 
         Raises
         ------
-        room_list_watcher.common.automation.exceptions.ConnectionLost
+        roomlistwatcher.common.automation.exceptions.ConnectionLost
             If the connection was not established successfully or was lost.
         """
 

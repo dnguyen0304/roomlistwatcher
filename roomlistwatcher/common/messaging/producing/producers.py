@@ -3,21 +3,23 @@
 import abc
 
 
-class Source(object):
+class Producer(object):
 
     __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod
-    def emit(self):
+    def produce(self):
 
         """
+        Emit and send data.
+
         Returns
         -------
-        str
+        None
 
         Raises
         ------
-        room_list_watcher.common.messaging.producing.exceptions.EmitFailed
+        roomlistwatcher.common.messaging.producing.exceptions.EmitFailed
             If the source fails to emit data.
         """
 

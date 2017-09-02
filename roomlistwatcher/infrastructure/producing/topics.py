@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from room_list_watcher.common import utility
+from roomlistwatcher.common import utility
 
 
 class Topic(utility.AutomatedEnum):

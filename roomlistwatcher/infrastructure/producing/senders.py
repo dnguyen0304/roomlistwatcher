@@ -5,8 +5,8 @@ import uuid
 
 from . import topics
 from .compat import HttpStatus
-from room_list_watcher.common import messaging
-from room_list_watcher.common.messaging import producing
+from roomlistwatcher.common import messaging
+from roomlistwatcher.common.messaging import producing
 
 
 class ConcurrentLinkedQueue(producing.senders.Sender):

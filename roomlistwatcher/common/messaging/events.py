@@ -6,8 +6,8 @@ import datetime
 import json
 import uuid
 
-from room_list_watcher.common import io
-from room_list_watcher.common import utility
+from roomlistwatcher.common import io
+from roomlistwatcher.common import utility
 
 
 class Event(object):

@@ -3,7 +3,7 @@
 import collections
 
 from . import sources
-from room_list_watcher.common import messaging
+from roomlistwatcher.common import messaging
 
 
 class ScraperToBufferingSource(sources.Disposable):

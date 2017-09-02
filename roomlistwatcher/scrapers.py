@@ -11,10 +11,10 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
 
 from . import exceptions
-from room_list_watcher.common import automation
-from room_list_watcher.common import io
-from room_list_watcher.common import retry
-from room_list_watcher.common import utility
+from roomlistwatcher.common import automation
+from roomlistwatcher.common import io
+from roomlistwatcher.common import retry
+from roomlistwatcher.common import utility
 
 
 class Scraper(io.Disposable):
@@ -35,7 +35,7 @@ class Scraper(io.Disposable):
 
         Raises
         ------
-        room_list_watcher.common.automation.exceptions.AutomationFailed
+        roomlistwatcher.common.automation.exceptions.AutomationFailed
             If the scrape failed.
         """
 
@@ -62,7 +62,7 @@ class BaseScraper(Scraper):
 
         Raises
         ------
-        room_list_watcher.common.automation.exceptions.AutomationFailed
+        roomlistwatcher.common.automation.exceptions.AutomationFailed
             If the initialization of the page failed.
         """
 
@@ -78,7 +78,7 @@ class BaseScraper(Scraper):
 
         Raises
         ------
-        room_list_watcher.common.automation.exceptions.AutomationFailed
+        roomlistwatcher.common.automation.exceptions.AutomationFailed
             If the extraction of the elements failed.
         """
 
@@ -384,7 +384,7 @@ class Validating(BaseScraper):
         """
         Raises
         ------
-        room_list_watcher.common.automation.exceptions.ConnectionLost
+        roomlistwatcher.common.automation.exceptions.ConnectionLost
             If the connection was not established successfully or was lost.
         """
 
