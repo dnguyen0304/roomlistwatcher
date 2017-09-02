@@ -61,7 +61,7 @@ class SeleniumWebElementToString(Marshaller):
         # XML parsing with xml.etree can't be used because it can't
         # handled malformed HTML such as those with mismatched tags.
         match = re.match(pattern=self._OUTER_HTML_PATTERN, string=html)
-        if not match:
+        if match is None:
             template = 'The input "{html}" could not be parsed.'
             raise ValueError(template.format(html=html))
         # When the string matches the regex pattern, it is not possible
