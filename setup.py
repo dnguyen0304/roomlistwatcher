@@ -11,9 +11,13 @@ if __name__ == '__main__':
     with open('./README.md', 'r') as file:
         long_description = file.read()
 
-    install_requires = ['boto3==1.4.7',
-                        'enum34==1.1.6',
-                        'selenium==3.3.3']
+    install_requires = [
+        # This package is needed by the infrastructure layer to
+        # implement producers that send their data to AWS Simple Queue
+        # Service (SQS).
+        'boto3==1.4.7',
+        'enum34==1.1.6',
+        'selenium==3.3.3']
 
     setuptools.setup(name=package_name,
                      version='0.1.0',
