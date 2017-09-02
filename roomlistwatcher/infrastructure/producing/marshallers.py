@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import abc
-
-import lxml.html
+import re
 
 
 class Marshaller(object):
@@ -39,6 +38,8 @@ class Nop(Marshaller):
 
 class SeleniumWebElementToString(Marshaller):
 
+    _OUTER_HTML_PATTERN = '<a href="(?P<room_path>/battle-[\d\w]+-[\d]+)" class="ilink">[\S\s]+</a>'
+
     def marshall(self, object_):
 
         """
@@ -49,11 +50,23 @@ class SeleniumWebElementToString(Marshaller):
         Returns
         -------
         str
+
+        Raises
+        ------
+        ValueError
+            If the input could not be parsed.
         """
 
         html = object_.get_attribute('outerHTML')
-        element = lxml.html.fragment_fromstring(html=html)
-        room_path = element.get(key='href')
+        # XML parsing with xml.etree can't be used because it can't
+        # handled malformed HTML such as those with mismatched tags.
+        match = re.match(pattern=self._OUTER_HTML_PATTERN, string=html)
+        if not match:
+            template = 'The input "{html}" could not be parsed.'
+            raise ValueError(template.format(html=html))
+        # When the string matches the regex pattern, it is not possible
+        # for this to raise a KeyError.
+        room_path = match.groupdict()['room_path']
         return room_path
 
     def __repr__(self):

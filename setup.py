@@ -13,7 +13,6 @@ if __name__ == '__main__':
 
     install_requires = ['boto3==1.4.7',
                         'enum34==1.1.6',
-                        'lxml==3.7.3',
                         'selenium==3.3.3']
 
     setuptools.setup(name=package_name,
