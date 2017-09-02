@@ -19,6 +19,8 @@ if __name__ == '__main__':
         # This package is needed by the application layer to use
         # enumerations.
         'enum34==1.1.6',
+        # This package is needed by the application layer to
+        # implement scrapers that extract data from web pages.
         'selenium==3.3.3']
 
     setuptools.setup(name=package_name,
