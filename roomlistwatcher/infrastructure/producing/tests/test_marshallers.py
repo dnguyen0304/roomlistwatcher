@@ -8,8 +8,9 @@ from .. import marshallers
 
 def test_selenium_web_element_to_string():
 
+    expected = '/battle-gen0foo-0'
     outer_html = """
-<a href="/{room_path}" class="ilink">
+<a href=\"""" + expected + """\" class="ilink">
   <small style="float:right">(rated: {rating})</small>
   <small>[[{generation}] {metagame}]</small>
   <br>
@@ -17,9 +18,8 @@ def test_selenium_web_element_to_string():
 </a>
 """
     element = mock.Mock()
-    element.get_attribute = mock.Mock(return_value=outer_html)
+    element.get_attribute = mock.Mock(return_value=outer_html.strip())
 
-    expected = '/{room_path}'
     output = marshallers.SeleniumWebElementToString().marshall(element)
     element.get_attribute.assert_called_with('outerHTML')
     assert_equals(output, expected)
