@@ -89,6 +89,9 @@ ENV/
 .ropeproject
 
 
+# Archives
+*.zip
+
 # Protocol Buffers
 *_pb2.py
 
