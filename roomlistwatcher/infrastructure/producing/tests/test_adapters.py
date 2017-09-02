@@ -5,7 +5,6 @@ from nose.tools import assert_equal
 
 from .. import adapters
 from .. import marshallers
-from .... import scrapers
 
 
 class TestScraperToBufferingSource(object):
@@ -18,7 +17,7 @@ class TestScraperToBufferingSource(object):
 
     def setup(self):
         self.elements = range(2)
-        self.scraper = scrapers.Nop()
+        self.scraper = mock.Mock()
         self.scraper.scrape = mock.Mock(return_value=self.elements)
         marshaller = marshallers.Nop()
         self.source = adapters.ScraperToBufferingSource(

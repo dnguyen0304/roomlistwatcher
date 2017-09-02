@@ -85,25 +85,6 @@ class BaseScraper(Scraper):
         pass
 
 
-class Nop(BaseScraper):
-
-    def scrape(self, url):
-        return list()
-
-    def _initialize(self, url):
-        pass
-
-    def _extract(self):
-        return list()
-
-    def dispose(self):
-        pass
-
-    def __repr__(self):
-        repr_ = '{}()'
-        return repr_.format(self.__class__.__name__)
-
-
 class RoomList(BaseScraper):
 
     def __init__(self, web_driver, wait_context, disposer):
