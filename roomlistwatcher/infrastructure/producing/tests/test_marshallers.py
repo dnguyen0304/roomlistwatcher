@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import mock
-from nose.tools import assert_equals
+from nose.tools import assert_equals, raises
 
 from .. import marshallers
 
@@ -14,7 +14,7 @@ class TestSeleniumWebElementToString(object):
     def setup(self):
         self.element = mock.Mock()
 
-    def test_selenium_web_element_to_string(self):
+    def test_valid_input_returns_room_path(self):
         expected = '/battle-gen0foo-0'
         outer_html = """
 <a href=\"""" + expected + """\" class="ilink">
@@ -30,3 +30,8 @@ class TestSeleniumWebElementToString(object):
             self.element)
         self.element.get_attribute.assert_called_with('outerHTML')
         assert_equals(output, expected)
+
+    @raises(ValueError)
+    def test_invalid_input_raises_value_error(self):
+        self.element.get_attribute = mock.Mock(return_value='foo')
+        marshallers.SeleniumWebElementToString().marshall(self.element)
