@@ -16,6 +16,8 @@ if __name__ == '__main__':
         # implement producers that send their data to AWS Simple Queue
         # Service (SQS).
         'boto3==1.4.7',
+        # This package is needed by the application layer to use
+        # enumerations.
         'enum34==1.1.6',
         'selenium==3.3.3']
 
