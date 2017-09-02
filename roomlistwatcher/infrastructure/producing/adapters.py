@@ -41,7 +41,10 @@ class ScraperToBufferingSource(sources.Disposable):
         except IndexError:
             message = 'The source failed to emit data.'
             raise messaging.producing.exceptions.EmitFailed(message)
-        message = self._marshaller.marshall(element)
+        try:
+            message = self._marshaller.marshall(element)
+        except ValueError as e:
+            raise messaging.producing.exceptions.EmitFailed(e.message)
         return message
 
     def dispose(self):
