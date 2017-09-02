@@ -50,7 +50,6 @@ coverage.xml
 *.pot
 
 # Django stuff:
-*.log
 local_settings.py
 
 # Flask stuff:
@@ -91,6 +90,10 @@ ENV/
 
 # Archives
 *.zip
+
+$ Logs
+*.log
+*.log.*
 
 # Protocol Buffers
 *_pb2.py
