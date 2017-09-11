@@ -5,7 +5,6 @@ enum34==1.1.6
 funcsigs==1.0.2
 futures==3.1.1
 jmespath==0.9.3
-lxml==3.7.3
 pbr==3.1.1
 python-dateutil==2.6.1
 s3transfer==0.1.10
