@@ -11,7 +11,7 @@ rm --force ${NAMESPACE}*.zip
 # Create the buildtime container.
 docker build \
     --file docker/buildtime/Dockerfile \
-    --tag ${NAMESPACE}-buildtime:${VERSION} \
+    --tag dnguyen0304/${NAMESPACE}-buildtime:${VERSION} \
     --build-arg COMPONENT=${NAMESPACE} \
     --build-arg SHARED_VOLUME=${REMOTE_SHARED_VOLUME} \
     .
