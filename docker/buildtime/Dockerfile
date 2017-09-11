@@ -4,6 +4,7 @@ MAINTAINER Duy Nguyen <dnguyen0304@gmail.com>
 
 ARG COMPONENT
 ARG SHARED_VOLUME
+
 ARG BUILD_DIRECTORY="/tmp/.build"
 ARG BUILD_EXECUTABLE="build.sh"
 
