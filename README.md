@@ -30,6 +30,5 @@ sudo docker push dnguyen0304/roomlistwatcher:<tag>
 ```
 # NOTE: Remember to replace the <tag> placeholder.
 
-sudo docker push dnguyen0304/roomlistwatcher-buildtime:<tag>
 sudo docker push dnguyen0304/roomlistwatcher:<tag>
 ```
