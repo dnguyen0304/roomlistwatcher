@@ -32,7 +32,10 @@ class Simple(Disposable):
         self._filters = filters or list()
 
     def produce(self):
-        data = self._source.emit()
+        try:
+            data = self._source.emit()
+        except messaging.producing.exceptions.EmitFailed:
+            return
         for filter_ in self._filters:
             data = filter_.filter(data)
             if data is None:
