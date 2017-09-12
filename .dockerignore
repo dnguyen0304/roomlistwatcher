@@ -1,0 +1,12 @@
+.dockerignore
+Dockerfile
+
+*
+
+!docker
+
+!roomlistwatcher
+!requirements.txt
+!main.py
+
+!*-latest.zip

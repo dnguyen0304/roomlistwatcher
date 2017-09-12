@@ -4,24 +4,19 @@
 import json
 import os
 
-from clare.application import factories
-
-
-def get_configuration():
-
-    configuration_file_path = os.environ['CLARE_CONFIGURATION_FILE_PATH']
-
-    with open(configuration_file_path, 'rb') as file:
-        parsed_configuration = json.loads(file.read())
-
-    return parsed_configuration
+from clare.application import ApplicationFactory
+from clare.infrastructure import ApplicationInfrastructureFactory
 
 
 def main():
 
     configuration = get_configuration()
-    factory = factories.Factory(properties=configuration)
-    application = factory.create()
+    infrastructure_factory = ApplicationInfrastructureFactory(
+        properties=configuration)
+    infrastructure = infrastructure_factory.create()
+    application_factory = ApplicationFactory(infrastructure=infrastructure,
+                                             properties=configuration)
+    application = application_factory.create()
     application.start()
 
 

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from . import factories
+from .factories import Application as ApplicationFactory
 
-__all__ = ['factories']
+__all__ = ['ApplicationFactory']

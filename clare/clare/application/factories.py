@@ -1,25 +1,27 @@
 # -*- coding: utf-8 -*-
 
 import Queue
-import logging
+import os
 import threading
+import uuid
 
 from . import applications
 from . import download_bot
 from . import room_list_watcher
-from clare.common import messaging
 
 
-class Factory(object):
+class Application(object):
 
-    def __init__(self, properties):
+    def __init__(self, infrastructure, properties):
 
         """
         Parameters
         ----------
+        infrastructure : clare.infrastructure.infrastructures.ApplicationInfrastructure
         properties : collections.Mapping
         """
 
+        self._infrastructure = infrastructure
         self._properties = properties
 
     def create(self):
@@ -32,29 +34,30 @@ class Factory(object):
 
         queue = Queue.Queue()
 
-        # Construct the room_list_watcher.
-        sender = messaging.producer.senders.Sender(
-            message_queue=queue)
+        # Construct the room list watcher.
         room_list_watcher_factory = room_list_watcher.factories.Producer(
-            properties=self._properties['room_list_watcher'],
-            sender=sender)
+            infrastructure=self._infrastructure.room_list_watcher,
+            properties=self._properties['room_list_watcher'])
         room_list_watcher_ = room_list_watcher_factory.create()
 
         # Include threading.
         kwargs = {
-            'interval': self._properties['room_list_watcher']['interval'],
-            'timeout': self._properties['room_list_watcher']['timeout']
+            'interval': self._properties['room_list_watcher']['interval']
         }
         room_list_watcher_ = threading.Thread(name='room_list_watcher',
                                               target=room_list_watcher_.produce,
                                               kwargs=kwargs)
         room_list_watcher_.daemon = True
 
-        # Construct the download_bot.
-        download_bot_factory = download_bot.factories.Consumer(
-            message_queue=queue,
+        # Construct the download bot.
+        download_bot_factory = download_bot.factories.Factory(
+            queue=queue,
             properties=self._properties['download_bot'])
-        download_bot_ = download_bot_factory.create()
+        directory_path = os.path.join(
+            self._properties['download_bot']['factory']['root_directory_path'],
+            str(uuid.uuid4()))
+        download_bot_ = download_bot_factory.create(
+            download_directory_path=directory_path)
 
         # Include threading.
         kwargs = {
@@ -74,5 +77,7 @@ class Factory(object):
         return application
 
     def __repr__(self):
-        repr_ = '{}(properties={})'
-        return repr_.format(self.__class__.__name__, self._properties)
+        repr_ = '{}(infrastructure={}, properties={})'
+        return repr_.format(self.__class__.__name__,
+                            self._infrastructure,
+                            self._properties)

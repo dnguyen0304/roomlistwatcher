@@ -66,11 +66,14 @@ class LoggingDownloadBot(object):
 
     def run(self, url):
         file_path = self._download_bot.run(url=url)
+
         arguments = collections.OrderedDict()
         arguments['file_path'] = file_path
         event = common.logging.Event(topic=topics.Topic.REPLAY_DOWNLOADED,
                                      arguments=arguments)
         self._logger.info(msg=event.to_json())
+
+        return file_path
 
     def dispose(self):
         self._download_bot.dispose()

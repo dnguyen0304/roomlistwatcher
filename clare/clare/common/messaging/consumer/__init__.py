@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from . import builders
+from . import consumers
+from . import deleters
 from . import exceptions
-from . import fetchers
 from . import interfaces
+from . import receivers
 
-__all__ = ['builders',
+__all__ = ['consumers',
+           'deleters',
            'exceptions',
-           'fetchers',
-           'interfaces']
+           'interfaces',
+           'receivers']

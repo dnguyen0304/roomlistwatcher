@@ -1,17 +1,8 @@
 # -*- coding: utf-8 -*-
 
-import abc
-import sys
-
-if sys.version_info[:2] == (2, 7):
-    import BaseHTTPServer
-    import httplib as HttpStatusCode
-
 import selenium.common
-import selenium.webdriver
 
-from nose.tools import (assert_false,
-                        assert_is_none,
+from nose.tools import (assert_is_none,
                         assert_is_not_none,
                         assert_true,
                         raises)
@@ -19,11 +10,6 @@ from nose.tools import (assert_false,
 from .. import exceptions
 from .. import download_strategies
 
-
-class MockServer(BaseHTTPServer.BaseHTTPRequestHandler):
-
-    def do_GET(self):
-        path = self.path.lstrip('/').rstrip('/')
 
         pages_index = {'expired_room':
 """
@@ -74,18 +60,6 @@ class MockServer(BaseHTTPServer.BaseHTTPRequestHandler):
   </div>
 </body>
 """,
-                       'server_error_correct_css_selector_and_content':
-"""
-<body>
-  <div class="ps-overlay">
-    <div>
-      <form>
-        <p>disconnected</p>
-      </form>
-    </div>
-  </div>
-</body>
-""",
                        'download_button_correct_class_name':
 """
 <button class="replayDownloadButton" type="button"></button>
@@ -94,32 +68,6 @@ class MockServer(BaseHTTPServer.BaseHTTPRequestHandler):
 """
 <button class="" type="button"></button>
 """}
-
-        try:
-            page = pages_index[path]
-        except KeyError:
-            page = ''
-            http_status_code = HttpStatusCode.INTERNAL_SERVER_ERROR
-        else:
-            http_status_code = HttpStatusCode.OK
-
-        self.send_response(code=http_status_code)
-        self.end_headers()
-        self.wfile.write(page)
-
-
-class MockServerUtilitiesMixin(object):
-
-    __metaclass__ = abc.ABCMeta
-
-    def set_web_driver_page(self, path):
-        url = self.construct_url(path=path)
-        self.web_driver.get(url=url)
-
-    @staticmethod
-    def construct_url(path):
-        url = 'http://127.0.0.1:9090/{}/'.format(path)
-        return url
 
 
 class NopDownloadStrategy(download_strategies.Base):
@@ -157,12 +105,6 @@ class TestBase(MockServerUtilitiesMixin):
     def test_confirm_no_redirect_title_incorrect_content(self):
         self.set_web_driver_page(path='title_incorrect_content')
         self.strategy._confirm_no_redirect(timeout=None)
-
-    def test_confirm_server_error_correct_css_selector(self):
-        self.set_web_driver_page(path='server_error_correct_css_selector')
-        encountered_server_error = self.strategy._confirm_server_error(
-            timeout=None)
-        assert_false(encountered_server_error)
 
     def test_confirm_server_error_correct_css_selector_and_content(self):
         self.set_web_driver_page(path='server_error_correct_css_selector_and_content')
@@ -219,18 +161,3 @@ class TestFindDownloadButton(MockServerUtilitiesMixin):
 
     def teardown(self):
         self.web_driver.quit()
-
-
-def main():
-
-    server_address = ('', 9090)
-    http_server = BaseHTTPServer.HTTPServer(server_address=server_address,
-                                            RequestHandlerClass=MockServer)
-    try:
-        http_server.serve_forever()
-    except KeyboardInterrupt:
-        http_server.server_close()
-
-
-if __name__ == '__main__':
-    main()
