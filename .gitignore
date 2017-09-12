@@ -88,6 +88,12 @@ ENV/
 # Rope project settings
 .ropeproject
 
+# Cache objects
+packer_cache/
+
+# For built boxes
+*.box
+
 
 # Protocol Buffers
 *_pb2.py
