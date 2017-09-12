@@ -2,6 +2,7 @@
 
 from . import adapters
 from . import compat
+from . import exceptions
 from . import filters
 from . import flush_strategies
 from . import generators
@@ -14,6 +15,7 @@ from . import disposers
 
 __all__ = ['adapters',
            'compat',
+           'exceptions',
            'filters',
            'flush_strategies',
            'generators',
