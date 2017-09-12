@@ -30,17 +30,15 @@ docker run \
     ${tag} \
     ${NAMESPACE} ${REMOTE_SHARED_VOLUME} ${VERSION}
 
-# Create the runtime container.
+# Create the container.
 tag=${DOMAIN}/${NAMESPACE}:${VERSION}
 
 if [ ! -z $(sudo docker images --quiet ${tag}) ]; then
     docker rmi --force ${tag}
 fi
 docker build \
-    --file docker/runtime/Dockerfile \
+    --file docker/Dockerfile \
     --tag ${tag} \
+    --build-arg VERSION=${VERSION} \
     --build-arg NAMESPACE=${NAMESPACE} \
-    --build-arg CONFIGURATION_FILE_NAME="application.config" \
-    --build-arg AWS_CONFIGURATION_FILE_NAME="aws.config" \
-    --build-arg AWS_CREDENTIALS_FILE_NAME="aws.credentials" \
     .
