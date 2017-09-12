@@ -49,6 +49,7 @@ class Scraper(object):
 
         # Create the scraper.
         chrome_options = selenium.webdriver.ChromeOptions()
+        chrome_options.add_argument('disable-gpu')
         chrome_options.add_argument('no-sandbox')
         if self._properties['browser']['is_headless']:
             chrome_options.add_argument('headless')
