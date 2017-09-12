@@ -25,7 +25,7 @@ class WebDriverDisposer(object):
         raise NotImplementedError
 
 
-class ChromeWebDriver(WebDriverDisposer):
+class SeleniumWebDriver(WebDriverDisposer):
 
     def dispose(self, web_driver):
 

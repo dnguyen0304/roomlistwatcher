@@ -39,7 +39,7 @@ class Scraper(object):
         """
 
         # Create the disposer.
-        disposer = producing.disposers.ChromeWebDriver()
+        disposer = producing.disposers.SeleniumWebDriver()
 
         # Include capturing.
         generator = producing.generators.TimestampingFilePath.from_file_path(
