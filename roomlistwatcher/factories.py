@@ -48,7 +48,10 @@ class Scraper(object):
                                                           generator=generator)
 
         # Create the scraper.
-        web_driver = selenium.webdriver.Chrome()
+        chrome_options = selenium.webdriver.ChromeOptions()
+        if self._properties['browser']['is_headless']:
+            chrome_options.add_argument('headless')
+        web_driver = selenium.webdriver.Chrome(chrome_options=chrome_options)
         wait_context = WebDriverWait(
             driver=web_driver,
             timeout=self._properties['wait_context']['timeout'])
