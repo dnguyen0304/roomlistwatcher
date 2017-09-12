@@ -2,6 +2,7 @@
 
 import collections
 
+from . import exceptions
 from . import sources
 from roomlistwatcher.common import messaging
 
@@ -43,7 +44,7 @@ class ScraperToBufferingSource(sources.Disposable):
             raise messaging.producing.exceptions.EmitFailed(message)
         try:
             message = self._marshaller.marshall(element)
-        except ValueError as e:
+        except (ValueError, exceptions.MarshallFailed) as e:
             raise messaging.producing.exceptions.EmitFailed(e.message)
         return message
 

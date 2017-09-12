@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import mock
+import selenium.common
 from nose.tools import assert_equal, raises
 
 from .. import adapters
@@ -45,6 +46,18 @@ class TestScraperToBufferingSource(object):
     def test_invalid_input_raises_emit_failed(self):
         element = mock.Mock()
         element.get_attribute = mock.Mock(return_value='foo')
+        self.scraper.scrape = mock.Mock(return_value=[element])
+        source = adapters.ScraperToBufferingSource(
+            scraper=self.scraper,
+            url=None,
+            marshaller=marshallers.SeleniumWebElementToString())
+        source.emit()
+
+    @raises(messaging.producing.exceptions.EmitFailed)
+    def test_marshall_failed_raises_emit_failed(self):
+        element = mock.Mock()
+        element.get_attribute = mock.Mock(
+            side_effect=selenium.common.exceptions.WebDriverException)
         self.scraper.scrape = mock.Mock(return_value=[element])
         source = adapters.ScraperToBufferingSource(
             scraper=self.scraper,

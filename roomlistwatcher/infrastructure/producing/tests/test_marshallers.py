@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import mock
+import selenium.common
 from nose.tools import assert_equals, raises
 
+from .. import exceptions
 from .. import marshallers
 
 
@@ -34,4 +36,10 @@ class TestSeleniumWebElementToString(object):
     @raises(ValueError)
     def test_invalid_input_raises_value_error(self):
         self.element.get_attribute = mock.Mock(return_value='foo')
+        marshallers.SeleniumWebElementToString().marshall(self.element)
+
+    @raises(exceptions.MarshallFailed)
+    def test_web_driver_exception_raises_marshall_failed(self):
+        self.element.get_attribute = mock.Mock(
+            side_effect=selenium.common.exceptions.WebDriverException)
         marshallers.SeleniumWebElementToString().marshall(self.element)

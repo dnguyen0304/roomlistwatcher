@@ -3,6 +3,10 @@
 import abc
 import re
 
+import selenium.common
+
+from . import exceptions
+
 
 class Marshaller(object):
 
@@ -59,9 +63,12 @@ class SeleniumWebElementToString(Marshaller):
         str
         """
 
-        # This is a leaky abstraction. The Selenium WebElement "model"
-        # performs I/O operations.
-        html = object_.get_attribute('outerHTML')
+        try:
+            # This is a leaky abstraction. The Selenium WebElement
+            # "model" performs I/O operations.
+            html = object_.get_attribute('outerHTML')
+        except selenium.common.exceptions.WebDriverException as e:
+            raise exceptions.MarshallFailed(e.message)
         # XML parsing with xml.etree can't be used because it can't
         # handled malformed HTML such as those with mismatched tags.
         match = re.match(pattern=self._OUTER_HTML_PATTERN, string=html)
