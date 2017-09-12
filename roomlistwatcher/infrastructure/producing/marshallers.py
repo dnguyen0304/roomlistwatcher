@@ -26,6 +26,8 @@ class Marshaller(object):
         ------
         ValueError
             If the input could not be parsed.
+        roomlistwatcher.infrastructure.producing.exceptions.MarshallFailed
+            If the marshalling failed.
         """
 
         raise NotImplementedError
