@@ -12,6 +12,9 @@ rm --force ${NAMESPACE}*.zip
 # Create the buildtime container.
 tag=${DOMAIN}/${NAMESPACE}-buildtime:${VERSION}
 
+if [ ! -z $(sudo docker images --quiet ${tag}) ]; then
+    docker rmi --force ${tag}
+fi
 docker build \
     --file docker/buildtime/Dockerfile \
     --tag ${tag} \
@@ -21,6 +24,7 @@ docker build \
 
 # Create the package.
 docker run \
+    --rm \
     --volume $(pwd):${REMOTE_SHARED_VOLUME} \
     ${tag} \
     ${NAMESPACE} ${REMOTE_SHARED_VOLUME} ${VERSION}
@@ -28,6 +32,9 @@ docker run \
 # Create the runtime container.
 tag=${DOMAIN}/${NAMESPACE}:${VERSION}
 
+if [ ! -z $(sudo docker images --quiet ${tag}) ]; then
+    docker rmi --force ${tag}
+fi
 docker build \
     --file docker/runtime/Dockerfile \
     --tag ${tag} \
