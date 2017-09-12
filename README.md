@@ -12,10 +12,11 @@ Update the configuration files in the `configuration` directory first.
 ```
 # NOTE: Remember to replace the <tag> placeholder.
 
-sudo docker run --rm \
-                --volume $(pwd)/configuration:/etc/opt/roomlistwatcher \
-                --volume $(pwd):/var/opt/roomlistwatcher/log \
-                dnguyen0304/roomlistwatcher:<tag>
+sudo docker run \
+    --rm \
+    --volume $(pwd)/configuration:/etc/opt/roomlistwatcher \
+    --volume $(pwd):/var/opt/roomlistwatcher/log \
+    dnguyen0304/roomlistwatcher:<tag>
 ```
 
 ### Pushing
