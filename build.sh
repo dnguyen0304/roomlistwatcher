@@ -7,6 +7,7 @@ NAMESPACE="roomlistwatcher"
 VERSION=$(grep -Po "version='\K\d\.\d\.\d" setup.py)
 REMOTE_SHARED_VOLUME="/tmp/build"
 
+# Clean up existing packages created by previous builds.
 rm --force ${NAMESPACE}*.zip
 
 # Create the buildtime container.
