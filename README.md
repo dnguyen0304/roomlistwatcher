@@ -32,3 +32,20 @@ sudo docker push dnguyen0304/roomlistwatcher:<tag>
 
 sudo docker push dnguyen0304/roomlistwatcher:<tag>
 ```
+
+## Advanced
+### Managing the runtime image.
+```
+# NOTE: Remember to replace the <tag> placeholder.
+
+sudo docker build \
+    --file docker/runtime/Dockerfile \
+    --tag dnguyen0304/roomlistwatcher-runtime:<tag> \
+    --build-arg NAMESPACE=dnguyen0304 \
+    --build-arg CONFIGURATION_FILE_NAME="application.config" \
+    --build-arg AWS_CONFIGURATION_FILE_NAME="aws.config" \
+    --build-arg AWS_CREDENTIALS_FILE_NAME="aws.credentials" \
+    .
+
+sudo docker push dnguyen0304/roomlistwatcher-runtime:<tag>
+```
