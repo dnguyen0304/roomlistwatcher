@@ -21,6 +21,11 @@ class Marshaller(object):
         Returns
         -------
         object
+
+        Raises
+        ------
+        ValueError
+            If the input could not be parsed.
         """
 
         raise NotImplementedError
@@ -50,11 +55,6 @@ class SeleniumWebElementToString(Marshaller):
         Returns
         -------
         str
-
-        Raises
-        ------
-        ValueError
-            If the input could not be parsed.
         """
 
         html = object_.get_attribute('outerHTML')
