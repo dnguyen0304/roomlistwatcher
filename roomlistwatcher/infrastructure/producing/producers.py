@@ -16,7 +16,7 @@ class Disposable(messaging.producing.producers.Producer, io.Disposable):
 
 class Simple(Disposable):
 
-    def __init__(self, sender, source, filters=None):
+    def __init__(self, source, sender, filters=None):
 
         """
         Parameters
