@@ -51,3 +51,5 @@ RUN rm -fr /var/lib/apt/lists/*
 
 VOLUME ${CONFIGURATION_DIRECTORY}
 VOLUME ${LOG_DIRECTORY}
+
+ENTRYPOINT ["python", "./main.py"]
