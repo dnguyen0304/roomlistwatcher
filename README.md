@@ -35,6 +35,23 @@ sudo docker push dnguyen0304/roomlistwatcher:<tag>
 ```
 
 ## Advanced
+### Testing the application.
+1. Build the image.
+```
+sudo ./build.sh test
+```
+2. Update the configuration files in the `configuration` directory.
+3. Run the test suite.
+```
+# NOTE: Remember to replace the <tag> placeholder.
+
+sudo docker run \
+    --rm \
+    --volume $(pwd)/configuration:/etc/opt/roomlistwatcher \
+    --volume $(pwd):/var/opt/roomlistwatcher/log \
+    dnguyen0304/roomlistwatcher:<tag>
+```
+
 ### Deploying the application.
 1. Install `docker`.
 2. Install `git`.
