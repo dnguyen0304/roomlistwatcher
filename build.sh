@@ -34,7 +34,7 @@ docker run \
     ${NAMESPACE} ${REMOTE_SHARED_VOLUME} ${VERSION}
 
 # Create the container.
-tag=${DOMAIN}/${NAMESPACE}:${VERSION}
+tag=${DOMAIN}/${NAMESPACE}-runtime:${VERSION}
 
 if [ ! -z $(sudo docker images --quiet ${tag}) ]; then
     docker rmi --force ${tag}
@@ -42,6 +42,8 @@ fi
 docker build \
     --file docker/Dockerfile \
     --tag ${tag} \
-    --build-arg VERSION=${VERSION} \
+    --build-arg DOMAIN=${DOMAIN} \
+    --build-arg NAMESPACE=${NAMESPACE} \
+    --build-arg BASE_IMAGE_VERSION=${VERSION} \
     --build-arg NAMESPACE=${NAMESPACE} \
     .
