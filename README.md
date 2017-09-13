@@ -69,18 +69,24 @@ sudo docker build \
 sudo docker push dnguyen0304/roomlistwatcher-buildtime-base:<tag>
 ```
 
-### Managing the runtime image.
+### Managing the base runtime image.
+1. Change the working directory to the package root directory.
+2. Build the image.
 ```
 # NOTE: Remember to replace the <tag> placeholder.
 
 sudo docker build \
     --file docker/runtime/base/Dockerfile \
     --tag dnguyen0304/roomlistwatcher-runtime:<tag> \
-    --build-arg NAMESPACE=roomlistwatcher \
+    --build-arg NAMESPACE="roomlistwatcher" \
     --build-arg CONFIGURATION_FILE_NAME="application.config" \
     --build-arg AWS_CONFIGURATION_FILE_NAME="aws.config" \
     --build-arg AWS_CREDENTIALS_FILE_NAME="aws.credentials" \
     .
+```
+3. Push the image.
+```
+# NOTE: Remember to replace the <tag> placeholder.
 
-sudo docker push dnguyen0304/roomlistwatcher-runtime:<tag>
+sudo docker push dnguyen0304/roomlistwatcher-runtime-base:<tag>
 ```

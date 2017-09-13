@@ -9,7 +9,7 @@ ARG AWS_CREDENTIALS_FILE_NAME
 
 # unzip is needed to extract the package.
 # wget is a dependency of Chrome.
-ARG BUILDTIME_DEPENDENCIES="unzip"
+ENV BUILDTIME_DEPENDENCIES="unzip"
 ARG RUNTIME_DEPENDENCIES="wget"
 
 ARG CHROME_DRIVER_VERSION="2.32"
@@ -47,8 +47,7 @@ RUN wget http://chromedriver.storage.googleapis.com/${CHROME_DRIVER_VERSION}/chr
 RUN chown --recursive ${NAMESPACE}:${NAMESPACE} ${CONFIGURATION_DIRECTORY} && \
     chown --recursive ${NAMESPACE}:${NAMESPACE} ${LOG_DIRECTORY}
 
-RUN rm -fr /var/lib/apt/lists/* && \
-    apt-get purge -y --auto-remove ${BUILDTIME_DEPENDENCIES}
+RUN rm -fr /var/lib/apt/lists/*
 
 VOLUME ${CONFIGURATION_DIRECTORY}
 VOLUME ${LOG_DIRECTORY}
