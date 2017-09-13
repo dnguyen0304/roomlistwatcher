@@ -56,7 +56,13 @@ class TestPokemonShowdown(object):
         self.process = multiprocessing.Process(target=self.serve)
         self.process.start()
 
-        self.web_driver = selenium.webdriver.Chrome()
+        chrome_options = selenium.webdriver.ChromeOptions()
+        chrome_options.add_argument('disable-gpu')
+        chrome_options.add_argument('headless')
+        chrome_options.add_argument('no-sandbox')
+
+        self.web_driver = selenium.webdriver.Chrome(
+            chrome_options=chrome_options)
         wait_context = WebDriverWait(driver=self.web_driver, timeout=0)
         self.validator = validators.PokemonShowdown(wait_context=wait_context)
 
