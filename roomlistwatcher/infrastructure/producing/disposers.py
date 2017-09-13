@@ -2,6 +2,8 @@
 
 import abc
 
+import selenium.common
+
 
 class WebDriverDisposer(object):
 
@@ -67,7 +69,13 @@ class CapturingWebDriver(WebDriverDisposer):
 
     def dispose(self, web_driver):
         file_path = self._generator.generate()
-        web_driver.get_screenshot_as_file(file_path)
+        try:
+            web_driver.get_screenshot_as_file(file_path)
+        except selenium.common.exceptions.WebDriverException:
+            # An expected error has occurred that cannot be handled
+            # by alternative measures. The web driver has reached a
+            # critical state. Perform a NOP.
+            pass
         self._disposer.dispose(web_driver=web_driver)
 
     def __repr__(self):
