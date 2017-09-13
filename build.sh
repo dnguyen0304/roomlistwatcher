@@ -11,7 +11,8 @@ REMOTE_SHARED_VOLUME="/tmp/build"
 rm --force ${NAMESPACE}*.zip
 
 # Create the buildtime container.
-tag=${DOMAIN}/${NAMESPACE}-buildtime:${VERSION}
+BUILDTIME_BASE_IMAGE_VERSION="0.1.0"
+tag=${DOMAIN}/${NAMESPACE}-buildtime:${BUILDTIME_BASE_IMAGE_VERSION}
 
 if [ ! -z $(sudo docker images --quiet ${tag}) ]; then
     docker rmi --force ${tag}
@@ -19,8 +20,10 @@ fi
 docker build \
     --file docker/buildtime/Dockerfile \
     --tag ${tag} \
+    --build-arg DOMAIN=${DOMAIN} \
+    --build-arg NAMESPACE=${NAMESPACE} \
+    --build-arg BASE_IMAGE_VERSION=${BUILDTIME_BASE_IMAGE_VERSION} \
     --build-arg COMPONENT=${NAMESPACE} \
-    --build-arg SHARED_VOLUME=${REMOTE_SHARED_VOLUME} \
     .
 
 # Create the package.
