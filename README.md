@@ -74,7 +74,7 @@ sudo docker push dnguyen0304/roomlistwatcher-buildtime-base:<tag>
 # NOTE: Remember to replace the <tag> placeholder.
 
 sudo docker build \
-    --file docker/runtime/Dockerfile \
+    --file docker/runtime/base/Dockerfile \
     --tag dnguyen0304/roomlistwatcher-runtime:<tag> \
     --build-arg NAMESPACE=roomlistwatcher \
     --build-arg CONFIGURATION_FILE_NAME="application.config" \
