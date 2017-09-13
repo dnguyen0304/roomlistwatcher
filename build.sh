@@ -40,7 +40,7 @@ if [ ! -z $(sudo docker images --quiet ${tag}) ]; then
     docker rmi --force ${tag}
 fi
 docker build \
-    --file docker/Dockerfile \
+    --file docker/runtime/Dockerfile \
     --tag ${tag} \
     --build-arg DOMAIN=${DOMAIN} \
     --build-arg NAMESPACE=${NAMESPACE} \
