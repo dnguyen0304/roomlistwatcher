@@ -76,6 +76,10 @@ class Scraper(object):
 
         return scraper
 
+    def __repr__(self):
+        repr_ = '{}(properties={})'
+        return repr_.format(self.__class__.__name__, self._properties)
+
 
 class _Scraper(object):
 

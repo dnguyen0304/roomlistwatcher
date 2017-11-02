@@ -199,8 +199,8 @@ class Orchestrating(BaseScraper):
             except selenium.common.exceptions.WebDriverException as e:
                 # An unexpected error has occurred. Reload the existing
                 # scraper.
-                self._logger.critical(msg=utility.format_exception(e=e),
-                                      exc_info=True)
+                self._logger.error(msg=utility.format_exception(e=e),
+                                   exc_info=True)
                 self._reload()
             except Exception as e:
                 # An unexpected error has occurred. Dispose of the
