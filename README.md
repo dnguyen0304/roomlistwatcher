@@ -57,11 +57,11 @@ sudo docker run \
 2. Install `git`.
 3. Clone the repository.
 ```
-git clone https://github.com/dnguyen0304/room-list-watcher.git
+git clone https://github.com/dnguyen0304/roomlistwatcher.git
 ```
 4. Change the working directory.
 ```
-cd room-list-watcher
+cd roomlistwatcher
 ```
 5. Build the application. See the notes on _Building_ in the _Getting Started_ section.
 6. Update the configuration files.
